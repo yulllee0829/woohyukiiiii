@@ -3,68 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <meta name="theme-color" content="#171326" />
+  <meta name="theme-color" content="#17172a" />
   <title>500일 꿈속 호텔</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <main id="app" aria-live="polite">
-    <section id="titleScene" class="scene active">
-      <div class="stars"></div>
-      <div class="hotel-sign pixel-panel">
-        <p class="eyebrow">500일 기념</p>
-        <h1>꿈속 호텔</h1>
-        <p>기억이 보관된 방들을 천천히 둘러보세요.</p>
-        <button class="pixel-button" data-action="enter-hotel">호텔 들어가기</button>
-      </div>
-    </section>
-
-    <section id="lobbyScene" class="scene">
-      <header class="hud">
-        <span>LOBBY</span>
-        <span id="progressText">완료 0 / 1</span>
-      </header>
-      <div class="lobby-world pixel-world">
-        <div class="window skyline"></div>
-        <div class="reception pixel-panel small-panel">
-          <strong>프런트</strong>
-          <span>첫 번째 방부터 열려 있습니다.</span>
-        </div>
-        <button class="room-door" data-action="enter-room">
-          <span class="room-number">308</span>
-          <span class="room-label">우연이 겹치던 날들</span>
-        </button>
-        <button class="locked-door" disabled>
-          <span>???</span>
-          <small>준비 중</small>
-        </button>
-        <button class="rooftop-door" disabled>
-          <span>ROOFTOP</span>
-          <small>🔒</small>
-        </button>
-        <div class="player avatar-boy idle" aria-label="남자친구 캐릭터"></div>
-      </div>
-    </section>
-
-    <section id="roomScene" class="scene">
-      <header class="hud">
-        <button class="hud-back" data-action="back-lobby">‹</button>
-        <span id="chapterTitle">308호 · 우연이 겹치던 날들</span>
-        <span id="stepText">1 / 5</span>
-      </header>
-      <div id="chapterWorld" class="chapter-world pixel-world"></div>
+  <main id="app">
+    <canvas id="game" width="384" height="672" aria-label="500일 꿈속 호텔 픽셀 게임"></canvas>
+    <div id="ui">
+      <button id="startButton" class="pixel-button">호텔 들어가기</button>
+      <button id="actionButton" class="pixel-button hidden">확인</button>
       <div id="dialogue" class="dialogue hidden"></div>
-    </section>
-
-    <section id="clearScene" class="scene">
-      <div class="clear-card pixel-panel">
-        <div class="pixel-heart">♥</div>
-        <p class="eyebrow">ROOM 308 CLEAR</p>
-        <h2>2025.03.08</h2>
-        <p>우연이 몇 번 겹치더니 결국 이렇게 됐습니다.</p>
-        <button class="pixel-button" data-action="return-lobby">로비로 돌아가기</button>
+      <div id="hint" class="hint hidden"></div>
+      <div id="controls" class="controls hidden" aria-label="이동 조작">
+        <button data-dir="left">◀</button>
+        <button data-dir="up">▲</button>
+        <button data-dir="down">▼</button>
+        <button data-dir="right">▶</button>
       </div>
-    </section>
+    </div>
   </main>
   <script src="script.js"></script>
 </body>
