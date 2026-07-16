@@ -1,40 +1,78 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 132" shape-rendering="crispEdges">
-<rect width="96" height="132" fill="none"/>
-<!-- long hair -->
-<path fill="#2b2530" d="M24 20h8v-6h32v6h8v8h4v64h-8v18h-12V48H40v62H28V92h-8V28h4z"/>
-<path fill="#3a313f" d="M32 16h30v4h8v10h4v50h-6V38H58v-8H32z"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 164" shape-rendering="crispEdges">
+<rect width="128" height="164" fill="none"/>
+<!-- ground shadow -->
+<rect x="36" y="152" width="56" height="5" fill="#d8c9c0" opacity=".45"/>
+<!-- long hair back silhouette -->
+<path fill="#211b24" d="M30 26h8v-8h16v-4h28v4h12v8h6v12h6v78h-8v18H82V62H46v72H30v-18h-8V38h8z"/>
+<!-- hair mid layers -->
+<path fill="#302832" d="M36 22h16v-4h28v4h12v8h6v64h-8V42h-8V30H68v8H50v8H36z"/>
+<path fill="#40343c" d="M42 20h14v-2h22v4h10v6H76v4H62v6H48v10H36V32h6z"/>
+<path fill="#5a463f" d="M46 24h10v4h8v-4h8v4h8v4h-8v4H58v-4H46z"/>
+<!-- ears -->
+<rect x="24" y="54" width="8" height="18" fill="#e9aa92"/>
+<rect x="96" y="54" width="8" height="18" fill="#e9aa92"/>
+<rect x="26" y="58" width="4" height="8" fill="#cf8579"/>
+<rect x="98" y="58" width="4" height="8" fill="#cf8579"/>
+<!-- face -->
+<rect x="32" y="44" width="64" height="44" fill="#f5cab5"/>
+<rect x="36" y="82" width="56" height="7" fill="#eab29f"/>
 <!-- bangs -->
-<rect x="30" y="28" width="36" height="18" fill="#2b2530"/>
-<rect x="30" y="42" width="36" height="28" fill="#f4c8b0"/>
-<rect x="27" y="46" width="4" height="14" fill="#e9a88f"/>
-<rect x="66" y="46" width="4" height="14" fill="#e9a88f"/>
-<rect x="32" y="28" width="6" height="18" fill="#3a313f"/>
-<rect x="42" y="28" width="4" height="16" fill="#3a313f"/>
-<rect x="54" y="28" width="4" height="16" fill="#3a313f"/>
-<!-- eyes -->
-<rect x="36" y="50" width="9" height="11" fill="#2a2030"/>
-<rect x="52" y="50" width="9" height="11" fill="#2a2030"/>
-<rect x="38" y="51" width="3" height="3" fill="#fff7ef"/>
-<rect x="54" y="51" width="3" height="3" fill="#fff7ef"/>
-<rect x="42" y="58" width="2" height="2" fill="#9d665f"/>
-<rect x="58" y="58" width="2" height="2" fill="#9d665f"/>
-<rect x="44" y="64" width="9" height="2" fill="#d9849a"/>
-<rect x="31" y="58" width="4" height="2" fill="#ef9cab"/>
-<rect x="62" y="58" width="4" height="2" fill="#ef9cab"/>
-<!-- lavender top -->
-<rect x="28" y="70" width="40" height="30" fill="#c7b1df"/>
-<rect x="22" y="74" width="8" height="26" fill="#c7b1df"/>
-<rect x="66" y="74" width="8" height="26" fill="#c7b1df"/>
-<rect x="24" y="98" width="6" height="8" fill="#f4c8b0"/>
-<rect x="66" y="98" width="6" height="8" fill="#f4c8b0"/>
-<!-- black shorts -->
-<rect x="30" y="100" width="17" height="16" fill="#25232b"/>
-<rect x="49" y="100" width="17" height="16" fill="#25232b"/>
-<rect x="32" y="116" width="13" height="8" fill="#f4c8b0"/>
-<rect x="51" y="116" width="13" height="8" fill="#f4c8b0"/>
+<path fill="#241e27" d="M32 36h12v20h6V40h10v18h6V38h10v20h6V40h14V30H32z"/>
+<path fill="#382e36" d="M40 30h10v18h6V34h8v16h6V32h8v18h6V30h8v-4H40z"/>
+<!-- eyebrows -->
+<rect x="42" y="58" width="12" height="3" fill="#4a3435"/>
+<rect x="74" y="58" width="12" height="3" fill="#4a3435"/>
+<!-- eyes outer -->
+<rect x="40" y="62" width="16" height="18" fill="#241d25"/>
+<rect x="72" y="62" width="16" height="18" fill="#241d25"/>
+<!-- irises -->
+<rect x="43" y="66" width="10" height="11" fill="#3d3f4c"/>
+<rect x="75" y="66" width="10" height="11" fill="#3d3f4c"/>
+<rect x="45" y="68" width="8" height="8" fill="#535b6a"/>
+<rect x="77" y="68" width="8" height="8" fill="#535b6a"/>
+<!-- highlights -->
+<rect x="43" y="64" width="5" height="5" fill="#fffaf3"/>
+<rect x="75" y="64" width="5" height="5" fill="#fffaf3"/>
+<rect x="50" y="73" width="3" height="3" fill="#dbe6ec"/>
+<rect x="82" y="73" width="3" height="3" fill="#dbe6ec"/>
+<!-- lashes -->
+<rect x="37" y="62" width="4" height="3" fill="#211b24"/>
+<rect x="87" y="62" width="4" height="3" fill="#211b24"/>
+<rect x="38" y="59" width="2" height="3" fill="#211b24"/>
+<rect x="88" y="59" width="2" height="3" fill="#211b24"/>
+<!-- cheeks / nose / mouth -->
+<rect x="34" y="74" width="9" height="4" fill="#f09ba8"/>
+<rect x="85" y="74" width="9" height="4" fill="#f09ba8"/>
+<rect x="62" y="71" width="4" height="3" fill="#d98f85"/>
+<rect x="59" y="80" width="10" height="3" fill="#c87586"/>
+<!-- neck -->
+<rect x="56" y="88" width="16" height="7" fill="#eebca8"/>
+<!-- lavender sweater -->
+<path fill="#c9b2df" d="M42 92h44v4h8v32h-8v6H42v-6h-8V96h8z"/>
+<rect x="44" y="94" width="40" height="4" fill="#dfcbed"/>
+<rect x="34" y="98" width="8" height="28" fill="#c9b2df"/>
+<rect x="86" y="98" width="8" height="28" fill="#c9b2df"/>
+<rect x="36" y="122" width="6" height="6" fill="#b69bce"/>
+<rect x="86" y="122" width="6" height="6" fill="#b69bce"/>
+<!-- hands -->
+<rect x="32" y="126" width="10" height="10" fill="#f5cab5"/>
+<rect x="86" y="126" width="10" height="10" fill="#f5cab5"/>
+<!-- short shorts -->
+<rect x="44" y="132" width="18" height="11" fill="#19191f"/>
+<rect x="66" y="132" width="18" height="11" fill="#19191f"/>
+<rect x="46" y="135" width="14" height="3" fill="#292932"/>
+<rect x="68" y="135" width="14" height="3" fill="#292932"/>
+<!-- legs -->
+<rect x="46" y="143" width="14" height="8" fill="#f5cab5"/>
+<rect x="68" y="143" width="14" height="8" fill="#f5cab5"/>
+<!-- socks -->
+<rect x="46" y="150" width="14" height="4" fill="#faf8f5"/>
+<rect x="68" y="150" width="14" height="4" fill="#faf8f5"/>
 <!-- shoes -->
-<rect x="28" y="124" width="20" height="6" fill="#faf8f5"/>
-<rect x="48" y="124" width="20" height="6" fill="#faf8f5"/>
-<rect x="28" y="130" width="20" height="2" fill="#8d8991"/>
-<rect x="48" y="130" width="20" height="2" fill="#8d8991"/>
+<rect x="40" y="153" width="24" height="7" fill="#fafafa"/>
+<rect x="64" y="153" width="24" height="7" fill="#fafafa"/>
+<rect x="42" y="156" width="20" height="2" fill="#b9bcc4"/>
+<rect x="66" y="156" width="20" height="2" fill="#b9bcc4"/>
+<rect x="40" y="160" width="24" height="3" fill="#4b4750"/>
+<rect x="64" y="160" width="24" height="3" fill="#4b4750"/>
 </svg>
