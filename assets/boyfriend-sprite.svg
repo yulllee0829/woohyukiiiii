@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 128" shape-rendering="crispEdges">
+<rect width="96" height="128" fill="none"/>
+<!-- hair silhouette -->
+<path fill="#2b2530" d="M28 22h8v-6h24v4h8v6h6v26h-6v10h-8V42H36v20h-8V52h-6V28h6z"/>
+<path fill="#3b3340" d="M34 18h24v4h10v8h4v14h-6V34h-8v-8H34z"/>
+<rect x="30" y="36" width="36" height="30" fill="#f3c6ae"/>
+<rect x="26" y="42" width="4" height="14" fill="#eaa990"/>
+<rect x="66" y="42" width="4" height="14" fill="#eaa990"/>
+<!-- eyes -->
+<rect x="36" y="45" width="8" height="10" fill="#2a2030"/>
+<rect x="52" y="45" width="8" height="10" fill="#2a2030"/>
+<rect x="38" y="46" width="3" height="3" fill="#fff7ef"/>
+<rect x="54" y="46" width="3" height="3" fill="#fff7ef"/>
+<rect x="41" y="52" width="2" height="2" fill="#8f5f55"/>
+<rect x="57" y="52" width="2" height="2" fill="#8f5f55"/>
+<rect x="44" y="58" width="8" height="2" fill="#c77f86"/>
+<!-- shirt -->
+<rect x="28" y="66" width="40" height="30" fill="#17171c"/>
+<rect x="22" y="70" width="8" height="24" fill="#17171c"/>
+<rect x="66" y="70" width="8" height="24" fill="#17171c"/>
+<rect x="24" y="92" width="6" height="10" fill="#f3c6ae"/>
+<rect x="66" y="92" width="6" height="10" fill="#f3c6ae"/>
+<!-- shorts -->
+<rect x="30" y="96" width="16" height="18" fill="#111116"/>
+<rect x="50" y="96" width="16" height="18" fill="#111116"/>
+<rect x="31" y="114" width="14" height="6" fill="#f3c6ae"/>
+<rect x="51" y="114" width="14" height="6" fill="#f3c6ae"/>
+<!-- shoes -->
+<rect x="27" y="120" width="20" height="6" fill="#f5f3ef"/>
+<rect x="49" y="120" width="20" height="6" fill="#f5f3ef"/>
+<rect x="27" y="126" width="20" height="2" fill="#8f8a92"/>
+<rect x="49" y="126" width="20" height="2" fill="#8f8a92"/>
+</svg>
