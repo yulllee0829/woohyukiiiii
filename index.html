@@ -3,24 +3,50 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-  <meta name="theme-color" content="#17172a" />
-  <title>500일 꿈속 호텔</title>
+  <meta name="theme-color" content="#17131f" />
+  <title>헬스보이짐 아트 초안</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <main id="app">
-    <canvas id="game" width="384" height="672" aria-label="500일 꿈속 호텔 픽셀 게임"></canvas>
-    <div id="ui">
-      <button id="startButton" class="pixel-button">호텔 들어가기</button>
-      <button id="actionButton" class="action-button hidden" aria-label="확인 또는 대화">♥</button>
-      <div id="dialogue" class="dialogue hidden"></div>
-      <div id="hint" class="hint hidden"></div>
-      <div id="joystick" class="joystick hidden" aria-label="이동 조이스틱">
-        <div class="joystick-ring"></div>
-        <div id="joystickKnob" class="joystick-knob"></div>
+  <main class="art-review">
+    <header class="topbar">
+      <p>ROOM 308 · ART CHECK</p>
+      <h1>캐릭터·카운터 초안</h1>
+      <span>게임 기능을 잠시 빼고 미감부터 확인하는 버전</span>
+    </header>
+
+    <section class="character-grid">
+      <article class="card character-card boyfriend-card">
+        <div class="card-label">남친</div>
+        <div class="sprite-stage">
+          <img src="assets/boyfriend-sprite.svg" alt="검은 반팔과 검은 반바지를 입은 남친 픽셀 캐릭터" />
+        </div>
+        <p>보통 머리 · 검은 반팔 · 검은 반바지</p>
+      </article>
+
+      <article class="card character-card yuli-card">
+        <div class="card-label">율리</div>
+        <div class="sprite-stage">
+          <img src="assets/yuli-sprite.svg" alt="긴 머리와 앞머리, 연보라 긴팔과 검정 반바지를 입은 율리 픽셀 캐릭터" />
+        </div>
+        <p>앞머리 · 긴 생머리 · 연보라 긴팔 · 검정 반바지</p>
+      </article>
+    </section>
+
+    <section class="card background-card">
+      <div class="card-label">헬스보이짐 카운터 화면</div>
+      <div class="counter-stage">
+        <img class="counter-bg" src="assets/gym-counter-preview.svg" alt="헬스보이짐 카운터 배경 초안" />
+        <img class="counter-yuli" src="assets/yuli-sprite.svg" alt="카운터 뒤의 율리" />
+        <img class="counter-boyfriend" src="assets/boyfriend-sprite.svg" alt="입구에 서 있는 남친" />
       </div>
-    </div>
+      <p class="layout-note">왼쪽 자판기 · 중앙 카운터 · 오른쪽 정수기와 소파 · 오른쪽 출구</p>
+    </section>
+
+    <section class="review-note">
+      <strong>이번에는 이 세 가지만 확인</strong>
+      <span>눈과 얼굴 비율 / 머리 모양 / 옷 / 카운터의 전체 색감과 밀도</span>
+    </section>
   </main>
-  <script src="script.js"></script>
 </body>
 </html>
