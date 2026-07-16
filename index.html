@@ -12,14 +12,12 @@
     <canvas id="game" width="384" height="672" aria-label="500일 꿈속 호텔 픽셀 게임"></canvas>
     <div id="ui">
       <button id="startButton" class="pixel-button">호텔 들어가기</button>
-      <button id="actionButton" class="pixel-button hidden">확인</button>
+      <button id="actionButton" class="action-button hidden" aria-label="확인 또는 대화">♥</button>
       <div id="dialogue" class="dialogue hidden"></div>
       <div id="hint" class="hint hidden"></div>
-      <div id="controls" class="controls hidden" aria-label="이동 조작">
-        <button data-dir="left">◀</button>
-        <button data-dir="up">▲</button>
-        <button data-dir="down">▼</button>
-        <button data-dir="right">▶</button>
+      <div id="joystick" class="joystick hidden" aria-label="이동 조이스틱">
+        <div class="joystick-ring"></div>
+        <div id="joystickKnob" class="joystick-knob"></div>
       </div>
     </div>
   </main>
