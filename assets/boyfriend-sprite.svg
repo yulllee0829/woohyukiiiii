@@ -1,33 +1,76 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 128" shape-rendering="crispEdges">
-<rect width="96" height="128" fill="none"/>
-<!-- hair silhouette -->
-<path fill="#2b2530" d="M28 22h8v-6h24v4h8v6h6v26h-6v10h-8V42H36v20h-8V52h-6V28h6z"/>
-<path fill="#3b3340" d="M34 18h24v4h10v8h4v14h-6V34h-8v-8H34z"/>
-<rect x="30" y="36" width="36" height="30" fill="#f3c6ae"/>
-<rect x="26" y="42" width="4" height="14" fill="#eaa990"/>
-<rect x="66" y="42" width="4" height="14" fill="#eaa990"/>
-<!-- eyes -->
-<rect x="36" y="45" width="8" height="10" fill="#2a2030"/>
-<rect x="52" y="45" width="8" height="10" fill="#2a2030"/>
-<rect x="38" y="46" width="3" height="3" fill="#fff7ef"/>
-<rect x="54" y="46" width="3" height="3" fill="#fff7ef"/>
-<rect x="41" y="52" width="2" height="2" fill="#8f5f55"/>
-<rect x="57" y="52" width="2" height="2" fill="#8f5f55"/>
-<rect x="44" y="58" width="8" height="2" fill="#c77f86"/>
-<!-- shirt -->
-<rect x="28" y="66" width="40" height="30" fill="#17171c"/>
-<rect x="22" y="70" width="8" height="24" fill="#17171c"/>
-<rect x="66" y="70" width="8" height="24" fill="#17171c"/>
-<rect x="24" y="92" width="6" height="10" fill="#f3c6ae"/>
-<rect x="66" y="92" width="6" height="10" fill="#f3c6ae"/>
-<!-- shorts -->
-<rect x="30" y="96" width="16" height="18" fill="#111116"/>
-<rect x="50" y="96" width="16" height="18" fill="#111116"/>
-<rect x="31" y="114" width="14" height="6" fill="#f3c6ae"/>
-<rect x="51" y="114" width="14" height="6" fill="#f3c6ae"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 160" shape-rendering="crispEdges">
+<rect width="128" height="160" fill="none"/>
+<!-- shadow -->
+<rect x="38" y="148" width="52" height="5" fill="#d8c9c0" opacity=".45"/>
+<!-- hair back / silhouette -->
+<path fill="#211b24" d="M34 28h8v-8h16v-6h24v4h12v6h8v8h6v28h-6v10h-8v8H34v-8h-8V38h8z"/>
+<!-- hair mid tones -->
+<path fill="#302832" d="M40 22h14v-4h24v4h14v6h8v16h-6V34h-8v-6H68v6H52v6H40z"/>
+<path fill="#40343c" d="M46 24h10v-4h18v4h8v6H68v6H52v8H40v-8h6z"/>
+<path fill="#5a463f" d="M48 26h8v4h8v-4h8v4h8v4h-10v4H58v-4H48z"/>
+<!-- ears -->
+<rect x="24" y="52" width="8" height="18" fill="#e9aa92"/>
+<rect x="96" y="52" width="8" height="18" fill="#e9aa92"/>
+<rect x="26" y="56" width="4" height="8" fill="#cf8579"/>
+<rect x="98" y="56" width="4" height="8" fill="#cf8579"/>
+<!-- face -->
+<rect x="32" y="42" width="64" height="42" fill="#f4c9b3"/>
+<rect x="36" y="78" width="56" height="8" fill="#eab29f"/>
+<!-- fringe pieces -->
+<path fill="#241e27" d="M32 38h12v20h6V42h10v18h6V40h10v18h6V38h14v-8H32z"/>
+<path fill="#382e36" d="M40 34h10v16h6V36h8v16h6V34h8v16h6V32h8v-4H40z"/>
+<!-- eyebrows -->
+<rect x="42" y="56" width="12" height="3" fill="#4a3435"/>
+<rect x="74" y="56" width="12" height="3" fill="#4a3435"/>
+<!-- eyes outer -->
+<rect x="40" y="60" width="16" height="18" fill="#241d25"/>
+<rect x="72" y="60" width="16" height="18" fill="#241d25"/>
+<!-- irises -->
+<rect x="43" y="64" width="10" height="11" fill="#3f4650"/>
+<rect x="75" y="64" width="10" height="11" fill="#3f4650"/>
+<rect x="45" y="66" width="8" height="8" fill="#596672"/>
+<rect x="77" y="66" width="8" height="8" fill="#596672"/>
+<!-- highlights -->
+<rect x="43" y="62" width="5" height="5" fill="#fffaf3"/>
+<rect x="75" y="62" width="5" height="5" fill="#fffaf3"/>
+<rect x="50" y="71" width="3" height="3" fill="#dbe6ec"/>
+<rect x="82" y="71" width="3" height="3" fill="#dbe6ec"/>
+<!-- lashes -->
+<rect x="38" y="61" width="3" height="3" fill="#211b24"/>
+<rect x="87" y="61" width="3" height="3" fill="#211b24"/>
+<!-- cheeks / nose / mouth -->
+<rect x="34" y="72" width="8" height="4" fill="#efa1a6" opacity=".8"/>
+<rect x="86" y="72" width="8" height="4" fill="#efa1a6" opacity=".8"/>
+<rect x="62" y="69" width="4" height="3" fill="#d98f85"/>
+<rect x="58" y="78" width="12" height="3" fill="#bf747c"/>
+<!-- neck -->
+<rect x="56" y="84" width="16" height="7" fill="#eebca8"/>
+<!-- shirt body -->
+<path fill="#17171b" d="M42 88h44v4h8v32h-8v6H42v-6h-8V92h8z"/>
+<rect x="44" y="92" width="40" height="4" fill="#24242a"/>
+<rect x="34" y="96" width="8" height="26" fill="#17171b"/>
+<rect x="86" y="96" width="8" height="26" fill="#17171b"/>
+<!-- hands -->
+<rect x="32" y="120" width="10" height="12" fill="#f4c9b3"/>
+<rect x="86" y="120" width="10" height="12" fill="#f4c9b3"/>
+<rect x="34" y="128" width="6" height="4" fill="#e6a990"/>
+<rect x="88" y="128" width="6" height="4" fill="#e6a990"/>
+<!-- shorts, clearly short -->
+<rect x="44" y="128" width="18" height="12" fill="#111116"/>
+<rect x="66" y="128" width="18" height="12" fill="#111116"/>
+<rect x="46" y="132" width="14" height="4" fill="#202026"/>
+<rect x="68" y="132" width="14" height="4" fill="#202026"/>
+<!-- legs -->
+<rect x="46" y="140" width="14" height="8" fill="#f4c9b3"/>
+<rect x="68" y="140" width="14" height="8" fill="#f4c9b3"/>
+<!-- socks -->
+<rect x="46" y="147" width="14" height="4" fill="#f7f4ef"/>
+<rect x="68" y="147" width="14" height="4" fill="#f7f4ef"/>
 <!-- shoes -->
-<rect x="27" y="120" width="20" height="6" fill="#f5f3ef"/>
-<rect x="49" y="120" width="20" height="6" fill="#f5f3ef"/>
-<rect x="27" y="126" width="20" height="2" fill="#8f8a92"/>
-<rect x="49" y="126" width="20" height="2" fill="#8f8a92"/>
+<rect x="40" y="150" width="24" height="7" fill="#f7f7f5"/>
+<rect x="64" y="150" width="24" height="7" fill="#f7f7f5"/>
+<rect x="42" y="153" width="20" height="2" fill="#b9bcc4"/>
+<rect x="66" y="153" width="20" height="2" fill="#b9bcc4"/>
+<rect x="40" y="157" width="24" height="3" fill="#4b4750"/>
+<rect x="64" y="157" width="24" height="3" fill="#4b4750"/>
 </svg>
