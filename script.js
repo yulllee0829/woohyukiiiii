@@ -78,19 +78,15 @@ function drawGymWorld(){
   px(0,0,WORLD_W,58,'#8c6d62');
   px(0,58,WORLD_W,5,'#5f4a48');
   for(let x=0;x<WORLD_W;x+=16)for(let y=63;y<H;y+=16){px(x,y,16,16,((x+y)/16)%2?'#ba8568':'#c48d6d');px(x,y,16,1,'#9f705c');px(x,y,1,16,'#9f705c');}
-
   rect(26,26,140,23,'#5c4037',C.ink,2);
   px(33,32,126,4,'#c99b71');
   px(42,39,108,3,'#8c6657');
-
   drawYuli(yuli.x,yuli.y,yuli.dir,yuli.frame,38);
   drawLargeCounter(32,101);
-
   rect(68,307,56,29,'#4e3944',C.ink,3);
   px(74,312,44,24,'#2d2938');
   px(87,300,18,9,'#6e4e4b');
   rect(73,278,46,18,'#7c5b59',C.ink,2);
-
   drawBoyfriend(player.x,player.y,player.dir,player.frame,36);
   ctx.restore();
   text('02.16 · 헬스보이짐',9,7,7,C.cream);
@@ -107,14 +103,15 @@ function tryAction(){if(scene==='lobby'&&Math.abs(player.x-136)<28&&Math.abs(pla
 function update(dt){
   if(!joy.active||!dialogue.classList.contains('hidden'))return;
   const len=Math.hypot(joy.dx,joy.dy);if(len<8){player.frame=0;return;}
-  const vx=joy.dx/len,vy=joy.dy/len,speed=72*dt;player.x+=vx*speed;player.y+=vy*speed;player.frame=1+Math.floor(elapsed/150)%2;
+  const vx=joy.dx/len,vy=joy.dy/len,speed=72*dt;
+  player.x+=vx*speed;player.y+=vy*speed;player.frame=1+Math.floor(elapsed/150)%2;
   if(Math.abs(vx)>Math.abs(vy))player.dir=vx>0?'right':'left';else player.dir=vy>0?'down':'up';
   if(scene==='lobby'){player.x=Math.max(15,Math.min(177,player.x));player.y=Math.max(202,Math.min(305,player.y));const near=Math.abs(player.x-136)<28&&Math.abs(player.y-166)<46;actionButton.classList.toggle('hidden',!near);actionButton.textContent='♥';}
   if(scene==='gym'){
     player.x=Math.max(15,Math.min(177,player.x));
-    player.y=Math.max(154,Math.min(309,player.y));
+    player.y=Math.max(168,Math.min(309,player.y));
     cameraX=0;
-    const nearYuli=Math.hypot(player.x-yuli.x,player.y-145)<38;
+    const nearYuli=Math.hypot(player.x-yuli.x,player.y-154)<38;
     foundYuli=nearYuli;
     actionButton.classList.toggle('hidden',!nearYuli);
   }
