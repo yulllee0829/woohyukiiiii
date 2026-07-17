@@ -11,7 +11,7 @@ const W=192,H=336,SCALE=2,WORLD_W=192;
 ctx.imageSmoothingEnabled=false;
 const C={ink:'#30243d',deep:'#17172a',night:'#24213d',cream:'#fff2d1',gold:'#f3c665',pink:'#f49ab8',skin:'#f4c5aa',wood:'#9b674f',wood2:'#71483c',white:'#fffaf0',black:'#17131d'};
 
-const boyfriendSheet=new Image();boyfriendSheet.src='assets/boyfriend.png?v=26';
+const boyfriendSheet=new Image();boyfriendSheet.src='assets/boyfriend.png?v=27';
 const yuliSheet=new Image();yuliSheet.src='assets/yuli.png?v=23';
 
 let scene='title',elapsed=0,cameraX=0;
@@ -27,7 +27,7 @@ function star(x,y,c=C.gold){px(x+1,y,1,3,c);px(x,y+1,3,1,c);}
 
 const rowByDir={down:0,up:1,left:2,right:3};
 function drawSprite(img,x,y,dir='down',frame=0,targetW=34,flipX=false){if(!img.complete||!img.naturalWidth)return;const cols=3,rows=4,fw=img.naturalWidth/cols,fh=img.naturalHeight/rows;const col=frame===0?0:1+((frame-1)%2),row=rowByDir[dir]??0,targetH=targetW*(fh/fw),dx=Math.round(x-targetW/2),dy=Math.round(y-targetH);ctx.save();if(flipX){ctx.translate(Math.round(x*2),0);ctx.scale(-1,1);}ctx.drawImage(img,col*fw,row*fh,fw,fh,dx,dy,Math.round(targetW),Math.round(targetH));ctx.restore();}
-function drawBoyfriendFrame(x,y,dir='down',frame=0,w=34,flipX=false){if(!boyfriendSheet.complete||!boyfriendSheet.naturalWidth)return;const cols=3,rows=4,fw=boyfriendSheet.naturalWidth/cols,fh=boyfriendSheet.naturalHeight/rows;const col=frame===0?0:1+((frame-1)%2),row=rowByDir[dir]??0;const cropH=fh*0.84,targetH=w*(fh/fw),dx=Math.round(x-w/2),dy=Math.round(y-targetH);ctx.save();if(flipX){ctx.translate(Math.round(x*2),0);ctx.scale(-1,1);}ctx.drawImage(boyfriendSheet,col*fw,row*fh,fw,cropH,dx,dy,Math.round(w),Math.round(targetH));ctx.restore();}
+function drawBoyfriendFrame(x,y,dir='down',frame=0,w=34,flipX=false){if(!boyfriendSheet.complete||!boyfriendSheet.naturalWidth)return;const cols=3,rows=4,fw=boyfriendSheet.naturalWidth/cols,fh=boyfriendSheet.naturalHeight/rows;const col=frame===0?0:1+((frame-1)%2),row=rowByDir[dir]??0;const cropRatio=dir==='down'?0.88:0.84,cropH=fh*cropRatio,targetH=w*(fh/fw),dx=Math.round(x-w/2),dy=Math.round(y-targetH);ctx.save();if(flipX){ctx.translate(Math.round(x*2),0);ctx.scale(-1,1);}ctx.drawImage(boyfriendSheet,col*fw,row*fh,fw,cropH,dx,dy,Math.round(w),Math.round(targetH));ctx.restore();}
 function drawBoyfriend(x,y,dir='down',frame=0,w=34){if(dir==='right')drawBoyfriendFrame(x,y,'left',frame,w,true);else drawBoyfriendFrame(x,y,dir,frame,w,false);}
 function drawYuli(x,y,dir='down',frame=0,w=34){drawSprite(yuliSheet,x,y,dir,frame,w);}
 
