@@ -45,16 +45,16 @@
     <rect x="154" y="18" width="12" height="18"/>
   </g>
 
-  <text x="67" y="62" text-anchor="middle" font-family="cursive" font-size="10" font-weight="700" font-style="italic" fill="#ff6ca9" filter="url(#pinkGlow)">PilaGirl</text>
-  <g transform="translate(103 44)" fill="#fff" filter="url(#whiteGlow)" font-family="Arial Black, sans-serif" text-anchor="middle">
-    <text x="28" y="9" font-size="5.2">HEALTH BOY</text>
-    <text x="28" y="18" font-size="7.8">GYM</text>
-    <rect x="4" y="10" width="8" height="2"/>
-    <rect x="44" y="10" width="8" height="2"/>
-    <rect x="2" y="7" width="2" height="8"/>
-    <rect x="6" y="6" width="3" height="10"/>
-    <rect x="47" y="6" width="3" height="10"/>
-    <rect x="52" y="7" width="2" height="8"/>
+  <text x="84" y="61" text-anchor="end" font-family="cursive" font-size="11" font-weight="700" font-style="italic" fill="#ff6ca9" filter="url(#pinkGlow)">PilaGirl</text>
+  <g transform="translate(99 43)" fill="#fff" filter="url(#whiteGlow)" font-family="Arial Black, sans-serif" text-anchor="middle">
+    <text x="31" y="10" font-size="5.7">HEALTH BOY</text>
+    <text x="31" y="20" font-size="8.5">GYM</text>
+    <rect x="3" y="11" width="9" height="2"/>
+    <rect x="50" y="11" width="9" height="2"/>
+    <rect x="1" y="8" width="2" height="8"/>
+    <rect x="5" y="7" width="3" height="10"/>
+    <rect x="54" y="7" width="3" height="10"/>
+    <rect x="59" y="8" width="2" height="8"/>
   </g>
 
   <rect x="12" y="120" width="168" height="10" rx="3" fill="#f4efe7" stroke="#5b5552" stroke-width="2"/>
