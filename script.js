@@ -13,7 +13,7 @@ const C={ink:'#30243d',deep:'#17172a',night:'#24213d',cream:'#fff2d1',gold:'#f3c
 
 const boyfriendSheet=new Image();boyfriendSheet.src='assets/boyfriend%20.png';
 const yuliSheet=new Image();yuliSheet.src='assets/yuli.png';
-const gymMap=new Image();gymMap.src='assets/gym_reception.svg?v=16';
+const gymMap=new Image();gymMap.src='assets/gym_reception.svg?v=2';
 
 let scene='title',elapsed=0;
 let player={x:96,y:267,dir:'up',frame:0};
