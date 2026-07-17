@@ -13,11 +13,11 @@ const C={ink:'#30243d',deep:'#17172a',night:'#24213d',cream:'#fff2d1',gold:'#f3c
 
 const boyfriendSheet=new Image();boyfriendSheet.src='assets/boyfriend%20.png';
 const yuliSheet=new Image();yuliSheet.src='assets/yuli.png';
-const gymMap=new Image();gymMap.src='assets/gym_reception.svg?v=1';
+const gymMap=new Image();gymMap.src='assets/gym_reception.svg?v=2';
 
 let scene='title',elapsed=0;
 let player={x:96,y:267,dir:'up',frame:0};
-let yuli={x:96,y:123,dir:'down',frame:0};
+let yuli={x:96,y:124,dir:'down',frame:0};
 let foundYuli=false,dialogueQueue=[],dialogueCallback=null;
 let joy={active:false,id:null,dx:0,dy:0};
 
@@ -56,12 +56,12 @@ function drawLobby(){
 }
 
 function drawDeskForeground(){
-  if(gymMap.complete&&gymMap.naturalWidth)ctx.drawImage(gymMap,0,110,192,76,0,110,192,76);
+  if(gymMap.complete&&gymMap.naturalWidth)ctx.drawImage(gymMap,0,118,192,56,0,118,192,56);
 }
 function drawGymWorld(){
   if(gymMap.complete&&gymMap.naturalWidth)ctx.drawImage(gymMap,0,0,W,H);else px(0,0,W,H,'#eee5d8');
   drawYuli(yuli.x,yuli.y,yuli.dir,yuli.frame,36);
-  if(player.y<184){drawBoyfriend(player.x,player.y,player.dir,player.frame,36);drawDeskForeground();}
+  if(player.y<174){drawBoyfriend(player.x,player.y,player.dir,player.frame,36);drawDeskForeground();}
   else {drawDeskForeground();drawBoyfriend(player.x,player.y,player.dir,player.frame,36);}
   text('02.16 · 헬스보이짐',9,7,7,C.cream);
 }
@@ -73,7 +73,10 @@ function nextDialogue(){if(!dialogueQueue.length){dialogue.classList.add('hidden
 dialogue.addEventListener('click',nextDialogue);
 function enterLobby(){scene='lobby';player={x:96,y:267,dir:'up',frame:0};startButton.classList.add('hidden');joystick.classList.remove('hidden');showHint('308호 문 앞으로 이동해 보세요');}
 function enterGym(){scene='gym';player={x:96,y:294,dir:'up',frame:0};yuli={x:96,y:124,dir:'down',frame:0};foundYuli=false;actionButton.classList.add('hidden');showDialogue(['308호의 첫 기억이 열렸다.','2월 16일, 헬스보이짐.']);}
-function tryAction(){if(scene==='lobby'&&Math.abs(player.x-136)<28&&Math.abs(player.y-166)<46){enterGym();return;}if(scene==='gym'&&foundYuli)showDialogue(['혹시 헬스장 오셨어요?','오 누구세요??','아웃백 교육 같이 받았었는데…'],()=>showHint('첫 장면 초안은 여기까지!',2200));}
+function tryAction(){
+  if(scene==='lobby'&&Math.abs(player.x-136)<28&&Math.abs(player.y-166)<46){enterGym();return;}
+  if(scene==='gym'&&foundYuli)showDialogue(['율리: 혹시 헬스장 오셨어요?','우혁: 오 누구세요??','율리: 아웃백 교육 같이 받았었는데…'],()=>showHint('첫 장면 초안은 여기까지!',2200));
+}
 
 function update(dt){
   if(!joy.active||!dialogue.classList.contains('hidden'))return;
@@ -86,10 +89,10 @@ function update(dt){
     const near=Math.abs(player.x-136)<28&&Math.abs(player.y-166)<46;actionButton.classList.toggle('hidden',!near);actionButton.textContent='♥';
   }
   if(scene==='gym'){
-    player.x=Math.max(8,Math.min(184,player.x));player.y=Math.max(82,Math.min(315,player.y));
-    const insideDesk=player.x>18&&player.x<174&&player.y>111&&player.y<185;
+    player.x=Math.max(7,Math.min(185,player.x));player.y=Math.max(112,Math.min(315,player.y));
+    const insideDesk=player.x>18&&player.x<174&&player.y>120&&player.y<174;
     if(insideDesk){
-      if(oldY>=185)player.y=185;else if(oldY<=111)player.y=111;else {player.x=oldX;player.y=oldY;}
+      if(oldY>=174)player.y=174;else if(oldY<=120)player.y=120;else {player.x=oldX;player.y=oldY;}
     }
     const nearYuli=Math.hypot(player.x-yuli.x,player.y-yuli.y)<30;foundYuli=nearYuli;actionButton.classList.toggle('hidden',!nearYuli);
   }
