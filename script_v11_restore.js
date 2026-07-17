@@ -47,7 +47,7 @@ function drawReceptionDesk(){
   rect(47,109,20,12,'#2d3136',C.ink,1);px(51,112,12,5,'#646a70');px(55,121,4,5,'#28282b');
   rect(126,108,19,15,'#d7d1c9',C.ink,1);for(let r=0;r<2;r++)for(let c=0;c<2;c++)px(130+c*7,112+r*5,5,3,'#696b6c');
 }
-function drawGymWorld(){ctx.save();ctx.translate(-cameraX,0);drawFloor();drawWoodWall();drawYuli(yuli.x,yuli.y,yuli.dir,yuli.frame,45);drawReceptionDesk();rect(74,307,44,29,'#4e4947',C.ink,3);px(79,312,34,24,'#2d2b2a');drawBoyfriend(player.x,player.y,player.dir,player.frame,41);ctx.restore();text('02.16 · 헬스보이짐',9,7,7,C.cream);}
+function drawGymWorld(){ctx.save();ctx.translate(-cameraX,0);drawFloor();drawWoodWall();drawYuli(yuli.x,yuli.y,yuli.dir,yuli.frame,45);drawReceptionDesk();rect(74,307,44,29,'#4e4947',C.ink,3);px(79,312,34,24,'#2d2b2a');drawBoyfriend(player.x,player.y,player.dir,player.frame,42);ctx.restore();text('02.16 · 헬스보이짐',9,7,7,C.cream);}
 
 function render(now=0){elapsed=now;ctx.setTransform(SCALE,0,0,SCALE,0,0);ctx.clearRect(0,0,W,H);if(scene==='title')drawTitle();if(scene==='lobby')drawLobby();if(scene==='gym')drawGymWorld();requestAnimationFrame(render);}
 function showHint(s,ms=1500){hint.textContent=s;hint.classList.remove('hidden');clearTimeout(showHint.t);showHint.t=setTimeout(()=>hint.classList.add('hidden'),ms);}
