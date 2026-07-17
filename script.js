@@ -7,7 +7,7 @@ const hint=document.querySelector('#hint');
 const joystick=document.querySelector('#joystick');
 const joystickKnob=document.querySelector('#joystickKnob');
 
-const W=192,H=336,SCALE=2,WORLD_W=576;
+const W=192,H=336,SCALE=2,WORLD_W=192;
 ctx.imageSmoothingEnabled=false;
 const C={ink:'#30243d',deep:'#17172a',night:'#24213d',cream:'#fff2d1',gold:'#f3c665',pink:'#f49ab8',rose:'#cf6489',lav:'#c7b0e8',skin:'#f4c5aa',skin2:'#df9f86',hair:'#3b3139',hair2:'#5c4850',wood:'#9b674f',wood2:'#71483c',floor:'#bd8869',gym:'#747b80',gym2:'#5f666b',white:'#fffaf0',black:'#17131d',blue:'#7db0d1'};
 
@@ -18,7 +18,7 @@ yuliSheet.src='assets/yuli.png';
 
 let scene='title',elapsed=0,cameraX=0;
 let player={x:96,y:267,dir:'up',frame:0};
-let yuli={x:300,y:112,dir:'right',frame:0,state:'counter'};
+let yuli={x:96,y:103,dir:'down',frame:0,state:'counter'};
 let foundYuli=false,dialogueQueue=[],dialogueCallback=null;
 let joy={active:false,id:null,dx:0,dy:0};
 
@@ -59,6 +59,14 @@ function drawVending(x,y){rect(x,y,30,47,'#706f86',C.ink,2);rect(x+5,y+5,20,23,'
 function drawWater(x,y){rect(x,y+9,22,34,'#d7d9df',C.ink,2);rect(x+4,y,14,13,'#8eb8d5',C.ink,2);px(x+8,y+25,6,5,'#6f8295');}
 function drawSofa(x,y){rect(x,y,52,24,'#403942',C.ink,2);px(x+5,y+4,19,12,'#58505a');px(x+28,y+4,19,12,'#58505a');}
 function drawCounter(x,y){rect(x,y,91,34,C.wood,C.ink,2);px(x+4,y+5,83,5,C.wood2);px(x+8,y+14,30,15,'#68483d');px(x+44,y+14,39,15,'#68483d');}
+function drawLargeCounter(x,y){
+  rect(x,y,128,43,C.wood,C.ink,3);
+  px(x+5,y+5,118,7,C.wood2);
+  px(x+10,y+17,50,18,'#68483d');
+  px(x+68,y+17,50,18,'#68483d');
+  px(x+62,y+15,4,23,C.gold);
+  px(x+5,y+38,118,2,'#5f3d35');
+}
 function drawDumbbells(x,y){rect(x,y,63,11,'#34383b',C.ink,1);for(let i=0;i<7;i++){px(x+4+i*8,y-7,5,7,'#25282b');px(x+5+i*8,y-9,3,2,'#555b60');}}
 function drawSmith(x,y){px(x,y,3,53,C.ink);px(x+37,y,3,53,C.ink);px(x+2,y+4,36,3,'#8b9196');px(x+5,y+27,30,3,'#babec1');px(x+10,y+39,20,5,'#383b3f');}
 function drawTreadmill(x,y){rect(x,y,28,40,'#35393c',C.ink,2);px(x+5,y+7,18,11,'#18202a');px(x+7,y+28,16,5,'#666d71');px(x+22,y+18,3,13,'#858b8f');}
@@ -66,32 +74,26 @@ function drawMachine(x,y,type=0){rect(x,y,28,36,['#53595d','#60686d','#474e52'][
 
 function drawGymWorld(){
   ctx.save();ctx.translate(-cameraX,0);
-  px(0,0,WORLD_W,H,'#d8c1aa');px(0,0,WORLD_W,58,'#8c6d62');
-  for(let x=0;x<WORLD_W;x+=16)for(let y=58;y<H;y+=16){const workout=x>=210&&x<500;px(x,y,16,16,workout?(((x+y)/16)%2?C.gym:C.gym2):(((x+y)/16)%2?'#ba8568':'#c48d6d'));px(x,y,16,1,workout?'#565d61':'#9f705c');px(x,y,1,16,workout?'#565d61':'#9f705c');}
+  px(0,0,WORLD_W,H,'#d8c1aa');
+  px(0,0,WORLD_W,58,'#8c6d62');
+  px(0,58,WORLD_W,5,'#5f4a48');
+  for(let x=0;x<WORLD_W;x+=16)for(let y=63;y<H;y+=16){px(x,y,16,16,((x+y)/16)%2?'#ba8568':'#c48d6d');px(x,y,16,1,'#9f705c');px(x,y,1,16,'#9f705c');}
 
-  // 1. 입구 구역
-  rect(8,16,76,22,'#5c4037',C.ink,2);text('HEALTH BOY GYM',46,23,6,C.cream,'center');
-  rect(15,76,45,70,C.wood2,C.ink,3);px(21,84,33,55,'#513848');text('입구',37,105,8,C.gold,'center');
-  drawVending(85,76);drawSofa(76,154);
+  rect(26,26,140,23,'#5c4037',C.ink,2);
+  px(33,32,126,4,'#c99b71');
+  px(42,39,108,3,'#8c6657');
 
-  // 2. 정수기 통로
-  px(174,58,4,H-58,C.ink);px(206,58,4,H-58,C.ink);
-  drawWater(179,92);text('정수기',192,142,6,C.cream,'center');
+  drawYuli(yuli.x,yuli.y,yuli.dir,yuli.frame,38);
+  drawLargeCounter(32,101);
 
-  // 3. 운동 공간
-  drawDumbbells(226,83);drawMachine(306,70,0);drawMachine(350,70,1);drawMachine(394,70,2);
-  rect(222,139,178,88,'#40464a',C.ink,2);drawMachine(240,162,0);drawMachine(286,162,1);drawMachine(332,162,2);
-  drawSmith(418,151);drawTreadmill(226,252);drawTreadmill(260,252);drawTreadmill(294,252);
-  rect(348,247,56,48,'#72756b',C.ink,2);px(356,256,9,31,'#ad82c8');px(371,256,9,31,'#d08191');px(386,256,9,31,'#7199bd');
+  rect(68,307,56,29,'#4e3944',C.ink,3);
+  px(74,312,44,24,'#2d2938');
+  px(87,300,18,9,'#6e4e4b');
+  rect(73,278,46,18,'#7c5b59',C.ink,2);
 
-  // 4. 308호 구역
-  px(500,58,4,H-58,C.ink);rect(512,75,52,75,C.wood2,C.ink,3);px(519,83,38,59,'#513848');text('308',538,102,12,C.gold,'center');
-  drawCounter(472,183);text('308호',538,232,7,C.cream,'center');
-
-  if(['counter','walking','exercise'].includes(yuli.state))drawYuli(yuli.x,yuli.y,yuli.dir,yuli.frame,36);
-  [{x:255,y:122,s:'#c77c5f'},{x:365,y:122,s:'#7b9d7b'},{x:275,y:286,s:'#9274a4'},{x:438,y:286,s:'#c69b58'}].forEach(n=>drawNpc(n.x,n.y,n.s));
   drawBoyfriend(player.x,player.y,player.dir,player.frame,36);
-  ctx.restore();text('02.16 · 헬스보이짐',9,7,7,C.cream);
+  ctx.restore();
+  text('02.16 · 헬스보이짐',9,7,7,C.cream);
 }
 
 function render(now=0){elapsed=now;ctx.setTransform(SCALE,0,0,SCALE,0,0);ctx.clearRect(0,0,W,H);if(scene==='title')drawTitle();if(scene==='lobby')drawLobby();if(scene==='gym')drawGymWorld();requestAnimationFrame(render);}
@@ -100,17 +102,22 @@ function showDialogue(lines,cb){dialogueQueue=[...lines];dialogueCallback=cb||nu
 function nextDialogue(){if(!dialogueQueue.length){dialogue.classList.add('hidden');if(scene!=='title')joystick.classList.remove('hidden');const cb=dialogueCallback;dialogueCallback=null;cb?.();return;}dialogue.textContent=dialogueQueue.shift();}
 dialogue.addEventListener('click',nextDialogue);
 function enterLobby(){scene='lobby';player={x:96,y:267,dir:'up',frame:0};startButton.classList.add('hidden');joystick.classList.remove('hidden');showHint('308호 문 앞으로 이동해 보세요');}
-function enterGym(){scene='gym';cameraX=0;player={x:48,y:235,dir:'right',frame:0};yuli={x:300,y:112,dir:'right',frame:0,state:'counter'};foundYuli=false;actionButton.classList.add('hidden');showDialogue(['308호의 첫 기억이 열렸다.','2월 16일, 헬스보이짐.'],startGymIntro);}
-function startGymIntro(){showHint('율리가 운동 공간으로 들어간다…',1800);setTimeout(()=>{yuli.state='walking';yuli.dir='right';yuli.frame=1;},400);}
+function enterGym(){scene='gym';cameraX=0;player={x:96,y:300,dir:'up',frame:0};yuli={x:96,y:103,dir:'down',frame:0,state:'counter'};foundYuli=false;actionButton.classList.add('hidden');showDialogue(['308호의 첫 기억이 열렸다.','2월 16일, 헬스보이짐.']);}
 function tryAction(){if(scene==='lobby'&&Math.abs(player.x-136)<28&&Math.abs(player.y-166)<46){enterGym();return;}if(scene==='gym'&&foundYuli)showDialogue(['혹시 헬스장 오셨어요?','오 누구세요??','아웃백 교육 같이 받았었는데…'],()=>showHint('첫 장면 초안은 여기까지!',2200));}
 function update(dt){
-  if(scene==='gym'&&yuli.state==='walking'){yuli.x+=42*dt;yuli.frame=1+Math.floor(elapsed/180)%2;if(yuli.x>455){yuli.x=475;yuli.y=174;yuli.dir='down';yuli.frame=0;yuli.state='exercise';showHint('오른쪽 308호 쪽으로 따라가 보자!',1800);}}
   if(!joy.active||!dialogue.classList.contains('hidden'))return;
   const len=Math.hypot(joy.dx,joy.dy);if(len<8){player.frame=0;return;}
   const vx=joy.dx/len,vy=joy.dy/len,speed=72*dt;player.x+=vx*speed;player.y+=vy*speed;player.frame=1+Math.floor(elapsed/150)%2;
   if(Math.abs(vx)>Math.abs(vy))player.dir=vx>0?'right':'left';else player.dir=vy>0?'down':'up';
   if(scene==='lobby'){player.x=Math.max(15,Math.min(177,player.x));player.y=Math.max(202,Math.min(305,player.y));const near=Math.abs(player.x-136)<28&&Math.abs(player.y-166)<46;actionButton.classList.toggle('hidden',!near);actionButton.textContent='♥';}
-  if(scene==='gym'){player.x=Math.max(12,Math.min(WORLD_W-12,player.x));player.y=Math.max(82,Math.min(309,player.y));cameraX=Math.max(0,Math.min(WORLD_W-W,player.x-W/2));const nearYuli=yuli.state==='exercise'&&Math.hypot(player.x-yuli.x,player.y-yuli.y)<32;foundYuli=nearYuli;actionButton.classList.toggle('hidden',!nearYuli);}
+  if(scene==='gym'){
+    player.x=Math.max(15,Math.min(177,player.x));
+    player.y=Math.max(154,Math.min(309,player.y));
+    cameraX=0;
+    const nearYuli=Math.hypot(player.x-yuli.x,player.y-145)<38;
+    foundYuli=nearYuli;
+    actionButton.classList.toggle('hidden',!nearYuli);
+  }
 }
 let last=performance.now();function loop(now){update(Math.min(.033,(now-last)/1000));last=now;requestAnimationFrame(loop);}requestAnimationFrame(loop);
 function joyMove(e){const r=joystick.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;let dx=e.clientX-cx,dy=e.clientY-cy;const m=Math.hypot(dx,dy),max=38;if(m>max){dx=dx/m*max;dy=dy/m*max;}joy.dx=dx;joy.dy=dy;joystickKnob.style.transform=`translate(${dx}px,${dy}px)`;}
