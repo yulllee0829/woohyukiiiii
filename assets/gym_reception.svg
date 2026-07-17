@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="336" viewBox="0 0 192 336">
+  <defs>
+    <linearGradient id="metal" x1="0" x2="1">
+      <stop offset="0" stop-color="#9c9c98"/>
+      <stop offset="0.18" stop-color="#d7d5cf"/>
+      <stop offset="0.5" stop-color="#b8b7b3"/>
+      <stop offset="0.82" stop-color="#dedbd4"/>
+      <stop offset="1" stop-color="#969792"/>
+    </linearGradient>
+    <linearGradient id="top" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#eee8dd"/>
+      <stop offset="1" stop-color="#c9c4bc"/>
+    </linearGradient>
+    <filter id="pinkGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="1.6" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="whiteGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="1.1" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <pattern id="wood" width="6" height="6" patternUnits="userSpaceOnUse">
+      <rect width="6" height="6" fill="#6f4c34"/>
+      <rect x="0" width="2" height="6" fill="#8c6547"/>
+      <rect x="3" width="1" height="6" fill="#4d3428"/>
+      <rect x="5" width="1" height="6" fill="#9a7250"/>
+    </pattern>
+    <pattern id="tile" width="48" height="48" patternUnits="userSpaceOnUse">
+      <rect width="48" height="48" fill="#e8ddcc"/>
+      <rect x="1" y="1" width="46" height="46" fill="#eee5d8"/>
+      <path d="M0 0H48M0 0V48" stroke="#c7b9a4" stroke-width="1"/>
+      <path d="M3 3H45" stroke="#f8f3eb" stroke-width="1" opacity=".8"/>
+    </pattern>
+  </defs>
+
+  <rect width="192" height="336" fill="#211e20"/>
+  <rect x="4" y="4" width="184" height="328" rx="2" fill="url(#tile)" stroke="#30282a" stroke-width="3"/>
+
+  <rect x="4" y="4" width="184" height="108" fill="url(#wood)"/>
+  <rect x="4" y="108" width="184" height="5" fill="#292325"/>
+  <rect x="11" y="10" width="170" height="6" rx="3" fill="#2e2828"/>
+  <g fill="#ffe6b0">
+    <rect x="22" y="15" width="20" height="3" rx="1.5"/>
+    <rect x="86" y="15" width="20" height="3" rx="1.5"/>
+    <rect x="150" y="15" width="20" height="3" rx="1.5"/>
+  </g>
+  <g fill="#fff3d2" opacity=".45">
+    <rect x="26" y="18" width="12" height="18"/>
+    <rect x="90" y="18" width="12" height="18"/>
+    <rect x="154" y="18" width="12" height="18"/>
+  </g>
+
+  <text x="82" y="62" text-anchor="end" font-family="cursive" font-size="15" font-weight="700" font-style="italic" fill="#ff6ca9" filter="url(#pinkGlow)">PilaGirl</text>
+  <g transform="translate(88 38)" fill="#fff" filter="url(#whiteGlow)" font-family="Arial Black, sans-serif" text-anchor="middle">
+    <text x="43" y="15" font-size="8">HEALTH BOY</text>
+    <text x="43" y="27" font-size="12">GYM</text>
+    <rect x="2" y="16" width="15" height="3"/>
+    <rect x="69" y="16" width="15" height="3"/>
+    <rect x="0" y="13" width="3" height="9"/>
+    <rect x="5" y="11" width="4" height="13"/>
+    <rect x="78" y="11" width="4" height="13"/>
+    <rect x="86" y="13" width="3" height="9"/>
+  </g>
+
+  <rect x="14" y="113" width="164" height="12" rx="3" fill="#f4efe7" stroke="#5b5552" stroke-width="2"/>
+  <path d="M14 123 Q14 139 27 143 V169 Q27 177 35 177 H157 Q165 177 165 169 V143 Q178 139 178 123 Z" fill="url(#metal)" stroke="#4d4948" stroke-width="2"/>
+  <path d="M27 143 H165" stroke="#8d8b87" stroke-width="1" opacity=".65"/>
+  <path d="M33 173 H159" stroke="#686663" stroke-width="2"/>
+  <rect x="31" y="178" width="130" height="4" rx="2" fill="#ffd88c" opacity=".9"/>
+  <rect x="37" y="182" width="118" height="2" rx="1" fill="#fff0bc" opacity=".8"/>
+
+  <g transform="translate(43 104)">
+    <rect x="0" y="0" width="22" height="14" rx="1" fill="#26282b" stroke="#48484b"/>
+    <rect x="3" y="3" width="16" height="7" fill="#657079"/>
+    <rect x="9" y="14" width="4" height="5" fill="#3c3c3d"/>
+  </g>
+  <g transform="translate(135 103)">
+    <rect width="18" height="16" rx="1" fill="#d8d7d2" stroke="#4e4d4c"/>
+    <rect x="3" y="3" width="5" height="4" fill="#777b7d"/>
+    <rect x="10" y="3" width="5" height="4" fill="#777b7d"/>
+    <rect x="3" y="9" width="12" height="4" fill="#aaa9a6"/>
+  </g>
+
+  <rect x="77" y="318" width="38" height="18" rx="2" fill="#34302e" stroke="#272326" stroke-width="2"/>
+  <rect x="83" y="314" width="26" height="5" rx="2" fill="#69625d"/>
+</svg>
