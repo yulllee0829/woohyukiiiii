@@ -11,7 +11,7 @@ const W=192,H=336,SCALE=2,WORLD_W=192;
 ctx.imageSmoothingEnabled=false;
 const C={ink:'#30243d',deep:'#17172a',night:'#24213d',cream:'#fff2d1',gold:'#f3c665',pink:'#f49ab8',skin:'#f4c5aa',wood:'#9b674f',wood2:'#71483c',white:'#fffaf0',black:'#17131d'};
 
-const boyfriendSheet=new Image();boyfriendSheet.src='assets/boyfriend.png?v=24';
+const boyfriendSheet=new Image();boyfriendSheet.src='assets/boyfriend.png?v=25';
 const yuliSheet=new Image();yuliSheet.src='assets/yuli.png?v=23';
 
 let scene='title',elapsed=0,cameraX=0;
@@ -26,8 +26,8 @@ function text(s,x,y,size=7,color=C.cream,align='left'){ctx.save();ctx.fillStyle=
 function star(x,y,c=C.gold){px(x+1,y,1,3,c);px(x,y+1,3,1,c);}
 
 const rowByDir={down:0,up:1,left:2,right:3};
-function drawSprite(img,x,y,dir='down',frame=0,targetW=34){if(!img.complete||!img.naturalWidth)return;const cols=3,rows=4,fw=img.naturalWidth/cols,fh=img.naturalHeight/rows;const col=frame===0?0:1+((frame-1)%2),row=rowByDir[dir]??0,targetH=targetW*(fh/fw);ctx.drawImage(img,col*fw,row*fh,fw,fh,Math.round(x-targetW/2),Math.round(y-targetH),Math.round(targetW),Math.round(targetH));}
-function drawBoyfriend(x,y,dir='down',frame=0,w=34){drawSprite(boyfriendSheet,x,y,dir,frame,w);}
+function drawSprite(img,x,y,dir='down',frame=0,targetW=34,flipX=false){if(!img.complete||!img.naturalWidth)return;const cols=3,rows=4,fw=img.naturalWidth/cols,fh=img.naturalHeight/rows;const col=frame===0?0:1+((frame-1)%2),row=rowByDir[dir]??0,targetH=targetW*(fh/fw),dx=Math.round(x-targetW/2),dy=Math.round(y-targetH);ctx.save();if(flipX){ctx.translate(Math.round(x*2),0);ctx.scale(-1,1);}ctx.drawImage(img,col*fw,row*fh,fw,fh,dx,dy,Math.round(targetW),Math.round(targetH));ctx.restore();}
+function drawBoyfriend(x,y,dir='down',frame=0,w=34){if(dir==='right')drawSprite(boyfriendSheet,x,y,'left',frame,w,true);else drawSprite(boyfriendSheet,x,y,dir,frame,w);}
 function drawYuli(x,y,dir='down',frame=0,w=34){drawSprite(yuliSheet,x,y,dir,frame,w);}
 
 function drawTitle(){px(0,0,W,H,C.deep);px(0,218,W,118,C.night);for(let i=0;i<30;i++){const x=(i*37+13)%W,y=(i*53+19)%185;i%4?px(x,y,1,1,C.cream):star(x,y);}rect(20,78,152,125,'#514466',C.ink,3);rect(26,84,140,113,'#282641',C.ink,2);for(let i=0;i<9;i++){const x=34+(i%3)*43,y=105+Math.floor(i/3)*25;rect(x,y,17,14,i===7?C.pink:C.gold,C.ink,2);}rect(72,157,48,39,C.wood2,C.ink,3);px(95,160,2,32,C.gold);rect(36,58,120,30,C.cream,C.ink,3);text('500일 꿈속 호텔',96,67,10,C.ink,'center');drawBoyfriend(72,270,'down',0,40);drawYuli(121,270,'down',0,40);text('기억 속 방들을 찾아가 보세요',96,294,7,C.cream,'center');}
@@ -46,7 +46,7 @@ function drawReceptionDesk(){
   rect(47,109,20,12,'#2d3136',C.ink,1);px(51,112,12,5,'#646a70');px(55,121,4,5,'#28282b');
   rect(126,108,19,15,'#d7d1c9',C.ink,1);for(let r=0;r<2;r++)for(let c=0;c<2;c++)px(130+c*7,112+r*5,5,3,'#696b6c');
 }
-function drawGymWorld(){ctx.save();ctx.translate(-cameraX,0);drawFloor();drawWoodWall();drawYuli(yuli.x,yuli.y,yuli.dir,yuli.frame,45);drawReceptionDesk();rect(74,307,44,29,'#4e4947',C.ink,3);px(79,312,34,24,'#2d2b2a');drawBoyfriend(player.x,player.y,player.dir,player.frame,36);ctx.restore();text('02.16 · 헬스보이짐',9,7,7,C.cream);}
+function drawGymWorld(){ctx.save();ctx.translate(-cameraX,0);drawFloor();drawWoodWall();drawYuli(yuli.x,yuli.y,yuli.dir,yuli.frame,45);drawReceptionDesk();rect(74,307,44,29,'#4e4947',C.ink,3);px(79,312,34,24,'#2d2b2a');drawBoyfriend(player.x,player.y,player.dir,player.frame,45);ctx.restore();text('02.16 · 헬스보이짐',9,7,7,C.cream);}
 
 function render(now=0){elapsed=now;ctx.setTransform(SCALE,0,0,SCALE,0,0);ctx.clearRect(0,0,W,H);if(scene==='title')drawTitle();if(scene==='lobby')drawLobby();if(scene==='gym')drawGymWorld();requestAnimationFrame(render);}
 function showHint(s,ms=1500){hint.textContent=s;hint.classList.remove('hidden');clearTimeout(showHint.t);showHint.t=setTimeout(()=>hint.classList.add('hidden'),ms);}
