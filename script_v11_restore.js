@@ -56,7 +56,7 @@ function drawGymSideRoom(){
   px(18,16,48,3,'#dce5e8');px(112,56,56,2,'#d7e0e3');
   for(let i=0;i<8;i++){const x=15+i*23;px(x,15+(i%3)*15,10,1,'#aebdc3');}
   px(0,78,W,5,'#0d0d0d');
-  for(let y=82;y<H;y+=24){for(let x=0;x<W;x+=24){const alt=((x+y)/24)%2;px(x,y,24,24,alt?'#202020':'#191919');px(x,y,24,1,'#2a2a2a');px(x,y,1,24,'#101010');}}
+  const tile=32;for(let y=82;y<H;y+=tile){for(let x=0;x<W;x+=tile){const alt=((x/tile)+(Math.floor((y-82)/tile)))%2;px(x,y,tile,tile,alt?'#202020':'#191919');px(x,y,tile,1,'#2a2a2a');px(x,y,1,tile,'#101010');}}
   drawBoyfriend(player.x,player.y,player.dir,player.frame,42);
 }
 
