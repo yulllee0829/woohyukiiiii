@@ -4,38 +4,50 @@ const legExerciseNew=new Image();legExerciseNew.src='assets/leg_extension_exerci
 const oldDrawLegMachine=drawLegMachine;
 const trimCache=new WeakMap();
 
-function getAlphaTrim(img,cols=1,frame=0){
+// Find one shared crop for the whole sheet. Exercise frames must never be
+// trimmed separately, because that makes the machine appear to pulse in size.
+function getSharedAlphaTrim(img,cols=1){
   if(!img.complete||!img.naturalWidth)return null;
-  let perImage=trimCache.get(img);
-  if(!perImage){perImage={};trimCache.set(img,perImage);}
-  const key=`${cols}:${frame}`;
-  if(perImage[key])return perImage[key];
-  const fw=Math.floor(img.naturalWidth/cols),fh=img.naturalHeight,sx=frame*fw;
-  const c=document.createElement('canvas');c.width=fw;c.height=fh;
-  const g=c.getContext('2d',{willReadFrequently:true});g.drawImage(img,sx,0,fw,fh,0,0,fw,fh);
-  const data=g.getImageData(0,0,fw,fh).data;
+  let cached=trimCache.get(img);
+  if(cached?.cols===cols)return cached.bounds;
+
+  const fw=Math.floor(img.naturalWidth/cols),fh=img.naturalHeight;
   let minX=fw,minY=fh,maxX=-1,maxY=-1;
-  for(let y=0;y<fh;y++)for(let x=0;x<fw;x++)if(data[(y*fw+x)*4+3]>10){if(x<minX)minX=x;if(x>maxX)maxX=x;if(y<minY)minY=y;if(y>maxY)maxY=y;}
-  const b=maxX<0?{sx,sy:0,sw:fw,sh:fh}:{sx:sx+minX,sy:minY,sw:maxX-minX+1,sh:maxY-minY+1};
-  perImage[key]=b;return b;
+
+  for(let frame=0;frame<cols;frame++){
+    const c=document.createElement('canvas');c.width=fw;c.height=fh;
+    const g=c.getContext('2d',{willReadFrequently:true});
+    g.drawImage(img,frame*fw,0,fw,fh,0,0,fw,fh);
+    const data=g.getImageData(0,0,fw,fh).data;
+    for(let y=0;y<fh;y++)for(let x=0;x<fw;x++){
+      if(data[(y*fw+x)*4+3]>10){
+        if(x<minX)minX=x;if(x>maxX)maxX=x;
+        if(y<minY)minY=y;if(y>maxY)maxY=y;
+      }
+    }
+  }
+
+  const bounds=maxX<0?{x:0,y:0,w:fw,h:fh}:{x:minX,y:minY,w:maxX-minX+1,h:maxY-minY+1};
+  trimCache.set(img,{cols,bounds});
+  return bounds;
 }
 
-function drawTrimmedLeg(img,cols,frame){
-  const b=getAlphaTrim(img,cols,frame);if(!b)return;
-  // Match the exact on-screen footprint of the machine shown after collection.
-  const boxX=38,boxY=165,boxW=60,boxH=81;
-  const scale=Math.min(boxW/b.sw,boxH/b.sh),dw=Math.round(b.sw*scale),dh=Math.round(b.sh*scale);
-  const dx=Math.round(boxX+(boxW-dw)/2),dy=Math.round(boxY+boxH-dh);
-  ctx.drawImage(img,b.sx,b.sy,b.sw,b.sh,dx,dy,dw,dh);
+function drawFixedLeg(img,cols,frame=0){
+  const b=getSharedAlphaTrim(img,cols);if(!b)return;
+  const fw=Math.floor(img.naturalWidth/cols);
+
+  // Every state uses this exact destination rectangle.
+  // No per-frame scaling, centering, or automatic resizing is allowed.
+  const dx=38,dy=165,dw=60,dh=81;
+  ctx.drawImage(img,frame*fw+b.x,b.y,b.w,b.h,dx,dy,dw,dh);
 }
 
 drawLegMachine=function(){
   if(bingsuCollected){oldDrawLegMachine(0);return;}
-  // Before and after exercising, show the idle machine with the bingsu outside.
-  drawTrimmedLeg(legIdleNew,1,0);
+  drawFixedLeg(legIdleNew,1,0);
 };
 
-drawLegExercise=function(frame){drawTrimmedLeg(legExerciseNew,3,frame);};
+drawLegExercise=function(frame){drawFixedLeg(legExerciseNew,3,frame);};
 
 // The new PNGs already include the patbingsu in the intended position.
 drawFixedPatbingsu=function(){};
