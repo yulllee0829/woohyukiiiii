@@ -48,8 +48,9 @@ function drawReceptionDesk(){
   rect(126,108,19,15,'#d7d1c9',C.ink,1);for(let r=0;r<2;r++)for(let c=0;c<2;c++)px(130+c*7,112+r*5,5,3,'#696b6c');
 }
 function drawGymWorld(){ctx.save();ctx.translate(-cameraX,0);drawFloor();drawWoodWall();drawYuli(yuli.x,yuli.y,yuli.dir,yuli.frame,45);drawReceptionDesk();rect(74,307,44,29,'#4e4947',C.ink,3);px(79,312,34,24,'#2d2b2a');drawBoyfriend(player.x,player.y,player.dir,player.frame,42);ctx.restore();text('02.16 · 헬스보이짐',9,7,7,C.cream);}
+function drawGymSideRoom(){px(0,0,W,H,'#171717');for(let y=0;y<H;y+=24){for(let x=0;x<W;x+=24){const alt=((x+y)/24)%2;px(x,y,24,24,alt?'#202020':'#191919');px(x,y,24,1,'#2a2a2a');px(x,y,1,24,'#101010');}}drawBoyfriend(player.x,player.y,player.dir,player.frame,42);text('헬스장 옆 공간',9,7,7,C.cream);}
 
-function render(now=0){elapsed=now;ctx.setTransform(SCALE,0,0,SCALE,0,0);ctx.clearRect(0,0,W,H);if(scene==='title')drawTitle();if(scene==='lobby')drawLobby();if(scene==='gym')drawGymWorld();requestAnimationFrame(render);}
+function render(now=0){elapsed=now;ctx.setTransform(SCALE,0,0,SCALE,0,0);ctx.clearRect(0,0,W,H);if(scene==='title')drawTitle();if(scene==='lobby')drawLobby();if(scene==='gym')drawGymWorld();if(scene==='gymSide')drawGymSideRoom();requestAnimationFrame(render);}
 function showHint(s,ms=1500){hint.textContent=s;hint.classList.remove('hidden');clearTimeout(showHint.t);showHint.t=setTimeout(()=>hint.classList.add('hidden'),ms);}
 function showDialogue(lines,cb){dialogueQueue=[...lines];dialogueCallback=cb||null;joystick.classList.add('hidden');actionButton.classList.add('hidden');dialogue.classList.remove('hidden');nextDialogue();}
 function nextDialogue(){if(!dialogueQueue.length){dialogue.classList.add('hidden');if(scene!=='title')joystick.classList.remove('hidden');const cb=dialogueCallback;dialogueCallback=null;cb?.();return;}dialogue.textContent=dialogueQueue.shift();}
@@ -58,7 +59,9 @@ function enterLobby(){scene='lobby';player={x:96,y:267,dir:'up',frame:0};startBu
 function enterGym(){scene='gym';cameraX=0;player={x:96,y:300,dir:'up',frame:0};yuli={x:96,y:119,dir:'down',frame:0,state:'counter'};foundYuli=false;actionButton.classList.add('hidden');showDialogue(['308호의 첫 기억이 열렸다.','2월 16일, 헬스보이짐.']);}
 function tryAction(){if(scene==='lobby'&&Math.abs(player.x-136)<28&&Math.abs(player.y-166)<46){enterGym();return;}if(scene==='gym'&&foundYuli)showDialogue(['혹시 헬스장 오셨어요?','오 누구세요??','아웃백 교육 같이 받았었는데…'],()=>showHint('첫 장면 초안은 여기까지!',2200));}
 function update(dt){if(!joy.active||!dialogue.classList.contains('hidden'))return;const len=Math.hypot(joy.dx,joy.dy);if(len<8){player.frame=0;return;}const oldX=player.x,oldY=player.y;const vx=joy.dx/len,vy=joy.dy/len,speed=72*dt;player.x+=vx*speed;player.y+=vy*speed;player.frame=1+Math.floor(elapsed/150)%2;if(Math.abs(vx)>Math.abs(vy))player.dir=vx>0?'right':'left';else player.dir=vy>0?'down':'up';if(scene==='lobby'){player.x=Math.max(15,Math.min(177,player.x));player.y=Math.max(202,Math.min(305,player.y));const near=Math.abs(player.x-136)<28&&Math.abs(player.y-166)<46;actionButton.classList.toggle('hidden',!near);actionButton.textContent='♥';}if(scene==='gym'){
-  player.x=Math.max(12,Math.min(180,player.x));player.y=Math.max(88,Math.min(330,player.y));cameraX=0;
+  player.y=Math.max(88,Math.min(330,player.y));cameraX=0;
+  if(player.x>=186){scene='gymSide';player.x=14;actionButton.classList.add('hidden');return;}
+  player.x=Math.max(12,player.x);
   const inDeskX=player.x>22&&player.x<170;
   const inDeskY=player.y>119&&player.y<171;
   if(inDeskX&&inDeskY){
@@ -69,6 +72,10 @@ function update(dt){if(!joy.active||!dialogue.classList.contains('hidden'))retur
     else {player.x=oldX;player.y=oldY;}
   }
   const nearYuli=Math.hypot(player.x-yuli.x,player.y-yuli.y)<34;foundYuli=nearYuli;actionButton.classList.toggle('hidden',!nearYuli);
+}if(scene==='gymSide'){
+  player.y=Math.max(12,Math.min(330,player.y));
+  if(player.x<=6){scene='gym';player.x=178;actionButton.classList.add('hidden');return;}
+  player.x=Math.min(180,player.x);
 }}
 let last=performance.now();function loop(now){update(Math.min(.033,(now-last)/1000));last=now;requestAnimationFrame(loop);}requestAnimationFrame(loop);
 function joyMove(e){const r=joystick.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;let dx=e.clientX-cx,dy=e.clientY-cy;const m=Math.hypot(dx,dy),max=38;if(m>max){dx=dx/m*max;dy=dy/m*max;}joy.dx=dx;joy.dy=dy;joystickKnob.style.transform=`translate(${dx}px,${dy}px)`;}
