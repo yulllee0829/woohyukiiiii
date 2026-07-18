@@ -48,7 +48,19 @@ function drawReceptionDesk(){
   rect(126,108,19,15,'#d7d1c9',C.ink,1);for(let r=0;r<2;r++)for(let c=0;c<2;c++)px(130+c*7,112+r*5,5,3,'#696b6c');
 }
 function drawGymWorld(){ctx.save();ctx.translate(-cameraX,0);drawFloor();drawWoodWall();drawYuli(yuli.x,yuli.y,yuli.dir,yuli.frame,45);drawReceptionDesk();rect(74,307,44,29,'#4e4947',C.ink,3);px(79,312,34,24,'#2d2b2a');drawBoyfriend(player.x,player.y,player.dir,player.frame,42);ctx.restore();text('02.16 · 헬스보이짐',9,7,7,C.cream);}
-function drawGymSideRoom(){px(0,0,W,H,'#171717');for(let y=0;y<H;y+=24){for(let x=0;x<W;x+=24){const alt=((x+y)/24)%2;px(x,y,24,24,alt?'#202020':'#191919');px(x,y,24,1,'#2a2a2a');px(x,y,1,24,'#101010');}}drawBoyfriend(player.x,player.y,player.dir,player.frame,42);text('헬스장 옆 공간',9,7,7,C.cream);}
+function drawGymSideRoom(){
+  px(0,0,W,H,'#171717');
+  rect(4,16,184,92,'#8fa0a8','#30383d',3);
+  px(8,20,176,84,'#7f929b');
+  for(let x=8;x<184;x+=44){px(x,20,2,84,'#55656d');px(x+2,20,1,84,'#b9c6cb');}
+  px(8,58,176,2,'#c8d2d6');
+  px(18,28,48,3,'#dce5e8');px(112,72,56,2,'#d7e0e3');
+  for(let i=0;i<8;i++){const x=15+i*23;px(x,27+(i%3)*18,10,1,'#aebdc3');}
+  px(0,108,W,4,'#0d0d0d');
+  for(let y=112;y<H;y+=24){for(let x=0;x<W;x+=24){const alt=((x+y)/24)%2;px(x,y,24,24,alt?'#202020':'#191919');px(x,y,24,1,'#2a2a2a');px(x,y,1,24,'#101010');}}
+  drawBoyfriend(player.x,player.y,player.dir,player.frame,42);
+  text('헬스장 옆 공간',9,7,7,C.cream);
+}
 
 function render(now=0){elapsed=now;ctx.setTransform(SCALE,0,0,SCALE,0,0);ctx.clearRect(0,0,W,H);if(scene==='title')drawTitle();if(scene==='lobby')drawLobby();if(scene==='gym')drawGymWorld();if(scene==='gymSide')drawGymSideRoom();requestAnimationFrame(render);}
 function showHint(s,ms=1500){hint.textContent=s;hint.classList.remove('hidden');clearTimeout(showHint.t);showHint.t=setTimeout(()=>hint.classList.add('hidden'),ms);}
