@@ -66,15 +66,14 @@ function drawGymSideRoom(){
   px(matX+4,matY+6,2,matH-12,'#d9dde0');
   px(matX+5,matY+matH-7,matW-10,2,'#969da3');
 
-  // dark foam roller, centered and closer to the mirror wall
-  px(139,159,36,3,'#111111');
+  // dark foam roller without a separate drop shadow
   rect(138,153,36,8,'#5d6670','#282d32',1);
   px(142,155,28,2,'#87919a');
   px(141,160,30,1,'#3d444b');
   px(138,155,2,4,'#909aa2');px(172,155,2,4,'#20252a');
 
-  // textured dark teal foam roller, vertical against the right wall
-  px(179,219,7,38,'#111111');
+  // textured dark teal foam roller with a compact shadow
+  px(181,220,4,31,'#111111');
   rect(177,215,8,36,'#176f73','#0b3c3f',1);
   px(179,219,2,28,'#3aa6a8');
   px(183,217,1,32,'#0f5559');
@@ -119,6 +118,11 @@ function update(dt){if(!joy.active||!dialogue.classList.contains('hidden'))retur
   player.y=Math.max(92,Math.min(330,player.y));
   if(player.x<=6){scene='gym';player.x=178;actionButton.classList.add('hidden');return;}
   player.x=Math.min(180,player.x);
+  const hitsDarkRoller=player.x>133&&player.x<179&&player.y>148&&player.y<166;
+  const hitsTealRoller=player.x>172&&player.x<189&&player.y>210&&player.y<256;
+  const hitsPurpleBall=Math.hypot(player.x-165.5,player.y-262.5)<8;
+  const hitsYellowBall=Math.hypot(player.x-176.5,player.y-262.5)<8;
+  if(hitsDarkRoller||hitsTealRoller||hitsPurpleBall||hitsYellowBall){player.x=oldX;player.y=oldY;}
 }}
 let last=performance.now();function loop(now){update(Math.min(.033,(now-last)/1000));last=now;requestAnimationFrame(loop);}requestAnimationFrame(loop);
 function joyMove(e){const r=joystick.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;let dx=e.clientX-cx,dy=e.clientY-cy;const m=Math.hypot(dx,dy),max=38;if(m>max){dx=dx/m*max;dy=dy/m*max;}joy.dx=dx;joy.dy=dy;joystickKnob.style.transform=`translate(${dx}px,${dy}px)`;}
