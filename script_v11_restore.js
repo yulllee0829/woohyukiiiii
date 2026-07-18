@@ -62,11 +62,11 @@ function drawGymSideRoom(){
   px(52,96,88,2,'#26292c');px(52,113,88,2,'#26292c');
   for(let row=0;row<2;row++)for(let i=0;i<7;i++){
     const x=55+i*13,y=85+row*17;
-    px(x-3,y+1,4,8,'#111214');px(x+8,y+1,4,8,'#111214');
-    px(x-2,y+2,2,6,'#2d3033');px(x+9,y+2,2,6,'#2d3033');
-    px(x+1,y+4,7,2,'#8d9499');px(x+3,y+3,3,4,'#b7bdc1');
-    px(x-2,y+3,2,4,'#777f25');px(x+9,y+3,2,4,'#777f25');
-    px(x-1,y+4,1,2,'#b1b53a');px(x+9,y+4,1,2,'#b1b53a');
+    // vertical dumbbell seen from a slight angle: near plate, short handle, rear plate
+    px(x+1,y,6,4,'#151719');px(x,y+1,8,4,'#232629');
+    px(x+3,y+4,2,3,'#b7bdc1');px(x+2,y+5,4,2,'#8d9499');
+    px(x+2,y+7,6,4,'#111214');px(x+1,y+8,8,3,'#202326');
+    px(x+3,y+1,2,2,'#b1b53a');px(x+3,y+8,2,2,'#777f25');
   }
 
   const matX=124,matY=146,matW=64,matH=128;
