@@ -40,8 +40,7 @@ function drawReceptionDesk(){
   px(31,160,130,5,'#f6d69c');px(27,165,138,3,'#eabf7e');
   px(30,119,132,8,'#d8d4cf');px(26,123,140,7,'#b7b4b1');
   px(22,130,12,25,'#9c9a98');px(158,130,12,25,'#9c9a98');
-  px(26,127,140,35,'#aaa8a6');
-  px(30,130,132,29,'#bdbab7');
+  px(26,127,140,35,'#aaa8a6');px(30,130,132,29,'#bdbab7');
   px(34,132,2,25,'#d9d6d2');px(54,132,1,25,'#8e8c8a');px(85,132,1,25,'#8e8c8a');px(116,132,1,25,'#8e8c8a');px(147,132,1,25,'#8e8c8a');px(157,132,2,25,'#d9d6d2');
   px(29,157,134,4,'#7e7b79');px(34,158,124,2,'#d7d2cc');
   rect(47,109,20,12,'#2d3136',C.ink,1);px(51,112,12,5,'#646a70');px(55,121,4,5,'#28282b');
@@ -50,44 +49,35 @@ function drawReceptionDesk(){
 function drawGymWorld(){ctx.save();ctx.translate(-cameraX,0);drawFloor();drawWoodWall();drawYuli(yuli.x,yuli.y,yuli.dir,yuli.frame,45);drawReceptionDesk();rect(74,307,44,29,'#4e4947',C.ink,3);px(79,312,34,24,'#2d2b2a');drawBoyfriend(player.x,player.y,player.dir,player.frame,42);ctx.restore();}
 function drawGymSideRoom(){
   px(0,0,W,H,'#171717');
-  rect(4,4,184,78,'#8fa0a8','#30383d',3);
-  px(8,8,176,70,'#7f929b');
+  rect(4,4,184,78,'#8fa0a8','#30383d',3);px(8,8,176,70,'#7f929b');
   for(let x=8;x<184;x+=44){px(x,8,2,70,'#55656d');px(x+2,8,1,70,'#b9c6cb');}
-  px(18,16,48,3,'#dce5e8');px(112,56,56,2,'#d7e0e3');
-  for(let i=0;i<8;i++){const x=15+i*23;px(x,15+(i%3)*15,10,1,'#aebdc3');}
+  px(18,16,48,3,'#dce5e8');px(112,56,56,2,'#d7e0e3');for(let i=0;i<8;i++){const x=15+i*23;px(x,15+(i%3)*15,10,1,'#aebdc3');}
   px(0,78,W,5,'#0d0d0d');
   const tile=32;for(let y=82;y<H;y+=tile){for(let x=0;x<W;x+=tile){const alt=((x/tile)+(Math.floor((y-82)/tile)))%2;px(x,y,tile,tile,alt?'#202020':'#191919');px(x,y,tile,1,'#2a2a2a');px(x,y,1,tile,'#101010');}}
 
-  // 2x4 tile stretching zone, moved one tile upward
+  // two-tier dumbbell rack, one tile below the mirror
+  px(12,139,104,3,'#101010');
+  px(14,109,4,34,'#34383b');px(110,109,4,34,'#34383b');
+  px(18,120,92,3,'#656b70');px(18,137,92,3,'#656b70');
+  px(20,123,88,2,'#26292c');px(20,140,88,2,'#26292c');
+  for(let row=0;row<2;row++)for(let i=0;i<7;i++){
+    const x=23+i*13,y=112+row*17;
+    px(x-3,y+2,3,5,'#111214');px(x+8,y+2,3,5,'#111214');
+    px(x,y,8,9,'#232629');px(x+2,y+3,4,3,'#777f25');
+    px(x+3,y+2,2,5,'#b1b53a');px(x+2,y+3,4,1,'#b1b53a');px(x+2,y+6,4,1,'#777f25');
+  }
+
   const matX=124,matY=146,matW=64,matH=128;
-  px(matX+3,matY+4,matW,matH,'#111111');
-  rect(matX,matY,matW,matH,'#bfc3c7','#737a80',2);
-  px(matX+4,matY+4,matW-8,2,'#e8eaec');
-  px(matX+4,matY+6,2,matH-12,'#d9dde0');
-  px(matX+5,matY+matH-7,matW-10,2,'#969da3');
+  px(matX+3,matY+4,matW,matH,'#111111');rect(matX,matY,matW,matH,'#bfc3c7','#737a80',2);
+  px(matX+4,matY+4,matW-8,2,'#e8eaec');px(matX+4,matY+6,2,matH-12,'#d9dde0');px(matX+5,matY+matH-7,matW-10,2,'#969da3');
 
-  // dark foam roller without a separate drop shadow
-  rect(138,153,36,8,'#5d6670','#282d32',1);
-  px(142,155,28,2,'#87919a');
-  px(141,160,30,1,'#3d444b');
-  px(138,155,2,4,'#909aa2');px(172,155,2,4,'#20252a');
+  rect(138,153,36,8,'#5d6670','#282d32',1);px(142,155,28,2,'#87919a');px(141,160,30,1,'#3d444b');px(138,155,2,4,'#909aa2');px(172,155,2,4,'#20252a');
 
-  // textured dark teal foam roller with a compact shadow
-  px(181,220,4,31,'#111111');
-  rect(177,215,8,36,'#176f73','#0b3c3f',1);
-  px(179,219,2,28,'#3aa6a8');
-  px(183,217,1,32,'#0f5559');
-  px(179,215,4,2,'#58b8b9');
-  for(let y=220;y<247;y+=6){px(177,y,2,3,'#0b4d50');px(183,y+2,2,3,'#2a8e91');}
-  for(let y=217;y<249;y+=8){px(180,y,2,2,'#0d5d60');px(181,y+4,2,2,'#46aeb0');}
+  px(181,220,4,31,'#111111');rect(177,215,8,36,'#176f73','#0b3c3f',1);px(179,219,2,28,'#3aa6a8');px(183,217,1,32,'#0f5559');px(179,215,4,2,'#58b8b9');
+  for(let y=220;y<247;y+=6){px(177,y,2,3,'#0b4d50');px(183,y+2,2,3,'#2a8e91');}for(let y=217;y<249;y+=8){px(180,y,2,2,'#0d5d60');px(181,y+4,2,2,'#46aeb0');}
 
-  // equally sized massage balls, balanced between roller and mat edge
-  px(163,265,7,2,'#111111');
-  rect(162,259,7,7,'#c8b6e8','#66557f',1);
-  px(164,260,2,2,'#eadffc');
-  px(174,265,7,2,'#111111');
-  rect(173,259,7,7,'#f3df86','#7d6b29',1);
-  px(175,260,2,2,'#fff4b7');
+  px(163,265,7,2,'#111111');rect(162,259,7,7,'#c8b6e8','#66557f',1);px(164,260,2,2,'#eadffc');
+  px(174,265,7,2,'#111111');rect(173,259,7,7,'#f3df86','#7d6b29',1);px(175,260,2,2,'#fff4b7');
 
   drawBoyfriend(player.x,player.y,player.dir,player.frame,42);
 }
@@ -104,25 +94,19 @@ function update(dt){if(!joy.active||!dialogue.classList.contains('hidden'))retur
   player.y=Math.max(88,Math.min(330,player.y));cameraX=0;
   if(player.x>=186){scene='gymSide';player.x=14;actionButton.classList.add('hidden');return;}
   player.x=Math.max(12,player.x);
-  const inDeskX=player.x>22&&player.x<170;
-  const inDeskY=player.y>119&&player.y<171;
-  if(inDeskX&&inDeskY){
-    const cameFromFront=oldY>=171;
-    const cameFromBack=oldY<=119;
-    if(cameFromFront)player.y=171;
-    else if(cameFromBack)player.y=119;
-    else {player.x=oldX;player.y=oldY;}
-  }
+  const inDeskX=player.x>22&&player.x<170;const inDeskY=player.y>119&&player.y<171;
+  if(inDeskX&&inDeskY){const cameFromFront=oldY>=171;const cameFromBack=oldY<=119;if(cameFromFront)player.y=171;else if(cameFromBack)player.y=119;else {player.x=oldX;player.y=oldY;}}
   const nearYuli=Math.hypot(player.x-yuli.x,player.y-yuli.y)<34;foundYuli=nearYuli;actionButton.classList.toggle('hidden',!nearYuli);
 }if(scene==='gymSide'){
   player.y=Math.max(92,Math.min(330,player.y));
   if(player.x<=6){scene='gym';player.x=178;actionButton.classList.add('hidden');return;}
   player.x=Math.min(180,player.x);
+  const hitsRack=player.x>8&&player.x<119&&player.y>104&&player.y<148;
   const hitsDarkRoller=player.x>133&&player.x<179&&player.y>148&&player.y<166;
   const hitsTealRoller=player.x>172&&player.x<189&&player.y>210&&player.y<256;
   const hitsPurpleBall=Math.hypot(player.x-165.5,player.y-262.5)<8;
   const hitsYellowBall=Math.hypot(player.x-176.5,player.y-262.5)<8;
-  if(hitsDarkRoller||hitsTealRoller||hitsPurpleBall||hitsYellowBall){player.x=oldX;player.y=oldY;}
+  if(hitsRack||hitsDarkRoller||hitsTealRoller||hitsPurpleBall||hitsYellowBall){player.x=oldX;player.y=oldY;}
 }}
 let last=performance.now();function loop(now){update(Math.min(.033,(now-last)/1000));last=now;requestAnimationFrame(loop);}requestAnimationFrame(loop);
 function joyMove(e){const r=joystick.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;let dx=e.clientX-cx,dy=e.clientY-cy;const m=Math.hypot(dx,dy),max=38;if(m>max){dx=dx/m*max;dy=dy/m*max;}joy.dx=dx;joy.dy=dy;joystickKnob.style.transform=`translate(${dx}px,${dy}px)`;}
