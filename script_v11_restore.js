@@ -73,20 +73,22 @@ function drawGymSideRoom(){
   px(141,160,30,1,'#3d444b');
   px(138,155,2,4,'#909aa2');px(172,155,2,4,'#20252a');
 
-  // dark teal foam roller, vertical against the right wall
+  // textured dark teal foam roller, vertical against the right wall
   px(179,219,7,38,'#111111');
   rect(177,215,8,36,'#176f73','#0b3c3f',1);
   px(179,219,2,28,'#3aa6a8');
   px(183,217,1,32,'#0f5559');
   px(179,215,4,2,'#58b8b9');
+  for(let y=220;y<247;y+=6){px(177,y,2,3,'#0b4d50');px(183,y+2,2,3,'#2a8e91');}
+  for(let y=217;y<249;y+=8){px(180,y,2,2,'#0d5d60');px(181,y+4,2,2,'#46aeb0');}
 
-  // equally sized massage balls with extra spacing from the teal roller
-  px(163,259,7,2,'#111111');
-  rect(162,253,7,7,'#c8b6e8','#66557f',1);
-  px(164,254,2,2,'#eadffc');
-  px(174,259,7,2,'#111111');
-  rect(173,253,7,7,'#f3df86','#7d6b29',1);
-  px(175,254,2,2,'#fff4b7');
+  // equally sized massage balls, balanced between roller and mat edge
+  px(163,265,7,2,'#111111');
+  rect(162,259,7,7,'#c8b6e8','#66557f',1);
+  px(164,260,2,2,'#eadffc');
+  px(174,265,7,2,'#111111');
+  rect(173,259,7,7,'#f3df86','#7d6b29',1);
+  px(175,260,2,2,'#fff4b7');
 
   drawBoyfriend(player.x,player.y,player.dir,player.frame,42);
 }
