@@ -53,7 +53,6 @@ function drawGymSideRoom(){
   rect(4,16,184,92,'#8fa0a8','#30383d',3);
   px(8,20,176,84,'#7f929b');
   for(let x=8;x<184;x+=44){px(x,20,2,84,'#55656d');px(x+2,20,1,84,'#b9c6cb');}
-  px(8,58,176,2,'#c8d2d6');
   px(18,28,48,3,'#dce5e8');px(112,72,56,2,'#d7e0e3');
   for(let i=0;i<8;i++){const x=15+i*23;px(x,27+(i%3)*18,10,1,'#aebdc3');}
   px(0,108,W,4,'#0d0d0d');
@@ -85,7 +84,7 @@ function update(dt){if(!joy.active||!dialogue.classList.contains('hidden'))retur
   }
   const nearYuli=Math.hypot(player.x-yuli.x,player.y-yuli.y)<34;foundYuli=nearYuli;actionButton.classList.toggle('hidden',!nearYuli);
 }if(scene==='gymSide'){
-  player.y=Math.max(12,Math.min(330,player.y));
+  player.y=Math.max(122,Math.min(330,player.y));
   if(player.x<=6){scene='gym';player.x=178;actionButton.classList.add('hidden');return;}
   player.x=Math.min(180,player.x);
 }}
