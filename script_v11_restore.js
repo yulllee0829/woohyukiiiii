@@ -13,13 +13,16 @@ const C={ink:'#30243d',deep:'#17172a',night:'#24213d',cream:'#fff2d1',gold:'#f3c
 
 const boyfriendSheet=new Image();boyfriendSheet.src='assets/boyfriend.png?v=29';
 const yuliSheet=new Image();yuliSheet.src='assets/yuli.png?v=23';
+const legExtensionSheet=new Image();legExtensionSheet.src='assets/boyfriend_leg_extension.png?v=1';
 
 let scene='title',elapsed=0,cameraX=0;
 let player={x:96,y:267,dir:'up',frame:0};
 let yuli={x:96,y:102,dir:'down',frame:0,state:'counter'};
 let foundYuli=false,dialogueQueue=[],dialogueCallback=null;
 let joy={active:false,id:null,dx:0,dy:0};
-let hipMachineOpen=false;
+let legExerciseActive=false,legExerciseStart=0;
+let bingsuRevealed=false,bingsuCollected=false;
+let inventory=[];
 
 function px(x,y,w,h,c){ctx.fillStyle=c;ctx.fillRect(Math.round(x),Math.round(y),Math.round(w),Math.round(h));}
 function rect(x,y,w,h,fill,border=C.ink,t=2){px(x,y,w,h,border);px(x+t,y+t,w-t*2,h-t*2,fill);}
@@ -40,70 +43,24 @@ function drawFloor(){px(0,82,W,H-82,'#d8c6ad');const tile=32;for(let y=82;y<H;y+
 function drawReceptionDesk(){px(31,160,130,5,'#f6d69c');px(27,165,138,3,'#eabf7e');px(30,119,132,8,'#d8d4cf');px(26,123,140,7,'#b7b4b1');px(22,130,12,25,'#9c9a98');px(158,130,12,25,'#9c9a98');px(26,127,140,35,'#aaa8a6');px(30,130,132,29,'#bdbab7');px(34,132,2,25,'#d9d6d2');px(54,132,1,25,'#8e8c8a');px(85,132,1,25,'#8e8c8a');px(116,132,1,25,'#8e8c8a');px(147,132,1,25,'#8e8c8a');px(157,132,2,25,'#d9d6d2');px(29,157,134,4,'#7e7b79');px(34,158,124,2,'#d7d2cc');rect(47,109,20,12,'#2d3136',C.ink,1);px(51,112,12,5,'#646a70');px(55,121,4,5,'#28282b');rect(126,108,19,15,'#d7d1c9',C.ink,1);for(let r=0;r<2;r++)for(let c=0;c<2;c++)px(130+c*7,112+r*5,5,3,'#696b6c');}
 function drawGymWorld(){ctx.save();ctx.translate(-cameraX,0);drawFloor();drawWoodWall();drawYuli(yuli.x,yuli.y,yuli.dir,yuli.frame,45);drawReceptionDesk();rect(74,307,44,29,'#4e4947',C.ink,3);px(79,312,34,24,'#2d2b2a');drawBoyfriend(player.x,player.y,player.dir,player.frame,42);ctx.restore();}
 
-function drawHipMachine(){
-  // floor frame and weight tower
-  px(18,242,90,4,'#0d0e10');px(20,238,86,4,'#474c50');
-  rect(22,151,24,77,'#25292d','#111315',2);px(26,156,16,59,'#111315');
-  for(let y=160;y<211;y+=6){px(28,y,12,4,'#3e4347');px(29,y,10,1,'#70767b');}
-  px(33,157,2,56,'#a6abb0');px(35,157,2,56,'#4b5054');px(31,178,6,2,'#d95b5b');
-  // upright supports, backrest and seat
-  px(48,157,4,78,'#34383c');px(99,153,4,84,'#34383c');
-  px(94,164,5,67,'#17191b');rect(81,164,18,55,'#24272a','#0e1012',2);px(84,168,11,43,'#303438');
-  rect(62,218,29,14,'#292d30','#111315',2);px(65,220,23,3,'#3d4246');
-  // pivot and moving arms
-  rect(69,198,15,10,'#4e5459','#17191b',2);px(75,199,3,8,'#8d9499');
-  const leftPadX=hipMachineOpen?49:60,rightPadX=hipMachineOpen?88:76;
-  px(76,204,leftPadX-70,3,'#555b60');px(80,204,rightPadX-78,3,'#555b60');
-  if(hipMachineOpen){px(57,202,13,3,'#555b60');px(83,202,13,3,'#555b60');}
-  // attached knee pads
-  rect(leftPadX,194,15,20,'#2a2e31','#101214',2);px(leftPadX+3,197,9,13,'#3a3f43');
-  rect(rightPadX,194,15,20,'#2a2e31','#101214',2);px(rightPadX+3,197,9,13,'#3a3f43');
-  // hidden bingsu revealed when pads open
-  if(hipMachineOpen){
-    px(69,217,19,2,'#111111');rect(70,207,17,11,'#f8f4e8','#77716b',1);
-    px(72,207,13,4,'#fffdf6');px(74,204,9,4,'#fff8ee');px(76,202,5,3,'#fffdf8');
-    px(73,209,3,3,'#8c3f42');px(79,207,3,3,'#8c3f42');px(82,211,2,2,'#8c3f42');
-    px(77,203,2,2,'#ef6f83');px(75,205,1,1,'#f4b24b');
-  }
-  text('HIP',34,146,5,'#b6bcc0','center');
-}
+function drawLegExtensionMachine(){px(19,242,91,4,'#0d0e10');px(21,238,87,4,'#474c50');rect(22,153,25,76,'#25292d','#111315',2);px(26,158,17,57,'#111315');for(let y=161;y<211;y+=6){px(29,y,11,4,'#3e4347');px(30,y,9,1,'#70767b');}px(34,158,2,55,'#a6abb0');px(36,158,2,55,'#4b5054');px(32,180,6,2,'#d95b5b');px(49,168,4,68,'#34383c');px(96,166,4,70,'#34383c');rect(82,168,17,48,'#24272a','#0e1012',2);px(85,171,10,39,'#303438');rect(61,214,31,14,'#292d30','#111315',2);px(65,216,23,3,'#3d4246');px(54,224,33,3,'#555b60');px(57,220,4,18,'#34383c');rect(48,225,35,11,'#24272a','#0e1012',2);px(51,228,29,4,'#3a3f43');px(44,231,7,3,'#555b60');px(83,231,8,3,'#555b60');text('LEG',34,147,5,'#b6bcc0','center');}
+function getLegExerciseFrame(now){const t=(now-legExerciseStart)%1800;if(t<300)return 0;if(t<600)return 1;if(t<1050)return 2;if(t<1350)return 1;return 0;}
+function drawLegExercise(frame){if(!legExtensionSheet.complete||!legExtensionSheet.naturalWidth)return;const fw=legExtensionSheet.naturalWidth/3,fh=legExtensionSheet.naturalHeight;const sx=frame*fw+8,sy=120,sw=fw-16,sh=720;ctx.drawImage(legExtensionSheet,sx,sy,sw,sh,11,128,104,141);}
+function drawBingsu(x=69,y=235){px(x-2,y+10,20,2,'#111111');rect(x,y,17,11,'#f8f4e8','#77716b',1);px(x+2,y,13,4,'#fffdf6');px(x+4,y-3,9,4,'#fff8ee');px(x+6,y-5,5,3,'#fffdf8');px(x+3,y+2,3,3,'#8c3f42');px(x+9,y,3,3,'#8c3f42');px(x+12,y+4,2,2,'#8c3f42');px(x+7,y-4,2,2,'#ef6f83');px(x+5,y-2,1,1,'#f4b24b');}
+function drawInventory(){if(!bingsuCollected)return;rect(160,88,25,25,'#2a2835','#ded6c8',2);drawBingsu(165,98);text('1',181,107,6,C.cream,'right');}
 
-function drawGymSideRoom(){
-  px(0,0,W,H,'#171717');rect(4,4,184,78,'#8fa0a8','#30383d',3);px(8,8,176,70,'#7f929b');
-  for(let x=8;x<184;x+=44){px(x,8,2,70,'#55656d');px(x+2,8,1,70,'#b9c6cb');}
-  px(18,16,48,3,'#dce5e8');px(112,56,56,2,'#d7e0e3');for(let i=0;i<8;i++){const x=15+i*23;px(x,15+(i%3)*15,10,1,'#aebdc3');}
-  px(0,78,W,5,'#0d0d0d');const tile=32;for(let y=82;y<H;y+=tile){for(let x=0;x<W;x+=tile){const alt=((x/tile)+(Math.floor((y-82)/tile)))%2;px(x,y,tile,tile,alt?'#202020':'#191919');px(x,y,tile,1,'#2a2a2a');px(x,y,1,tile,'#101010');}}
-  // two-tier dumbbell rack
-  px(44,112,104,3,'#101010');px(46,82,4,34,'#34383b');px(142,82,4,34,'#34383b');px(50,93,92,3,'#656b70');px(50,110,92,3,'#656b70');px(52,96,88,2,'#26292c');px(52,113,88,2,'#26292c');
-  for(let row=0;row<2;row++)for(let i=0;i<7;i++){const x=55+i*13,y=85+row*17;px(x+1,y,6,4,'#151719');px(x,y+1,8,4,'#232629');px(x+3,y+4,2,3,'#b7bdc1');px(x+2,y+5,4,2,'#8d9499');px(x+2,y+7,6,4,'#111214');px(x+1,y+8,8,3,'#202326');px(x+3,y+1,2,2,'#b1b53a');px(x+3,y+8,2,2,'#777f25');}
-  const matX=124,matY=146,matW=64,matH=128;px(matX+3,matY+4,matW,matH,'#111111');rect(matX,matY,matW,matH,'#bfc3c7','#737a80',2);px(matX+4,matY+4,matW-8,2,'#e8eaec');px(matX+4,matY+6,2,matH-12,'#d9dde0');px(matX+5,matY+matH-7,matW-10,2,'#969da3');
-  rect(138,153,36,8,'#5d6670','#282d32',1);px(142,155,28,2,'#87919a');px(141,160,30,1,'#3d444b');px(138,155,2,4,'#909aa2');px(172,155,2,4,'#20252a');
-  px(181,220,4,31,'#111111');rect(177,215,8,36,'#176f73','#0b3c3f',1);px(179,219,2,28,'#3aa6a8');px(183,217,1,32,'#0f5559');px(179,215,4,2,'#58b8b9');for(let y=220;y<247;y+=6){px(177,y,2,3,'#0b4d50');px(183,y+2,2,3,'#2a8e91');}for(let y=217;y<249;y+=8){px(180,y,2,2,'#0d5d60');px(181,y+4,2,2,'#46aeb0');}
-  px(163,265,7,2,'#111111');rect(162,259,7,7,'#c8b6e8','#66557f',1);px(164,260,2,2,'#eadffc');px(174,265,7,2,'#111111');rect(173,259,7,7,'#f3df86','#7d6b29',1);px(175,260,2,2,'#fff4b7');
-  drawHipMachine();
-  drawBoyfriend(player.x,player.y,player.dir,player.frame,42);
-}
+function drawGymSideRoom(){px(0,0,W,H,'#171717');rect(4,4,184,78,'#8fa0a8','#30383d',3);px(8,8,176,70,'#7f929b');for(let x=8;x<184;x+=44){px(x,8,2,70,'#55656d');px(x+2,8,1,70,'#b9c6cb');}px(18,16,48,3,'#dce5e8');px(112,56,56,2,'#d7e0e3');for(let i=0;i<8;i++){const x=15+i*23;px(x,15+(i%3)*15,10,1,'#aebdc3');}px(0,78,W,5,'#0d0d0d');const tile=32;for(let y=82;y<H;y+=tile){for(let x=0;x<W;x+=tile){const alt=((x/tile)+(Math.floor((y-82)/tile)))%2;px(x,y,tile,tile,alt?'#202020':'#191919');px(x,y,tile,1,'#2a2a2a');px(x,y,1,tile,'#101010');}}px(44,112,104,3,'#101010');px(46,82,4,34,'#34383b');px(142,82,4,34,'#34383b');px(50,93,92,3,'#656b70');px(50,110,92,3,'#656b70');px(52,96,88,2,'#26292c');px(52,113,88,2,'#26292c');for(let row=0;row<2;row++)for(let i=0;i<7;i++){const x=55+i*13,y=85+row*17;px(x+1,y,6,4,'#151719');px(x,y+1,8,4,'#232629');px(x+3,y+4,2,3,'#b7bdc1');px(x+2,y+5,4,2,'#8d9499');px(x+2,y+7,6,4,'#111214');px(x+1,y+8,8,3,'#202326');px(x+3,y+1,2,2,'#b1b53a');px(x+3,y+8,2,2,'#777f25');}const matX=124,matY=146,matW=64,matH=128;px(matX+3,matY+4,matW,matH,'#111111');rect(matX,matY,matW,matH,'#bfc3c7','#737a80',2);px(matX+4,matY+4,matW-8,2,'#e8eaec');px(matX+4,matY+6,2,matH-12,'#d9dde0');px(matX+5,matY+matH-7,matW-10,2,'#969da3');rect(138,153,36,8,'#5d6670','#282d32',1);px(142,155,28,2,'#87919a');px(141,160,30,1,'#3d444b');px(138,155,2,4,'#909aa2');px(172,155,2,4,'#20252a');px(181,220,4,31,'#111111');rect(177,215,8,36,'#176f73','#0b3c3f',1);px(179,219,2,28,'#3aa6a8');px(183,217,1,32,'#0f5559');px(179,215,4,2,'#58b8b9');for(let y=220;y<247;y+=6){px(177,y,2,3,'#0b4d50');px(183,y+2,2,3,'#2a8e91');}for(let y=217;y<249;y+=8){px(180,y,2,2,'#0d5d60');px(181,y+4,2,2,'#46aeb0');}px(163,265,7,2,'#111111');rect(162,259,7,7,'#c8b6e8','#66557f',1);px(164,260,2,2,'#eadffc');px(174,265,7,2,'#111111');rect(173,259,7,7,'#f3df86','#7d6b29',1);px(175,260,2,2,'#fff4b7');if(legExerciseActive)drawLegExercise(getLegExerciseFrame(elapsed));else drawLegExtensionMachine();if(bingsuRevealed&&!bingsuCollected&&!legExerciseActive)drawBingsu();if(!legExerciseActive)drawBoyfriend(player.x,player.y,player.dir,player.frame,42);drawInventory();}
 
-function render(now=0){elapsed=now;ctx.setTransform(SCALE,0,0,SCALE,0,0);ctx.clearRect(0,0,W,H);if(scene==='title')drawTitle();if(scene==='lobby')drawLobby();if(scene==='gym')drawGymWorld();if(scene==='gymSide')drawGymSideRoom();requestAnimationFrame(render);}
+function finishLegExercise(){legExerciseActive=false;bingsuRevealed=true;player={x:115,y:236,dir:'left',frame:0};joystick.classList.remove('hidden');showHint('받침대 아래에서 팥빙수가 나타났다!',2200);}
+function render(now=0){elapsed=now;if(legExerciseActive&&now-legExerciseStart>=3600)finishLegExercise();ctx.setTransform(SCALE,0,0,SCALE,0,0);ctx.clearRect(0,0,W,H);if(scene==='title')drawTitle();if(scene==='lobby')drawLobby();if(scene==='gym')drawGymWorld();if(scene==='gymSide')drawGymSideRoom();requestAnimationFrame(render);}
 function showHint(s,ms=1500){hint.textContent=s;hint.classList.remove('hidden');clearTimeout(showHint.t);showHint.t=setTimeout(()=>hint.classList.add('hidden'),ms);}
 function showDialogue(lines,cb){dialogueQueue=[...lines];dialogueCallback=cb||null;joystick.classList.add('hidden');actionButton.classList.add('hidden');dialogue.classList.remove('hidden');nextDialogue();}
-function nextDialogue(){if(!dialogueQueue.length){dialogue.classList.add('hidden');if(scene!=='title')joystick.classList.remove('hidden');const cb=dialogueCallback;dialogueCallback=null;cb?.();return;}dialogue.textContent=dialogueQueue.shift();}
+function nextDialogue(){if(!dialogueQueue.length){dialogue.classList.add('hidden');if(scene!=='title'&&!legExerciseActive)joystick.classList.remove('hidden');const cb=dialogueCallback;dialogueCallback=null;cb?.();return;}dialogue.textContent=dialogueQueue.shift();}
 dialogue.addEventListener('click',nextDialogue);
 function enterLobby(){scene='lobby';player={x:96,y:267,dir:'up',frame:0};startButton.classList.add('hidden');joystick.classList.remove('hidden');showHint('308호 문 앞으로 이동해 보세요');}
-function enterGym(){scene='gym';cameraX=0;player={x:96,y:300,dir:'up',frame:0};yuli={x:96,y:119,dir:'down',frame:0,state:'counter'};foundYuli=false;hipMachineOpen=false;actionButton.classList.add('hidden');showDialogue(['308호의 첫 기억이 열렸다.','2월 16일, 헬스보이짐.']);}
-function tryAction(){
-  if(scene==='lobby'&&Math.abs(player.x-136)<28&&Math.abs(player.y-166)<46){enterGym();return;}
-  if(scene==='gym'&&foundYuli){showDialogue(['혹시 헬스장 오셨어요?','오 누구세요??','아웃백 교육 같이 받았었는데…'],()=>showHint('첫 장면 초안은 여기까지!',2200));return;}
-  if(scene==='gymSide'&&Math.hypot(player.x-73,player.y-225)<48){
-    if(!hipMachineOpen){hipMachineOpen=true;showDialogue(['딸깍! 무릎 받침대가 양옆으로 벌어졌다.','어라… 안쪽에 팥빙수가 숨겨져 있다!']);}
-    else showDialogue(['새하얀 얼음 위에 팥이 듬뿍 올라간 팥빙수다.','율리가 제일 좋아하는 간식 같다!']);
-  }
-}
-function update(dt){if(!joy.active||!dialogue.classList.contains('hidden'))return;const len=Math.hypot(joy.dx,joy.dy);if(len<8){player.frame=0;return;}const oldX=player.x,oldY=player.y;const vx=joy.dx/len,vy=joy.dy/len,speed=72*dt;player.x+=vx*speed;player.y+=vy*speed;player.frame=1+Math.floor(elapsed/150)%2;if(Math.abs(vx)>Math.abs(vy))player.dir=vx>0?'right':'left';else player.dir=vy>0?'down':'up';
-  if(scene==='lobby'){player.x=Math.max(15,Math.min(177,player.x));player.y=Math.max(202,Math.min(305,player.y));const near=Math.abs(player.x-136)<28&&Math.abs(player.y-166)<46;actionButton.classList.toggle('hidden',!near);actionButton.textContent='♥';}
-  if(scene==='gym'){player.y=Math.max(88,Math.min(330,player.y));cameraX=0;if(player.x>=186){scene='gymSide';player.x=14;actionButton.classList.add('hidden');return;}player.x=Math.max(12,player.x);const inDeskX=player.x>22&&player.x<170,inDeskY=player.y>119&&player.y<171;if(inDeskX&&inDeskY){const cameFromFront=oldY>=171,cameFromBack=oldY<=119;if(cameFromFront)player.y=171;else if(cameFromBack)player.y=119;else{player.x=oldX;player.y=oldY;}}const nearYuli=Math.hypot(player.x-yuli.x,player.y-yuli.y)<34;foundYuli=nearYuli;actionButton.classList.toggle('hidden',!nearYuli);}
-  if(scene==='gymSide'){player.y=Math.max(92,Math.min(330,player.y));if(player.x<=6){scene='gym';player.x=178;actionButton.classList.add('hidden');return;}player.x=Math.min(180,player.x);const hitsRack=player.x>40&&player.x<151&&player.y>77&&player.y<121;const hitsDarkRoller=player.x>133&&player.x<179&&player.y>148&&player.y<166;const hitsTealRoller=player.x>172&&player.x<189&&player.y>210&&player.y<256;const hitsPurpleBall=Math.hypot(player.x-165.5,player.y-262.5)<8;const hitsYellowBall=Math.hypot(player.x-176.5,player.y-262.5)<8;const hitsHipMachine=player.x>16&&player.x<110&&player.y>144&&player.y<247;if(hitsRack||hitsDarkRoller||hitsTealRoller||hitsPurpleBall||hitsYellowBall||hitsHipMachine){player.x=oldX;player.y=oldY;}const nearHip=Math.hypot(player.x-73,player.y-225)<48;actionButton.classList.toggle('hidden',!nearHip);actionButton.textContent='♥';}
-}
+function enterGym(){scene='gym';cameraX=0;player={x:96,y:300,dir:'up',frame:0};yuli={x:96,y:119,dir:'down',frame:0,state:'counter'};foundYuli=false;legExerciseActive=false;bingsuRevealed=false;bingsuCollected=false;inventory=[];actionButton.classList.add('hidden');showDialogue(['308호의 첫 기억이 열렸다.','2월 16일, 헬스보이짐.']);}
+function tryAction(){if(scene==='lobby'&&Math.abs(player.x-136)<28&&Math.abs(player.y-166)<46){enterGym();return;}if(scene==='gym'&&foundYuli){showDialogue(['혹시 헬스장 오셨어요?','오 누구세요??','아웃백 교육 같이 받았었는데…'],()=>showHint('첫 장면 초안은 여기까지!',2200));return;}if(scene==='gymSide'&&!legExerciseActive){const nearMachine=Math.hypot(player.x-74,player.y-228)<50;const nearBingsu=bingsuRevealed&&!bingsuCollected&&Math.hypot(player.x-77,player.y-241)<28;if(nearBingsu){bingsuCollected=true;inventory.push('팥빙수');actionButton.classList.add('hidden');showDialogue(['팥빙수를 주머니에 넣었다!','율리가 좋아할 것 같다ㅎㅎ']);return;}if(nearMachine&&!bingsuRevealed){legExerciseActive=true;legExerciseStart=performance.now();player={x:78,y:228,dir:'left',frame:0};joy.active=false;joy.dx=joy.dy=0;joystick.classList.add('hidden');actionButton.classList.add('hidden');showHint('레그 익스텐션 시작!',1200);return;}}}
+function update(dt){if(legExerciseActive)return;if(!joy.active||!dialogue.classList.contains('hidden'))return;const len=Math.hypot(joy.dx,joy.dy);if(len<8){player.frame=0;return;}const oldX=player.x,oldY=player.y;const vx=joy.dx/len,vy=joy.dy/len,speed=72*dt;player.x+=vx*speed;player.y+=vy*speed;player.frame=1+Math.floor(elapsed/150)%2;if(Math.abs(vx)>Math.abs(vy))player.dir=vx>0?'right':'left';else player.dir=vy>0?'down':'up';if(scene==='lobby'){player.x=Math.max(15,Math.min(177,player.x));player.y=Math.max(202,Math.min(305,player.y));const near=Math.abs(player.x-136)<28&&Math.abs(player.y-166)<46;actionButton.classList.toggle('hidden',!near);actionButton.textContent='♥';}if(scene==='gym'){player.y=Math.max(88,Math.min(330,player.y));cameraX=0;if(player.x>=186){scene='gymSide';player.x=14;actionButton.classList.add('hidden');return;}player.x=Math.max(12,player.x);const inDeskX=player.x>22&&player.x<170,inDeskY=player.y>119&&player.y<171;if(inDeskX&&inDeskY){const cameFromFront=oldY>=171,cameFromBack=oldY<=119;if(cameFromFront)player.y=171;else if(cameFromBack)player.y=119;else{player.x=oldX;player.y=oldY;}}const nearYuli=Math.hypot(player.x-yuli.x,player.y-yuli.y)<34;foundYuli=nearYuli;actionButton.classList.toggle('hidden',!nearYuli);}if(scene==='gymSide'){player.y=Math.max(92,Math.min(330,player.y));if(player.x<=6){scene='gym';player.x=178;actionButton.classList.add('hidden');return;}player.x=Math.min(180,player.x);const hitsRack=player.x>40&&player.x<151&&player.y>77&&player.y<121;const hitsDarkRoller=player.x>133&&player.x<179&&player.y>148&&player.y<166;const hitsTealRoller=player.x>172&&player.x<189&&player.y>210&&player.y<256;const hitsPurpleBall=Math.hypot(player.x-165.5,player.y-262.5)<8;const hitsYellowBall=Math.hypot(player.x-176.5,player.y-262.5)<8;const hitsLegMachine=player.x>15&&player.x<112&&player.y>145&&player.y<247;if(hitsRack||hitsDarkRoller||hitsTealRoller||hitsPurpleBall||hitsYellowBall||hitsLegMachine){player.x=oldX;player.y=oldY;}const nearMachine=!bingsuRevealed&&Math.hypot(player.x-74,player.y-228)<50;const nearBingsu=bingsuRevealed&&!bingsuCollected&&Math.hypot(player.x-77,player.y-241)<28;actionButton.classList.toggle('hidden',!(nearMachine||nearBingsu));actionButton.textContent=nearBingsu?'획득':'운동하기';}}
 let last=performance.now();function loop(now){update(Math.min(.033,(now-last)/1000));last=now;requestAnimationFrame(loop);}requestAnimationFrame(loop);
 function joyMove(e){const r=joystick.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;let dx=e.clientX-cx,dy=e.clientY-cy;const m=Math.hypot(dx,dy),max=38;if(m>max){dx=dx/m*max;dy=dy/m*max;}joy.dx=dx;joy.dy=dy;joystickKnob.style.transform=`translate(${dx}px,${dy}px)`;}
 joystick.addEventListener('pointerdown',e=>{e.preventDefault();joy.active=true;joy.id=e.pointerId;joystick.setPointerCapture(e.pointerId);joyMove(e);});
