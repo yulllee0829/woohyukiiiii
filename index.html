@@ -5,14 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <meta name="theme-color" content="#17172a" />
   <title>500일 꿈속 호텔</title>
-  <link rel="stylesheet" href="style.css?v=21" />
+  <link rel="stylesheet" href="style.css?v=22" />
 </head>
 <body>
   <main id="app">
     <canvas id="game" width="384" height="672" aria-label="500일 꿈속 호텔 픽셀 게임"></canvas>
     <div id="ui">
       <button id="startButton" class="pixel-button">호텔 들어가기</button>
+      <button id="pocketButton" class="pocket-button hidden" aria-label="주머니 열기">주머니</button>
       <button id="actionButton" class="action-button hidden" aria-label="확인 또는 대화">♥</button>
+      <section id="inventoryPanel" class="inventory-panel hidden" aria-label="주머니">
+        <div class="inventory-title">주머니</div>
+        <div id="inventoryItems" class="inventory-items"></div>
+        <div class="inventory-help">아이템을 눌러 선택해 보세요</div>
+      </section>
       <div id="dialogue" class="dialogue hidden"></div>
       <div id="hint" class="hint hidden"></div>
       <div id="joystick" class="joystick hidden" aria-label="이동 조이스틱">
@@ -21,6 +27,6 @@
       </div>
     </div>
   </main>
-  <script src="script_v11_restore.js?v=50"></script>
+  <script src="script_v11_restore.js?v=51"></script>
 </body>
 </html>
