@@ -55,13 +55,13 @@ function drawGymSideRoom(){
   px(0,78,W,5,'#0d0d0d');
   const tile=32;for(let y=82;y<H;y+=tile){for(let x=0;x<W;x+=tile){const alt=((x/tile)+(Math.floor((y-82)/tile)))%2;px(x,y,tile,tile,alt?'#202020':'#191919');px(x,y,tile,1,'#2a2a2a');px(x,y,1,tile,'#101010');}}
 
-  // two-tier dumbbell rack, one tile below the mirror
-  px(12,139,104,3,'#101010');
-  px(14,109,4,34,'#34383b');px(110,109,4,34,'#34383b');
-  px(18,120,92,3,'#656b70');px(18,137,92,3,'#656b70');
-  px(20,123,88,2,'#26292c');px(20,140,88,2,'#26292c');
+  // two-tier dumbbell rack centered on the top floor row
+  px(44,112,104,3,'#101010');
+  px(46,82,4,34,'#34383b');px(142,82,4,34,'#34383b');
+  px(50,93,92,3,'#656b70');px(50,110,92,3,'#656b70');
+  px(52,96,88,2,'#26292c');px(52,113,88,2,'#26292c');
   for(let row=0;row<2;row++)for(let i=0;i<7;i++){
-    const x=23+i*13,y=112+row*17;
+    const x=55+i*13,y=85+row*17;
     px(x-3,y+2,3,5,'#111214');px(x+8,y+2,3,5,'#111214');
     px(x,y,8,9,'#232629');px(x+2,y+3,4,3,'#777f25');
     px(x+3,y+2,2,5,'#b1b53a');px(x+2,y+3,4,1,'#b1b53a');px(x+2,y+6,4,1,'#777f25');
@@ -101,7 +101,7 @@ function update(dt){if(!joy.active||!dialogue.classList.contains('hidden'))retur
   player.y=Math.max(92,Math.min(330,player.y));
   if(player.x<=6){scene='gym';player.x=178;actionButton.classList.add('hidden');return;}
   player.x=Math.min(180,player.x);
-  const hitsRack=player.x>8&&player.x<119&&player.y>104&&player.y<148;
+  const hitsRack=player.x>40&&player.x<151&&player.y>77&&player.y<121;
   const hitsDarkRoller=player.x>133&&player.x<179&&player.y>148&&player.y<166;
   const hitsTealRoller=player.x>172&&player.x<189&&player.y>210&&player.y<256;
   const hitsPurpleBall=Math.hypot(player.x-165.5,player.y-262.5)<8;
