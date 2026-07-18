@@ -22,7 +22,8 @@ function getAlphaTrim(img,cols=1,frame=0){
 
 function drawTrimmedLeg(img,cols,frame){
   const b=getAlphaTrim(img,cols,frame);if(!b)return;
-  const boxX=29,boxY=151,boxW=78,boxH=98;
+  // Match the exact on-screen footprint of the machine shown after collection.
+  const boxX=38,boxY=165,boxW=60,boxH=81;
   const scale=Math.min(boxW/b.sw,boxH/b.sh),dw=Math.round(b.sw*scale),dh=Math.round(b.sh*scale);
   const dx=Math.round(boxX+(boxW-dw)/2),dy=Math.round(boxY+boxH-dh);
   ctx.drawImage(img,b.sx,b.sy,b.sw,b.sh,dx,dy,dw,dh);
@@ -30,10 +31,11 @@ function drawTrimmedLeg(img,cols,frame){
 
 drawLegMachine=function(){
   if(bingsuCollected){oldDrawLegMachine(0);return;}
+  // Before and after exercising, show the idle machine with the bingsu outside.
   drawTrimmedLeg(legIdleNew,1,0);
 };
 
 drawLegExercise=function(frame){drawTrimmedLeg(legExerciseNew,3,frame);};
 
-// The new PNGs already contain the patbingsu in the correct fixed position.
+// The new PNGs already include the patbingsu in the intended position.
 drawFixedPatbingsu=function(){};
