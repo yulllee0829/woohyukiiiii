@@ -57,6 +57,37 @@ function drawGymSideRoom(){
   for(let i=0;i<8;i++){const x=15+i*23;px(x,15+(i%3)*15,10,1,'#aebdc3');}
   px(0,78,W,5,'#0d0d0d');
   const tile=32;for(let y=82;y<H;y+=tile){for(let x=0;x<W;x+=tile){const alt=((x/tile)+(Math.floor((y-82)/tile)))%2;px(x,y,tile,tile,alt?'#202020':'#191919');px(x,y,tile,1,'#2a2a2a');px(x,y,1,tile,'#101010');}}
+
+  // 2x4 tile stretching zone
+  const matX=124,matY=178,matW=64,matH=128;
+  px(matX+3,matY+4,matW,matH,'#111111');
+  rect(matX,matY,matW,matH,'#bfc3c7','#737a80',2);
+  px(matX+4,matY+4,matW-8,2,'#e8eaec');
+  px(matX+4,matY+6,2,matH-12,'#d9dde0');
+  px(matX+5,matY+matH-7,matW-10,2,'#969da3');
+  px(matX+matW/2-1,matY+8,2,matH-16,'#aeb4b9');
+
+  // foam roller
+  px(133,190,34,3,'#111111');
+  rect(132,184,36,8,'#5d6670','#282d32',1);
+  px(136,186,28,2,'#87919a');
+  px(135,191,30,1,'#3d444b');
+  px(132,186,2,4,'#909aa2');px(166,186,2,4,'#20252a');
+
+  // massage balls
+  px(173,286,7,2,'#111111');
+  rect(172,280,7,7,'#7698b8','#283746',1);
+  px(174,281,2,2,'#b8cee0');
+  px(181,290,6,2,'#111111');
+  rect(180,285,6,6,'#3f4248','#1c1d21',1);
+  px(181,286,2,1,'#777b82');
+
+  // folded towel
+  px(134,294,20,2,'#111111');
+  rect(133,287,22,7,'#f0ede5','#b8b3a9',1);
+  px(137,289,14,1,'#ffffff');
+  px(145,288,1,5,'#d5d0c7');
+
   drawBoyfriend(player.x,player.y,player.dir,player.frame,42);
 }
 
