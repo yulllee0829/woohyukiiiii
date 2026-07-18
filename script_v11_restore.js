@@ -58,7 +58,7 @@ function enterLobby(){scene='lobby';player={x:96,y:267,dir:'up',frame:0};startBu
 function enterGym(){scene='gym';cameraX=0;player={x:96,y:300,dir:'up',frame:0};yuli={x:96,y:119,dir:'down',frame:0,state:'counter'};foundYuli=false;actionButton.classList.add('hidden');showDialogue(['308호의 첫 기억이 열렸다.','2월 16일, 헬스보이짐.']);}
 function tryAction(){if(scene==='lobby'&&Math.abs(player.x-136)<28&&Math.abs(player.y-166)<46){enterGym();return;}if(scene==='gym'&&foundYuli)showDialogue(['혹시 헬스장 오셨어요?','오 누구세요??','아웃백 교육 같이 받았었는데…'],()=>showHint('첫 장면 초안은 여기까지!',2200));}
 function update(dt){if(!joy.active||!dialogue.classList.contains('hidden'))return;const len=Math.hypot(joy.dx,joy.dy);if(len<8){player.frame=0;return;}const oldX=player.x,oldY=player.y;const vx=joy.dx/len,vy=joy.dy/len,speed=72*dt;player.x+=vx*speed;player.y+=vy*speed;player.frame=1+Math.floor(elapsed/150)%2;if(Math.abs(vx)>Math.abs(vy))player.dir=vx>0?'right':'left';else player.dir=vy>0?'down':'up';if(scene==='lobby'){player.x=Math.max(15,Math.min(177,player.x));player.y=Math.max(202,Math.min(305,player.y));const near=Math.abs(player.x-136)<28&&Math.abs(player.y-166)<46;actionButton.classList.toggle('hidden',!near);actionButton.textContent='♥';}if(scene==='gym'){
-  player.x=Math.max(12,Math.min(180,player.x));player.y=Math.max(88,Math.min(309,player.y));cameraX=0;
+  player.x=Math.max(12,Math.min(180,player.x));player.y=Math.max(88,Math.min(330,player.y));cameraX=0;
   const inDeskX=player.x>22&&player.x<170;
   const inDeskY=player.y>119&&player.y<171;
   if(inDeskX&&inDeskY){
