@@ -15,6 +15,18 @@
 
   pocketButton.textContent='';
   actionButton.textContent='';
-  pocketButton.setAttribute('aria-label','주머니 열기');
+  pocketButton.setAttribute('aria-label','가방 열기');
+
+  const inventoryTitle=document.querySelector('.inventory-title');
+  const inventoryPanelEl=document.querySelector('#inventoryPanel');
+  if(inventoryTitle)inventoryTitle.textContent='가방';
+  if(inventoryPanelEl)inventoryPanelEl.setAttribute('aria-label','가방');
+
+  const originalShowDialogue=showDialogue;
+  showDialogue=function(lines,cb){
+    const renamed=lines.map(line=>String(line).replaceAll('주머니','가방'));
+    return originalShowDialogue(renamed,cb);
+  };
+
   requestAnimationFrame(syncInteractionIcon);
 })();
