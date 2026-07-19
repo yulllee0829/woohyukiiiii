@@ -9,8 +9,8 @@
 .action-button,.pocket-button{pointer-events:auto;position:absolute;z-index:45;bottom:calc(env(safe-area-inset-bottom) + 16px);padding:0;border:0;border-radius:0;background-color:transparent;background-repeat:no-repeat;color:transparent;font-size:0;line-height:0;box-shadow:none;image-rendering:pixelated;image-rendering:crisp-edges}
 /* Bag stays approved. Each action state crops only its own half of ui_actions.png. */
 .pocket-button{right:12px;width:96px;height:96px;background-image:url('assets/ui_bag.PNG?v=5');background-position:center;background-size:160% auto}
-.action-button{width:96px;height:96px;background-image:url('assets/ui_actions.png?v=5');background-repeat:no-repeat}
-.action-button.action-hand{right:104px;background-size:285% auto;background-position:left center}
+.action-button{width:96px;height:96px;background-image:url('assets/ui_actions.png?v=6');background-repeat:no-repeat}
+.action-button.action-hand{right:104px;background-size:285% auto;background-position:10% center}
 .action-button.action-talk{right:104px;width:108px;height:108px;bottom:calc(env(safe-area-inset-bottom) + 10px);background-size:285% auto;background-position:right center}
 .action-button:active,.pocket-button:active{transform:translateY(3px);filter:brightness(.92)}
 .inventory-panel{pointer-events:auto;position:absolute;z-index:58;right:16px;bottom:calc(env(safe-area-inset-bottom) + 132px);width:184px;padding:12px;border:4px solid var(--ink);background:rgba(255,245,221,.98);color:var(--ink);box-shadow:0 6px 0 rgba(21,16,32,.5)}
