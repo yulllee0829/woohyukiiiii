@@ -64,17 +64,17 @@
     },2050);
   };
 
-  // Yuli begins directly in front of the counter, faces away, turns toward Woohyuk, then walks right.
+  // Yuli begins fully in front of the counter, faces away, turns toward Woohyuk, then walks right.
   const originalDrawYuliScenario=drawYuli;
   drawYuli=function(x,y,dir='down',frame=0,w=34){
     if(state.active&&scene==='gym'){
       if(state.yuliPhase==='side')return;
       if(state.yuliPhase==='back'||state.yuliPhase==='front'){
-        x=96;y=166;dir=state.yuliPhase==='back'?'up':'down';frame=0;w=42;
+        x=96;y=198;dir=state.yuliPhase==='back'?'up':'down';frame=0;w=42;
       }
       if(state.yuliPhase==='walking'){
         const p=Math.min(1,(performance.now()-state.yuliWalkStart)/1500);
-        x=96+(112*p);y=166;dir='right';frame=1+Math.floor(performance.now()/150)%2;w=42;
+        x=96+(112*p);y=198;dir='right';frame=1+Math.floor(performance.now()/150)%2;w=42;
       }
     }
     originalDrawYuliScenario(x,y,dir,frame,w);
