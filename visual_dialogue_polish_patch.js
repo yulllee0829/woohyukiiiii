@@ -9,7 +9,10 @@
   const previousShowHint=showHint;
   showHint=function(text,...args){
     if(typeof text==='string'&&text.includes('팥빙수')&&(text.includes('나타났다')||text.includes('발견'))){
-      showDialogue(['ㅜㅜ내 앞벅지…😇','??????? 발 받침대 아래 팥빙수가 왜 있지???????']);
+      showDialogue([
+        '우혁 : ㅜㅜ내 앞벅지…😇',
+        '우혁 : ??????? 발 받침대 아래 팥빙수가 왜 있지???????'
+      ]);
       return;
     }
     return previousShowHint(text,...args);
