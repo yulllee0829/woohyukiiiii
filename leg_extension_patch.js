@@ -63,7 +63,8 @@ update=function(dt){
     const hitsYellowBall=Math.hypot(player.x-176.5,player.y-262.5)<8;
     // Three small boxes instead of one large rectangle: tower, seat, and bottom base.
     const hitsLegTower=player.x>42&&player.x<60&&player.y>173&&player.y<229;
-    const hitsLegSeat=player.x>55&&player.x<91&&player.y>194&&player.y<226;
+    // Let the player's feet approach a little closer to the space directly above the seat.
+    const hitsLegSeat=player.x>55&&player.x<91&&player.y>201&&player.y<226;
     const hitsLegBase=player.x>36&&player.x<94&&player.y>226&&player.y<244;
     const hitsLegMachine=hitsLegTower||hitsLegSeat||hitsLegBase;
     if(hitsRack||hitsDarkRoller||hitsTealRoller||hitsPurpleBall||hitsYellowBall||hitsLegMachine){player.x=oldX;player.y=oldY;}
