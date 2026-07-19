@@ -6,6 +6,7 @@
 
   let hongDone=false;
   let changingText=false;
+  let lastSpeaker='system';
 
   const previousShowHint=showHint;
   showHint=function(text,...args){
@@ -14,11 +15,10 @@
     return previousShowHint(text,...args);
   };
 
-  // Remove the old opening narration no matter whether it was sent as dialogue or hint text.
   const previousShowDialogue=showDialogue;
   showDialogue=function(lines,...args){
     if(Array.isArray(lines)){
-      lines=lines.filter(line=>!(typeof line==='string'&&line.includes('기억이 열렸다')));
+      lines=lines.filter(line=>!(typeof line==='string'&&line.includes('기억이 열렸다'));
       if(!lines.length){
         const cb=args[0];
         if(typeof cb==='function')cb();
@@ -46,18 +46,25 @@
   function applySpeakerBubble(){
     if(changingText)return;
     const raw=(dialogueEl.textContent||'').trim();
-    let speaker='system';
+    let speaker=lastSpeaker;
     let clean=raw;
     const match=raw.match(/^(우혁|율리|홍다민씨)\s*[:：]\s*/);
     if(match){
       speaker=match[1]==='우혁'?'woohyuk':match[1]==='율리'?'yuli':'hong';
+      lastSpeaker=speaker;
       clean=raw.slice(match[0].length);
+    }else if(dialogueEl.classList.contains('hidden')||!raw){
+      speaker='system';
+      lastSpeaker='system';
     }
+
     const nextClass='speaker-'+speaker;
     for(const cls of ['speaker-woohyuk','speaker-yuli','speaker-hong','speaker-system']){
       dialogueEl.classList.toggle(cls,cls===nextClass);
     }
+    dialogueEl.classList.toggle('speaker-yuli-mat',speaker==='yuli'&&scene==='gymSide');
     dialogueEl.dataset.speaker=speaker==='woohyuk'?'우혁':speaker==='yuli'?'율리':speaker==='hong'?'홍다민씨':'';
+
     if(clean!==raw){
       changingText=true;
       dialogueEl.textContent=clean;
@@ -74,9 +81,10 @@
     #dialogue.speaker-hong{left:auto;right:14px;background:#e7f5ff;border-color:#355d78}
     #dialogue.speaker-system{left:16px;right:16px;max-width:none;width:auto;padding-top:12px}
     #dialogue.speaker-system::before{content:''}
+    #dialogue.speaker-yuli-mat{left:14px;right:auto;top:calc(env(safe-area-inset-top) + 72px);bottom:auto;max-width:72%}
   `;
   document.head.appendChild(style);
-  new MutationObserver(applySpeakerBubble).observe(dialogueEl,{childList:true,characterData:true,subtree:true});
+  new MutationObserver(applySpeakerBubble).observe(dialogueEl,{childList:true,characterData:true,subtree:true,attributes:true,attributeFilter:['class']});
   applySpeakerBubble();
   requestAnimationFrame(syncActionIcon);
 })();
