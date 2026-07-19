@@ -103,7 +103,7 @@ function collectFoamRoller(){
   if(!inventory.includes('초록 폼롤러'))inventory.push('초록 폼롤러');
   renderInventory();
   actionButton.classList.add('hidden');
-  showDialogue(['초록 울퉁불퉁 폼롤러를 가방에 넣었다!','가방 버튼을 눌러 확인해 보자ㅎㅎ']);
+  showDialogue(['초록 폼롤러를 가방에 넣었다!']);
   return true;
 }
 
