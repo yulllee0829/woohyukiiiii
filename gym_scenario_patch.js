@@ -16,17 +16,19 @@
   const mission=document.createElement('div');mission.id='missionBanner';mission.classList.add('hidden');document.querySelector('#ui').appendChild(mission);
   const fade=document.createElement('div');fade.id='gymFadeout';document.querySelector('#ui').appendChild(fade);
 
+  // The old room-transition hint is intentionally omitted in this gym scene.
+  const originalShowHintScenario=showHint;
+  showHint=function(text,...args){
+    if(state.active&&typeof text==='string'&&text.includes('기억이 열렸다'))return;
+    return originalShowHintScenario(text,...args);
+  };
+
   function setMission(n,bang=false){
     state.mission=n;
     if(!n){mission.classList.add('hidden');mission.classList.remove('mission-bang');return;}
     mission.textContent=n===1?'미션 1 : 율리님에게 말 걸기':'미션 2 : 율리 삐진 거 풀어쥬기';
     mission.classList.remove('hidden','mission-bang');
     if(bang){void mission.offsetWidth;mission.classList.add('mission-bang');}
-  }
-  function showDate(){
-    document.querySelector('#gymDateCard')?.remove();
-    const el=document.createElement('div');el.id='gymDateCard';el.textContent='2/14 잠실 헬스보이짐';document.querySelector('#ui').appendChild(el);
-    setTimeout(()=>el.remove(),2450);
   }
   function showChoices(){
     document.querySelector('#scenarioChoices')?.remove();
@@ -56,12 +58,13 @@
     originalEnterGymScenario();
     Object.assign(state,{active:true,mission:0,yuliPhase:'back',yuliWalkStart:0,hongVisible:false,hongTalked:false,onaoPlaced:false,visitedSide:false,dumbbellCollected:false,blackRollerCollected:false,giftMode:false,ending:false});
     setMission(0);fade.classList.remove('active');
-    showDate();
+    document.querySelector('#gymDateCard')?.remove();
+    // Give the opening pose more breathing room before Yuli turns around.
     setTimeout(()=>{
       state.yuliPhase='front';
       yuli.dir='down';
-      setTimeout(()=>showDialogue(['우혁 : 엇 혹시 아웃백 교육...???','우혁 : 말 걸어볼까...'],startYuliWalk),420);
-    },2050);
+      setTimeout(()=>showDialogue(['우혁 : 엇 혹시 아웃백 교육...???','우혁 : 말 걸어볼까...'],startYuliWalk),700);
+    },3000);
   };
 
   // Suppress the original gym Yuli draw. She is redrawn after the counter so her head is never hidden.
@@ -178,7 +181,14 @@
 
   const originalUpdateScenario=update;
   update=function(dt){
+    const beforeX=player.x,beforeY=player.y;
     originalUpdateScenario(dt);
+
+    // Keep Woohyuk from walking through Yuli on the stretching mat.
+    if(state.active&&scene==='gymSide'&&state.yuliPhase==='side'&&Math.abs(player.x-154)<25&&Math.abs(player.y-218)<31){
+      player.x=beforeX;player.y=beforeY;
+    }
+
     if(state.active&&scene==='gymSide'&&!state.visitedSide){
       state.visitedSide=true;
       state.hongVisible=true;
