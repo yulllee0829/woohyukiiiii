@@ -18,7 +18,7 @@
   const previousShowDialogue=showDialogue;
   showDialogue=function(lines,...args){
     if(Array.isArray(lines)){
-      lines=lines.filter(line=>!(typeof line==='string'&&line.includes('기억이 열렸다'));
+      lines=lines.filter(line=>!(typeof line==='string'&&line.includes('기억이 열렸다')));
       if(!lines.length){
         const cb=args[0];
         if(typeof cb==='function')cb();
@@ -74,12 +74,12 @@
 
   const style=document.createElement('style');
   style.textContent=`
-    #dialogue{max-width:78%;width:auto;min-width:180px;border-radius:12px;padding:21px 14px 12px;line-height:1.4;box-sizing:border-box;font-size:13px}
+    #dialogue{max-width:78%;width:auto;min-width:180px;border-radius:12px;padding:21px 14px 12px;line-height:1.4;box-sizing:border-box;font-size:14px}
     #dialogue::before{content:attr(data-speaker);position:absolute;top:4px;left:12px;font-size:10px;font-weight:800;color:#6f2941}
-    #dialogue.speaker-woohyuk{left:14px;right:auto;background:#fff4d8;border-color:#493744}
-    #dialogue.speaker-yuli{left:auto;right:14px;background:#ffe4ef;border-color:#8d3858}
-    #dialogue.speaker-hong{left:auto;right:14px;background:#e7f5ff;border-color:#355d78}
-    #dialogue.speaker-system{left:16px;right:16px;max-width:none;width:auto;padding-top:12px}
+    #dialogue.speaker-woohyuk{left:14px;right:auto;background:#e8f7ff;border-color:#4b7185}
+    #dialogue.speaker-yuli{left:auto;right:14px;background:#ffe8f1;border-color:#98506b}
+    #dialogue.speaker-hong{left:auto;right:14px;background:#fff6cf;border-color:#88733d}
+    #dialogue.speaker-system{left:16px;right:16px;max-width:none;width:auto;padding-top:12px;background:#fff5dd;border-color:#2b2138}
     #dialogue.speaker-system::before{content:''}
     #dialogue.speaker-yuli-mat{left:14px;right:auto;top:calc(env(safe-area-inset-top) + 72px);bottom:auto;max-width:72%}
   `;
