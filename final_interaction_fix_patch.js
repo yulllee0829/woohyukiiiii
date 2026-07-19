@@ -21,7 +21,6 @@
       if(typeof original!=='string'){cleaned.push(original);continue;}
       const line=original.trim();
 
-      // Strip every old bag/pocket guide; it is re-added below only for item #1.
       if((line.includes('가방')||line.includes('주머니'))&&line.includes('버튼')&&line.includes('확인'))continue;
 
       if(line.includes('팥빙수')&&(line.includes('가방에 넣었다')||line.includes('주머니에 넣었다')||line.includes('주웠다'))){
@@ -62,12 +61,20 @@
     return dialogueWatcher(lines,...args);
   };
 
-  // This runs last so older patches cannot turn person interactions back into a hand icon.
+  function nearGreenFoam(){
+    return scene==='gymSide'&&!legExerciseActive&&!window.foamRollerCollected&&Math.hypot(player.x-181,player.y-237)<38;
+  }
+
+  // This runs last so older patches cannot overwrite the intended icon.
   function enforceInteractionIcon(){
     const visible=!action.classList.contains('hidden');
     let talk=false;
-    if(visible&&scene==='gymSide'&&Math.hypot(player.x-154,player.y-218)<48)talk=true;
-    if(visible&&scene==='gym'&&!hongConversationFinished&&Math.hypot(player.x-96,player.y-124)<58)talk=true;
+
+    // Collectibles always take priority over nearby people.
+    if(visible&&!nearGreenFoam()){
+      if(scene==='gymSide'&&Math.hypot(player.x-154,player.y-218)<48)talk=true;
+      if(scene==='gym'&&!hongConversationFinished&&Math.hypot(player.x-96,player.y-124)<58)talk=true;
+    }
 
     action.classList.toggle('action-talk',visible&&talk);
     action.classList.toggle('action-hand',visible&&!talk);
