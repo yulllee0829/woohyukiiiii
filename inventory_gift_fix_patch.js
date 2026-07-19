@@ -8,7 +8,7 @@
       const item=button.dataset.item;
       if(item==='아령'){
         const label=button.querySelector('span');
-        if(label)label.textContent='덤벨';
+        if(label&&label.textContent!=='덤벨')label.textContent='덤벨';
       }
       button.classList.toggle('scenario-selected',item===selectedItem);
     });
@@ -35,6 +35,7 @@
   },true);
 
   // Keep the visible name as '덤벨' whenever another patch rebuilds the bag.
+  // Only update when the text is actually different, preventing an observer loop.
   const observer=new MutationObserver(refreshLabels);
   observer.observe(items,{childList:true,subtree:true});
   refreshLabels();
