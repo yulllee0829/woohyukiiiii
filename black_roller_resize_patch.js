@@ -43,13 +43,8 @@
       ctx.drawImage(img,b.x,b.y,b.w,b.h,cx-targetW/2,bottom-targetH,targetW,targetH);
     }
 
-    // Restore characters after repainting the mat so neither face is covered.
-    if(typeof drawYuli==='function'&&typeof yuliPhase==='undefined'){
-      // no-op compatibility guard
-    }
-    if(typeof state==='undefined'&&typeof drawYuli==='function'){
-      // scenario patch owns Yuli drawing; leave it untouched here
-    }
+    // Repaint Yuli and Woohyuk above the mat/roller layer.
+    if(typeof drawYuli==='function')drawYuli(154,218,'down',0,45);
     if(!legExerciseActive)drawBoyfriend(player.x,player.y,player.dir,player.frame,42);
   };
 })();
