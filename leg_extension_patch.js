@@ -63,7 +63,8 @@ update=function(dt){
     player.y=Math.max(92,Math.min(330,player.y));
     if(player.x<=6){scene='gym';player.x=178;actionButton.classList.add('hidden');return;}
     player.x=Math.min(180,player.x);
-    const hitsRack=player.x>40&&player.x<151&&player.y>77&&player.y<121;
+    // The uploaded dumbbell rack has its own collision in dumbbell_rack_patch.js.
+    const hitsRack=false;
     const hitsDarkRoller=player.x>133&&player.x<179&&player.y>148&&player.y<166;
     const hitsTealRoller=!window.foamRollerCollected&&player.x>172&&player.x<189&&player.y>210&&player.y<256;
     const hitsPurpleBall=Math.hypot(player.x-165.5,player.y-262.5)<8;
