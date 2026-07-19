@@ -24,11 +24,11 @@ drawLegExercise=function(frame){drawScaledLeg(originalDrawLegExercise,frame);};
 // draw the separate patbingsu image fully outside the foot pad.
 drawFixedPatbingsu=function(){
   if(!bingsuRevealed||bingsuCollected||legExerciseActive)return;
-  drawPatbingsu(63,227,28);
+  drawPatbingsu(65,230,24);
 };
 
-// Replace movement handling with a collision box that hugs the visible machine.
-// The player's foot point can pass immediately beside it, but cannot enter the artwork.
+// Replace movement handling with collision shapes that follow the actual silhouette.
+// The open space beside and behind the seat remains walkable.
 update=function(dt){
   if(legExerciseActive)return;
   if(!joy.active||!dialogue.classList.contains('hidden')||!inventoryPanel.classList.contains('hidden'))return;
@@ -61,11 +61,14 @@ update=function(dt){
     const hitsTealRoller=player.x>172&&player.x<189&&player.y>210&&player.y<256;
     const hitsPurpleBall=Math.hypot(player.x-165.5,player.y-262.5)<8;
     const hitsYellowBall=Math.hypot(player.x-176.5,player.y-262.5)<8;
-    // Tightest safe footprint for the scaled machine: only the pixels occupied by it.
-    const hitsLegMachine=player.x>42&&player.x<94&&player.y>173&&player.y<244;
+    // Three small boxes instead of one large rectangle: tower, seat, and bottom base.
+    const hitsLegTower=player.x>42&&player.x<60&&player.y>173&&player.y<229;
+    const hitsLegSeat=player.x>55&&player.x<91&&player.y>194&&player.y<226;
+    const hitsLegBase=player.x>36&&player.x<94&&player.y>226&&player.y<244;
+    const hitsLegMachine=hitsLegTower||hitsLegSeat||hitsLegBase;
     if(hitsRack||hitsDarkRoller||hitsTealRoller||hitsPurpleBall||hitsYellowBall||hitsLegMachine){player.x=oldX;player.y=oldY;}
     const nearMachine=!bingsuRevealed&&Math.hypot(player.x-74,player.y-228)<44;
-    const nearBingsu=bingsuRevealed&&!bingsuCollected&&Math.hypot(player.x-77,player.y-241)<28;
+    const nearBingsu=bingsuRevealed&&!bingsuCollected&&Math.hypot(player.x-77,player.y-241)<25;
     actionButton.classList.toggle('hidden',!(nearMachine||nearBingsu));actionButton.textContent=nearBingsu?'획득':'운동하기';
   }
 };
