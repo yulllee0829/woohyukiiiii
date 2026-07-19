@@ -28,12 +28,14 @@
 
   function applySpeakerBubble(){
     const raw=(dialogueEl.textContent||'').trim();
-    dialogueEl.classList.remove('speaker-woohyuk','speaker-yuli','speaker-hong','speaker-system');
     let speaker='system';
     if(/^우혁\s*[:：]/.test(raw))speaker='woohyuk';
     else if(/^율리\s*[:：]/.test(raw))speaker='yuli';
     else if(/^홍다민씨\s*[:：]/.test(raw))speaker='hong';
-    dialogueEl.classList.add('speaker-'+speaker);
+    const nextClass='speaker-'+speaker;
+    for(const cls of ['speaker-woohyuk','speaker-yuli','speaker-hong','speaker-system']){
+      dialogueEl.classList.toggle(cls,cls===nextClass);
+    }
     dialogueEl.dataset.speaker=speaker==='woohyuk'?'우혁':speaker==='yuli'?'율리':speaker==='hong'?'홍다민씨':'';
   }
 
@@ -48,7 +50,7 @@
     #dialogue.speaker-system::before{content:''}
   `;
   document.head.appendChild(style);
-  new MutationObserver(applySpeakerBubble).observe(dialogueEl,{childList:true,characterData:true,subtree:true,attributes:true,attributeFilter:['class']});
+  new MutationObserver(applySpeakerBubble).observe(dialogueEl,{childList:true,characterData:true,subtree:true});
   applySpeakerBubble();
   requestAnimationFrame(syncActionIcon);
 })();
