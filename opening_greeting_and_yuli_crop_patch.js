@@ -17,8 +17,8 @@
     return previousShowDialogue(lines,...args);
   };
 
-  // The scenario captured an older drawYuli reference, so patching drawYuli alone did
-  // not affect the opening walk. Redraw that moving frame last with the full sprite cell.
+  // The scenario captured an older drawYuli reference, so redraw the moving frame last.
+  // Include a generous source margin above the horizontal sprite cell so the hair tip is visible.
   let walkStartedAt=0;
   const previousDrawGymWorld=drawGymWorld;
   drawGymWorld=function(){
@@ -38,13 +38,16 @@
     const fh=yuliSheet.naturalHeight/rows;
     const col=1+((frame-1)%2);
     const row=rowByDir.right??3;
+    const topPad=Math.max(8,Math.round(fh*0.10));
+    const sx=col*fw;
+    const sy=Math.max(0,row*fh-topPad);
+    const sh=Math.min(yuliSheet.naturalHeight-sy,fh+topPad);
     const w=40;
-    const targetH=w*(fh/fw);
+    const targetH=w*(sh/fw);
     const dx=Math.round(x-w/2);
     const dy=Math.round(198-targetH);
 
-    // Use the untouched full frame bounds so the top of her hair is never cropped.
-    ctx.drawImage(yuliSheet,col*fw,row*fh,fw,fh,dx,dy,Math.round(w),Math.round(targetH));
+    ctx.drawImage(yuliSheet,sx,sy,fw,sh,dx,dy,Math.round(w),Math.round(targetH));
   };
 
   const style=document.createElement('style');
