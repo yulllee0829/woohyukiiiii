@@ -1,4 +1,4 @@
-// Add Woohyuk's greeting before the Outback question and fix Yuli's walking-frame head crop.
+// Add Woohyuk's greeting before the Outback question and repair Yuli's opening walk frames.
 (function(){
   const previousShowDialogue=showDialogue;
   showDialogue=function(lines,...args){
@@ -7,7 +7,7 @@
       for(const line of lines){
         if(typeof line==='string'&&line.includes('혹시 아웃백 잠실롯데점')&&line.includes('알바하시나요')){
           expanded.push('우혁 : 안녕하세요..!');
-          expanded.push('우혁 : 혹시 아웃백 잠실롯데점에서 알바하시나요?');
+          expanded.push('우혁 : 혹시.. 아웃백 잠실롯데점에서 알바하시나요??');
         }else{
           expanded.push(line);
         }
@@ -17,30 +17,37 @@
     return previousShowDialogue(lines,...args);
   };
 
-  // Horizontal walking frames had too-tight source bounds at the top.
-  // Add a small source margin above the frame and preserve the same foot position.
-  const previousDrawYuli=drawYuli;
-  drawYuli=function(x,y,dir='down',frame=0,w=34){
-    if((dir==='left'||dir==='right')&&frame>0&&yuliSheet.complete&&yuliSheet.naturalWidth){
-      const cols=3,rows=4;
-      const fw=yuliSheet.naturalWidth/cols;
-      const fh=yuliSheet.naturalHeight/rows;
-      const col=1+((frame-1)%2);
-      const row=rowByDir[dir]??0;
-      const topPad=Math.max(2,Math.round(fh*0.025));
-      const sx=col*fw;
-      const sy=Math.max(0,row*fh-topPad);
-      const sh=Math.min(yuliSheet.naturalHeight-sy,fh+topPad);
-      const targetH=w*(sh/fw);
-      const dx=Math.round(x-w/2);
-      const dy=Math.round(y-targetH);
-      ctx.drawImage(yuliSheet,sx,sy,fw,sh,dx,dy,Math.round(w),Math.round(targetH));
+  // The scenario captured an older drawYuli reference, so patching drawYuli alone did
+  // not affect the opening walk. Redraw that moving frame last with the full sprite cell.
+  let walkStartedAt=0;
+  const previousDrawGymWorld=drawGymWorld;
+  drawGymWorld=function(){
+    previousDrawGymWorld();
+    if(scene!=='gym'||!yuli||yuli.dir!=='right'||yuli.x!==96){
+      walkStartedAt=0;
       return;
     }
-    return previousDrawYuli(x,y,dir,frame,w);
+    if(!walkStartedAt)walkStartedAt=performance.now();
+    if(!yuliSheet.complete||!yuliSheet.naturalWidth)return;
+
+    const p=Math.min(1,(performance.now()-walkStartedAt)/1500);
+    const x=96+(112*p);
+    const frame=1+Math.floor(performance.now()/150)%2;
+    const cols=3,rows=4;
+    const fw=yuliSheet.naturalWidth/cols;
+    const fh=yuliSheet.naturalHeight/rows;
+    const col=1+((frame-1)%2);
+    const row=rowByDir.right??3;
+    const w=40;
+    const targetH=w*(fh/fw);
+    const dx=Math.round(x-w/2);
+    const dy=Math.round(198-targetH);
+
+    // Use the untouched full frame bounds so the top of her hair is never cropped.
+    ctx.drawImage(yuliSheet,col*fw,row*fh,fw,fh,dx,dy,Math.round(w),Math.round(targetH));
   };
 
   const style=document.createElement('style');
-  style.textContent='#dialogue{font-size:14.5px!important}';
+  style.textContent='#dialogue{font-size:14.2px!important}';
   document.head.appendChild(style);
 })();
