@@ -8,7 +8,7 @@
   };
 
   const asset=(src)=>{const img=new Image();img.src=src;return img;};
-  const hongImg=asset('assets/hong.png?v=2');
+  const hongImg=asset('assets/hong.png?v=3');
   const dumbbellImg=asset('assets/item_dumbbell.png?v=1');
   const blackRollerImg=asset('assets/%20%20%20%20item_black_foamroller.png?v=1');
   const onaoImg=asset('assets/item_onao.png?v=1');
@@ -91,8 +91,8 @@
       originalDrawYuliScenario(96+(112*p),198,'right',1+Math.floor(performance.now()/150)%2,42);
     }
 
-    // Hong appears only after Woohyuk has entered the right exercise room once.
-    if(state.hongVisible)drawContained(hongImg,96,166,42,64);
+    // Hong stands on the rear floor tile at the same visual scale as Woohyuk.
+    if(state.hongVisible)drawContained(hongImg,96,142,56,86);
     if(state.onaoPlaced&&!inventory.includes('우혁made오나오'))drawContained(onaoImg,96,124,22,18);
     drawBoyfriend(player.x,player.y,player.dir,player.frame,42);
   };
@@ -113,13 +113,13 @@
   function interactionTarget(){
     if(!state.active||legExerciseActive)return null;
     if(scene==='gym'){
-      if(state.hongVisible&&!state.hongTalked&&near(96,166,48))return 'hong';
-      if(state.onaoPlaced&&!inventory.includes('우혁made오나오')&&near(96,129,45))return 'onao';
+      if(state.hongVisible&&!state.hongTalked&&near(96,142,52))return 'hong';
+      if(state.mission===2&&state.onaoPlaced&&!inventory.includes('우혁made오나오')&&near(96,129,45))return 'onao';
     }
     if(scene==='gymSide'){
       if(state.yuliPhase==='side'&&near(154,218,42))return 'yuli';
-      if(!state.dumbbellCollected&&near(55,145,34))return 'dumbbell';
-      if(!state.blackRollerCollected&&near(157,158,35))return 'blackRoller';
+      if(state.mission===2&&!state.dumbbellCollected&&near(55,145,34))return 'dumbbell';
+      if(state.mission===2&&!state.blackRollerCollected&&near(157,158,35))return 'blackRoller';
     }
     return null;
   }
@@ -185,8 +185,16 @@
     }
     if(!state.active||legExerciseActive||!dialogue.classList.contains('hidden')||!inventoryPanel.classList.contains('hidden'))return;
     const target=interactionTarget();
+    if(state.mission<2&&scene==='gymSide'&&target!=='yuli'){
+      actionButton.classList.add('hidden');
+      foundYuli=false;
+      return;
+    }
     if(target){actionButton.classList.remove('hidden');foundYuli=target==='yuli';}
-    else if(scene==='gymSide'&&state.yuliPhase==='side')foundYuli=false;
+    else{
+      actionButton.classList.add('hidden');
+      if(scene==='gymSide'&&state.yuliPhase==='side')foundYuli=false;
+    }
   };
 
   const originalRenderInventoryScenario=renderInventory;
