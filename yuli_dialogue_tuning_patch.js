@@ -2,10 +2,11 @@
 (function(){
   const mission=document.querySelector('#missionBanner');
   const dialogueEl=document.querySelector('#dialogue');
+  const missionTwoText='미션 2 : 삐진 율리 풀어주기';
 
   function fixMission(){
-    if(mission&&mission.textContent.includes('미션 2')){
-      mission.textContent='미션 2 : 삐진 율리 풀어주기';
+    if(mission&&mission.textContent.includes('미션 2')&&mission.textContent!==missionTwoText){
+      mission.textContent=missionTwoText;
     }
   }
   fixMission();
