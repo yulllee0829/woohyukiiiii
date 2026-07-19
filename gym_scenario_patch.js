@@ -8,7 +8,7 @@
   };
 
   const asset=(src)=>{const img=new Image();img.src=src;return img;};
-  const hongImg=asset('assets/hong.png?v=3');
+  const hongImg=asset('assets/hong.png?v=4');
   const dumbbellImg=asset('assets/item_dumbbell.png?v=1');
   const blackRollerImg=asset('assets/%20%20%20%20item_black_foamroller.png?v=1');
   const onaoImg=asset('assets/item_onao.png?v=1');
@@ -16,7 +16,6 @@
   const mission=document.createElement('div');mission.id='missionBanner';mission.classList.add('hidden');document.querySelector('#ui').appendChild(mission);
   const fade=document.createElement('div');fade.id='gymFadeout';document.querySelector('#ui').appendChild(fade);
 
-  // The old room-transition hint is intentionally omitted in this gym scene.
   const originalShowHintScenario=showHint;
   showHint=function(text,...args){
     if(state.active&&typeof text==='string'&&text.includes('기억이 열렸다'))return;
@@ -59,7 +58,6 @@
     Object.assign(state,{active:true,mission:0,yuliPhase:'back',yuliWalkStart:0,hongVisible:false,hongTalked:false,onaoPlaced:false,visitedSide:false,dumbbellCollected:false,blackRollerCollected:false,giftMode:false,ending:false});
     setMission(0);fade.classList.remove('active');
     document.querySelector('#gymDateCard')?.remove();
-    // Give the opening pose more breathing room before Yuli turns around.
     setTimeout(()=>{
       state.yuliPhase='front';
       yuli.dir='down';
@@ -67,7 +65,6 @@
     },3000);
   };
 
-  // Suppress the original gym Yuli draw. She is redrawn after the counter so her head is never hidden.
   const originalDrawYuliScenario=drawYuli;
   drawYuli=function(x,y,dir='down',frame=0,w=34){
     if(state.active&&scene==='gym')return;
@@ -85,17 +82,13 @@
   drawGymWorld=function(){
     originalDrawGymWorldScenario();
     if(!state.active)return;
-
-    // Counter stays in the back; Yuli is placed fully in front of it.
     if(state.yuliPhase==='back'||state.yuliPhase==='front'){
       originalDrawYuliScenario(96,198,state.yuliPhase==='back'?'up':'down',0,42);
     }else if(state.yuliPhase==='walking'){
       const p=Math.min(1,(performance.now()-state.yuliWalkStart)/1500);
       originalDrawYuliScenario(96+(112*p),198,'right',1+Math.floor(performance.now()/150)%2,42);
     }
-
-    // Hong stands on the rear floor tile at the same visual scale as Woohyuk.
-    if(state.hongVisible)drawContained(hongImg,96,142,56,86);
+    if(state.hongVisible)drawContained(hongImg,96,124,62,94);
     if(state.onaoPlaced&&!inventory.includes('우혁made오나오'))drawContained(onaoImg,96,124,22,18);
     drawBoyfriend(player.x,player.y,player.dir,player.frame,42);
   };
@@ -116,7 +109,7 @@
   function interactionTarget(){
     if(!state.active||legExerciseActive)return null;
     if(scene==='gym'){
-      if(state.hongVisible&&!state.hongTalked&&near(96,142,52))return 'hong';
+      if(state.hongVisible&&!state.hongTalked&&near(96,124,54))return 'hong';
       if(state.mission===2&&state.onaoPlaced&&!inventory.includes('우혁made오나오')&&near(96,129,45))return 'onao';
     }
     if(scene==='gymSide'){
@@ -127,10 +120,10 @@
     return null;
   }
 
-  function collectItem(item,label){
+  function collectItem(item,message){
     if(!inventory.includes(item))inventory.push(item);
     renderInventory();actionButton.classList.add('hidden');
-    showDialogue([`${label}을(를) 가방에 넣었다!`]);
+    showDialogue([message]);
   }
 
   function beginGiftSelection(){
@@ -160,13 +153,13 @@
       showDialogue(['홍다민씨 : 우혁님 안녕하세요^^','우혁 : 아 넵^^','홍다민씨 : 썸녀분이신가요^^'],showChoices);return true;
     }
     if(target==='onao'){
-      state.onaoPlaced=false;collectItem('우혁made오나오','우혁made오나오');return true;
+      state.onaoPlaced=false;collectItem('우혁made오나오','우혁made오나오를 가방에 넣었다!');return true;
     }
     if(target==='dumbbell'){
-      state.dumbbellCollected=true;collectItem('아령','아령');return true;
+      state.dumbbellCollected=true;collectItem('아령','덤벨을 가방에 넣었다!');return true;
     }
     if(target==='blackRoller'){
-      state.blackRollerCollected=true;collectItem('검정 폼롤러','검정 폼롤러');return true;
+      state.blackRollerCollected=true;collectItem('검정 폼롤러','검정 폼롤러를 가방에 넣었다!');return true;
     }
     if(target==='yuli'){talkToYuli();return true;}
     return false;
@@ -183,8 +176,8 @@
   update=function(dt){
     const beforeX=player.x,beforeY=player.y;
     originalUpdateScenario(dt);
+    const baseActionVisible=!actionButton.classList.contains('hidden');
 
-    // Keep Woohyuk from walking through Yuli on the stretching mat.
     if(state.active&&scene==='gymSide'&&state.yuliPhase==='side'&&Math.abs(player.x-154)<25&&Math.abs(player.y-218)<31){
       player.x=beforeX;player.y=beforeY;
     }
@@ -200,8 +193,11 @@
       foundYuli=false;
       return;
     }
-    if(target){actionButton.classList.remove('hidden');foundYuli=target==='yuli';}
-    else{
+    if(target){
+      actionButton.classList.remove('hidden');foundYuli=target==='yuli';
+    }else if(state.mission>=2&&baseActionVisible){
+      foundYuli=false;
+    }else{
       actionButton.classList.add('hidden');
       if(scene==='gymSide'&&state.yuliPhase==='side')foundYuli=false;
     }
