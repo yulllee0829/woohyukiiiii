@@ -2,7 +2,34 @@
 window.foamRollerCollected=false;
 
 const foamRollerImg=new Image();
-foamRollerImg.src='assets/item_foamroller.png?v=2';
+let foamRollerBounds=null;
+let foamRollerCroppedSrc='assets/item_foamroller.png?v=3';
+foamRollerImg.src='assets/item_foamroller.png?v=3';
+
+foamRollerImg.addEventListener('load',()=>{
+  // Detect the visible alpha bounds so the large transparent canvas does not squash the item.
+  try{
+    const c=document.createElement('canvas');
+    c.width=foamRollerImg.naturalWidth;c.height=foamRollerImg.naturalHeight;
+    const cctx=c.getContext('2d',{willReadFrequently:true});
+    cctx.drawImage(foamRollerImg,0,0);
+    const data=cctx.getImageData(0,0,c.width,c.height).data;
+    let minX=c.width,minY=c.height,maxX=-1,maxY=-1;
+    for(let y=0;y<c.height;y++)for(let x=0;x<c.width;x++){
+      if(data[(y*c.width+x)*4+3]>12){
+        if(x<minX)minX=x;if(x>maxX)maxX=x;if(y<minY)minY=y;if(y>maxY)maxY=y;
+      }
+    }
+    if(maxX>=minX&&maxY>=minY){
+      foamRollerBounds={x:minX,y:minY,w:maxX-minX+1,h:maxY-minY+1};
+      const out=document.createElement('canvas');
+      out.width=foamRollerBounds.w;out.height=foamRollerBounds.h;
+      out.getContext('2d').drawImage(foamRollerImg,foamRollerBounds.x,foamRollerBounds.y,foamRollerBounds.w,foamRollerBounds.h,0,0,out.width,out.height);
+      foamRollerCroppedSrc=out.toDataURL('image/png');
+      if(window.foamRollerCollected)renderInventory();
+    }
+  }catch(_){foamRollerBounds=null;}
+});
 
 const originalEnterGymFoam=enterGym;
 enterGym=function(){
@@ -19,28 +46,49 @@ drawGymSideRoom=function(){
   px(176,214,11,2,'#e8eaec');
   px(176,249,11,2,'#969da3');
 
-  // Draw the uploaded transparent PNG until it is collected.
+  // Draw the uploaded PNG at its original aspect ratio instead of forcing it into a thin box.
   if(!window.foamRollerCollected&&foamRollerImg.complete&&foamRollerImg.naturalWidth){
-    ctx.drawImage(foamRollerImg,174,210,15,44);
+    const b=foamRollerBounds||{x:0,y:0,w:foamRollerImg.naturalWidth,h:foamRollerImg.naturalHeight};
+    const targetH=42;
+    const targetW=Math.max(8,targetH*(b.w/b.h));
+    const centerX=181.5;
+    ctx.drawImage(foamRollerImg,b.x,b.y,b.w,b.h,centerX-targetW/2,211,targetW,targetH);
   }
 
   // Keep Woohyuk above the item.
   drawBoyfriend(player.x,player.y,player.dir,player.frame,42);
 };
 
-const originalRenderInventoryFoam=renderInventory;
+// Render every inventory item explicitly. The base renderer treated every unknown item as a key.
 renderInventory=function(){
-  originalRenderInventoryFoam();
-  if(!inventory.includes('초록 폼롤러'))return;
-  if(inventoryItems.querySelector('[data-item="초록 폼롤러"]'))return;
+  inventoryItems.innerHTML='';
+  if(!inventory.length){
+    inventoryItems.innerHTML='<div class="inventory-empty">아직 아무것도 없어요</div>';
+    return;
+  }
 
-  const b=document.createElement('button');
-  b.type='button';
-  b.className='inventory-item';
-  b.dataset.item='초록 폼롤러';
-  b.innerHTML='<img src="assets/item_foamroller.png?v=2" alt="초록 폼롤러"><span>초록 폼롤러</span>';
-  b.addEventListener('click',()=>selectInventoryItem('초록 폼롤러'));
-  inventoryItems.appendChild(b);
+  for(const item of inventory){
+    const b=document.createElement('button');
+    b.type='button';b.className='inventory-item';b.draggable=true;b.dataset.item=item;
+
+    if(item==='팥빙수'){
+      b.innerHTML='<img src="assets/patbingsu.png?v=2" alt="팥빙수"><span>팥빙수</span>';
+    }else if(item==='초록 폼롤러'){
+      const img=document.createElement('img');
+      img.src=foamRollerCroppedSrc;img.alt='초록 폼롤러';
+      const label=document.createElement('span');label.textContent='초록 폼롤러';
+      b.append(img,label);
+    }else if(item==='다음 방 열쇠'){
+      b.innerHTML='<span class="key-icon">🗝️</span><span>다음 방 열쇠</span>';
+    }else{
+      const label=document.createElement('span');label.textContent=item;
+      b.appendChild(label);
+    }
+
+    b.addEventListener('dragstart',e=>{selectedItem=item;e.dataTransfer?.setData('text/plain',item);});
+    b.addEventListener('click',()=>selectInventoryItem(item));
+    inventoryItems.appendChild(b);
+  }
 };
 
 function isNearFoamRoller(){
@@ -49,7 +97,6 @@ function isNearFoamRoller(){
 
 function collectFoamRoller(){
   if(!isNearFoamRoller())return false;
-
   window.foamRollerCollected=true;
   if(!inventory.includes('초록 폼롤러'))inventory.push('초록 폼롤러');
   renderInventory();
@@ -58,14 +105,12 @@ function collectFoamRoller(){
   return true;
 }
 
-// Preserve every existing interaction while adding foam-roller pickup.
 const originalTryActionFoam=tryAction;
 tryAction=function(){
   if(collectFoamRoller())return;
   originalTryActionFoam();
 };
 
-// The original click listener captured the old tryAction function, so handle pickup directly too.
 actionButton.addEventListener('click',event=>{
   if(collectFoamRoller()){
     event.preventDefault();
@@ -73,12 +118,10 @@ actionButton.addEventListener('click',event=>{
   }
 },true);
 
-// Keep the hand button synchronized even while the player is standing still.
 const originalUpdateFoam=update;
 update=function(dt){
   originalUpdateFoam(dt);
   if(scene!=='gymSide'||legExerciseActive)return;
-
   const nearMachine=!bingsuRevealed&&Math.hypot(player.x-74,player.y-228)<44;
   const nearBingsu=bingsuRevealed&&!bingsuCollected&&Math.hypot(player.x-77,player.y-241)<25;
   const nearFoam=isNearFoamRoller();
