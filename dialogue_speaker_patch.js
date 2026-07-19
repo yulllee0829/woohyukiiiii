@@ -2,7 +2,8 @@
 (function(){
   const action=document.querySelector('#actionButton');
   const dialogueEl=document.querySelector('#dialogue');
-  if(!action||!dialogueEl)return;
+  const app=document.querySelector('#app');
+  if(!action||!dialogueEl||!app)return;
 
   let hongDone=false;
   let changingText=false;
@@ -84,19 +85,41 @@
   style.textContent=`
     #dialogue{min-width:0;min-height:82px;border-radius:12px;padding:22px 14px 12px;line-height:1.4;box-sizing:border-box;font-size:14px}
     #dialogue::before{content:attr(data-speaker);position:absolute;top:4px;left:12px;font-size:11px;font-weight:800;color:#6f2941}
-    #dialogue.speaker-woohyuk{left:28px;right:auto;width:150px;max-width:calc(100% - 42px);background:#e8f7ff;border-color:#4b7185}
+    #dialogue.speaker-woohyuk{right:auto;width:150px;max-width:calc(100% - 16px);background:#e8f7ff;border-color:#4b7185}
     #dialogue.speaker-yuli{left:48px;right:auto;width:150px;max-width:calc(100% - 62px);background:#ffe8f1;border-color:#98506b}
     #dialogue.speaker-hong{left:24px;right:auto;width:145px;max-width:calc(100% - 38px);background:#fff6cf;border-color:#88733d}
     #dialogue.speaker-system{left:16px;right:16px;width:auto;max-width:none;padding-top:12px;background:#fff5dd;border-color:#2b2138}
     #dialogue.speaker-system::before{content:''}
 
-    /* Fixed positions matching the marked locations in the screenshots. */
-    #dialogue.speaker-yuli-mat{left:145px;right:auto;top:43%;bottom:auto;width:150px;max-width:calc(100% - 160px)}
-    #dialogue.speaker-woohyuk-yuli{left:95px;right:auto;top:56%;bottom:auto;width:150px;max-width:calc(100% - 110px)}
+    /* Yuli stays fixed just above-left of her head on the stretching mat. */
+    #dialogue.speaker-yuli-mat{left:145px;right:auto;top:49%;bottom:auto;width:150px;max-width:calc(100% - 160px)}
+
+    /* Hong stays fixed and compact so the bubble does not cover him. */
     #dialogue.speaker-hong-gym{left:34px;right:auto;top:14%;bottom:auto;width:145px;max-width:calc(100% - 48px)}
-    #dialogue.speaker-woohyuk-hong{left:28px;right:auto;top:39%;bottom:auto;width:150px;max-width:calc(100% - 42px)}
   `;
   document.head.appendChild(style);
+
+  function followWoohyukBubble(){
+    const active=!dialogueEl.classList.contains('hidden')&&dialogueEl.classList.contains('speaker-woohyuk');
+    if(active&&player){
+      const appRect=app.getBoundingClientRect();
+      const bubbleRect=dialogueEl.getBoundingClientRect();
+      const screenX=(player.x/192)*appRect.width;
+      const screenY=(player.y/336)*appRect.height;
+      const left=Math.max(8,Math.min(appRect.width-bubbleRect.width-8,screenX-bubbleRect.width-10));
+      const top=Math.max(72,Math.min(appRect.height-bubbleRect.height-10,screenY-bubbleRect.height-24));
+      dialogueEl.style.left=`${left}px`;
+      dialogueEl.style.top=`${top}px`;
+      dialogueEl.style.right='auto';
+      dialogueEl.style.bottom='auto';
+    }else{
+      dialogueEl.style.removeProperty('left');
+      dialogueEl.style.removeProperty('top');
+      dialogueEl.style.removeProperty('right');
+      dialogueEl.style.removeProperty('bottom');
+    }
+    requestAnimationFrame(followWoohyukBubble);
+  }
 
   // Advance dialogue by tapping anywhere on the game screen, not only the bubble.
   document.addEventListener('pointerup',event=>{
@@ -110,4 +133,5 @@
   new MutationObserver(applySpeakerBubble).observe(dialogueEl,{childList:true,characterData:true,subtree:true,attributes:true,attributeFilter:['class']});
   applySpeakerBubble();
   requestAnimationFrame(syncActionIcon);
+  requestAnimationFrame(followWoohyukBubble);
 })();
