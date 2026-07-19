@@ -65,9 +65,12 @@
 
     const talkingByHong=speaker==='hong'&&scene==='gym';
     const woohyukTalkingToHong=speaker==='woohyuk'&&scene==='gym'&&isNearHong();
-    dialogueEl.classList.toggle('speaker-yuli-mat',speaker==='yuli'&&scene==='gymSide');
+    const yuliOnMat=speaker==='yuli'&&scene==='gymSide';
+    const woohyukTalkingToYuli=speaker==='woohyuk'&&scene==='gymSide';
+    dialogueEl.classList.toggle('speaker-yuli-mat',yuliOnMat);
     dialogueEl.classList.toggle('speaker-hong-gym',talkingByHong);
     dialogueEl.classList.toggle('speaker-woohyuk-hong',woohyukTalkingToHong);
+    dialogueEl.classList.toggle('speaker-woohyuk-yuli',woohyukTalkingToYuli);
     dialogueEl.dataset.speaker=speaker==='woohyuk'?'우혁':speaker==='yuli'?'율리':speaker==='hong'?'홍다민씨':'';
 
     if(clean!==raw){
@@ -79,22 +82,23 @@
 
   const style=document.createElement('style');
   style.textContent=`
-    #dialogue{max-width:78%;width:auto;min-width:180px;border-radius:12px;padding:21px 14px 12px;line-height:1.4;box-sizing:border-box;font-size:14px}
-    #dialogue::before{content:attr(data-speaker);position:absolute;top:4px;left:12px;font-size:10px;font-weight:800;color:#6f2941}
-    #dialogue.speaker-woohyuk{left:14px;right:auto;background:#e8f7ff;border-color:#4b7185}
-    #dialogue.speaker-yuli{left:auto;right:14px;background:#ffe8f1;border-color:#98506b}
-    #dialogue.speaker-hong{left:auto;right:14px;background:#fff6cf;border-color:#88733d}
-    #dialogue.speaker-system{left:16px;right:16px;max-width:none;width:auto;padding-top:12px;background:#fff5dd;border-color:#2b2138}
+    #dialogue{width:252px;max-width:calc(100% - 28px);min-width:0;min-height:82px;border-radius:12px;padding:22px 14px 12px;line-height:1.4;box-sizing:border-box;font-size:14px}
+    #dialogue::before{content:attr(data-speaker);position:absolute;top:4px;left:12px;font-size:11px;font-weight:800;color:#6f2941}
+    #dialogue.speaker-woohyuk{left:28px;right:auto;background:#e8f7ff;border-color:#4b7185}
+    #dialogue.speaker-yuli{left:48px;right:auto;background:#ffe8f1;border-color:#98506b}
+    #dialogue.speaker-hong{left:18px;right:auto;width:214px;background:#fff6cf;border-color:#88733d}
+    #dialogue.speaker-system{left:16px;right:16px;width:auto;max-width:none;padding-top:12px;background:#fff5dd;border-color:#2b2138}
     #dialogue.speaker-system::before{content:''}
 
-    /* Stretching-mat Yuli: place the pink bubble just above-left of her head. */
-    #dialogue.speaker-yuli-mat{left:54px;right:auto;top:43%;bottom:auto;max-width:72%}
+    /* Fixed positions during the stretching-mat conversation. */
+    #dialogue.speaker-yuli-mat{left:48px;right:auto;top:42%;bottom:auto;width:252px;max-width:calc(100% - 62px)}
+    #dialogue.speaker-woohyuk-yuli{left:36px;right:auto;top:61%;bottom:auto;width:252px;max-width:calc(100% - 50px)}
 
-    /* Hong: yellow bubble sits just above-left of Hong's head. */
-    #dialogue.speaker-hong-gym{left:78px;right:auto;top:19%;bottom:auto;max-width:68%}
+    /* Fixed, compact Hong bubble so it does not cover Hong. */
+    #dialogue.speaker-hong-gym{left:18px;right:auto;top:16%;bottom:auto;width:214px;max-width:56%}
 
-    /* Woohyuk while speaking to Hong: raise the blue bubble to desk height. */
-    #dialogue.speaker-woohyuk-hong{left:14px;right:auto;top:43%;bottom:auto;max-width:72%}
+    /* Woohyuk while speaking to Hong, raised to desk height. */
+    #dialogue.speaker-woohyuk-hong{left:30px;right:auto;top:39%;bottom:auto;width:252px;max-width:calc(100% - 44px)}
   `;
   document.head.appendChild(style);
   new MutationObserver(applySpeakerBubble).observe(dialogueEl,{childList:true,characterData:true,subtree:true,attributes:true,attributeFilter:['class']});
