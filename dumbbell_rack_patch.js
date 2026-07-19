@@ -30,8 +30,8 @@ drawGymSideRoom=function(){
   if(!legExerciseActive)drawBoyfriend(player.x,player.y,player.dir,player.frame,42);
 };
 
-// Let Woohyuk overlap the lower part of the rack, but stop him around the first shelf.
-// This keeps roughly the lower 2/3 approachable without letting him walk over the top row.
+// Lower the walkable overlap boundary by about half the displayed rack height.
+// Woohyuk can approach the bottom edge, but cannot climb into the rack image.
 const originalUpdateRack=update;
 update=function(dt){
   const oldX=player.x;
@@ -39,10 +39,11 @@ update=function(dt){
   originalUpdateRack(dt);
   if(scene!=='gymSide'||legExerciseActive)return;
 
+  const RACK_WALK_LIMIT_Y=150;
   const overRackX=player.x>30&&player.x<162;
-  const crossedRackLimit=overRackX&&player.y<112&&oldY>=112;
+  const crossedRackLimit=overRackX&&player.y<RACK_WALK_LIMIT_Y&&oldY>=RACK_WALK_LIMIT_Y;
   if(crossedRackLimit){
     player.x=oldX;
-    player.y=112;
+    player.y=RACK_WALK_LIMIT_Y;
   }
 };
