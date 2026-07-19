@@ -87,14 +87,12 @@
     #dialogue::before{content:attr(data-speaker);position:absolute;top:4px;left:12px;font-size:11px;font-weight:800;color:#6f2941}
     #dialogue.speaker-woohyuk{right:auto;width:174px;max-width:calc(100% - 16px);background:#e8f7ff;border-color:#4b7185}
     #dialogue.speaker-yuli{left:48px;right:auto;width:174px;max-width:calc(100% - 62px);background:#ffe8f1;border-color:#98506b}
-    #dialogue.speaker-hong{left:24px;right:auto;width:145px;max-width:calc(100% - 38px);background:#fff6cf;border-color:#88733d}
+    #dialogue.speaker-hong{left:18px;right:auto;width:145px;max-width:calc(100% - 32px);background:#fff6cf;border-color:#88733d}
     #dialogue.speaker-system{left:16px;right:16px;width:auto;max-width:none;padding-top:12px;background:#fff5dd;border-color:#2b2138}
     #dialogue.speaker-system::before{content:''}
 
-    /* Keep Yuli visible: bubble sits clearly above-left of her face. */
     #dialogue.speaker-yuli-mat{left:104px;right:auto;top:39%;bottom:auto;width:174px;max-width:calc(100% - 118px)}
-
-    #dialogue.speaker-hong-gym{left:34px;right:auto;top:14%;bottom:auto;width:145px;max-width:calc(100% - 48px)}
+    #dialogue.speaker-hong-gym{left:22px;right:auto;top:14%;bottom:auto;width:145px;max-width:calc(100% - 36px)}
   `;
   document.head.appendChild(style);
 
@@ -105,8 +103,8 @@
       const bubbleRect=dialogueEl.getBoundingClientRect();
       const screenX=(player.x/192)*appRect.width;
       const screenY=(player.y/336)*appRect.height;
-      const left=Math.max(8,Math.min(appRect.width-bubbleRect.width-8,screenX-bubbleRect.width-10));
-      const top=Math.max(72,Math.min(appRect.height-bubbleRect.height-10,screenY-bubbleRect.height-24));
+      const left=Math.max(8,Math.min(appRect.width-bubbleRect.width-8,screenX-bubbleRect.width-28));
+      const top=Math.max(62,Math.min(appRect.height-bubbleRect.height-10,screenY-bubbleRect.height-36));
       dialogueEl.style.left=`${left}px`;
       dialogueEl.style.top=`${top}px`;
       dialogueEl.style.right='auto';
