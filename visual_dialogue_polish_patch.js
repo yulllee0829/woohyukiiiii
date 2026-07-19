@@ -6,7 +6,6 @@
 
   let heartEyes=false;
 
-  // Replace the old one-line bingsu reveal with the requested two-step ivory dialogue.
   const previousShowHint=showHint;
   showHint=function(text,...args){
     if(typeof text==='string'&&text.includes('팥빙수')&&(text.includes('나타났다')||text.includes('발견'))){
@@ -16,7 +15,6 @@
     return previousShowHint(text,...args);
   };
 
-  // Turn Yuli's eyes into hearts as soon as Woohyuk gives her the ONAO.
   const previousShowDialogue=showDialogue;
   showDialogue=function(lines,...args){
     if(Array.isArray(lines)&&lines.some(line=>typeof line==='string'&&(line.includes('넌 체고얌')||line.includes('통은 씻어서 내일 줄게')))){
@@ -25,14 +23,12 @@
     return previousShowDialogue(lines,...args);
   };
 
-  // Keep the displayed speaker name as 다민쌤 after the earlier speaker parser runs.
   function renameSpeaker(){
     if(dialogueEl.dataset.speaker==='홍다민씨')dialogueEl.dataset.speaker='다민쌤';
   }
   new MutationObserver(renameSpeaker).observe(dialogueEl,{attributes:true,attributeFilter:['data-speaker'],childList:true,subtree:true});
   renameSpeaker();
 
-  // Draw tiny pixel hearts directly over Yuli's eyes while she is on the mat.
   const previousDrawGymSideRoom=drawGymSideRoom;
   drawGymSideRoom=function(){
     previousDrawGymSideRoom();
@@ -44,9 +40,9 @@
       px(x+1,y+3,3,1,'#d93670');
       px(x+2,y+4,1,1,'#d93670');
     };
-    // Shift both hearts right so they sit exactly on the visible pupils.
-    heart(147,188);
-    heart(156,188);
+    // Move the hearts slightly right and up so their centers sit on Yuli's pupils.
+    heart(149,186);
+    heart(158,186);
   };
 
   const style=document.createElement('style');
