@@ -5,8 +5,13 @@
   const previousShowDialogue=showDialogue;
   showDialogue=function(lines,cb){
     if(Array.isArray(lines)){
-      // Suppress the old base-game opening narration; a centered date card is shown instead.
-      if(lines.some(line=>typeof line==='string'&&(line.includes('308호의 첫 기억이 열렸다')||line.includes('2월 16일, 헬스보이짐')))){
+      // Permanently suppress every legacy opening narration/date line.
+      if(lines.some(line=>typeof line==='string'&&(
+        line.includes('308호의 첫 기억이 열렸다')||
+        line.includes('2월 16일, 헬스보이짐')||
+        line.includes('2025년 2월 16일')||
+        line.includes('헬스보이짐 잠실점')
+      ))){
         if(typeof cb==='function')cb();
         return;
       }
@@ -19,9 +24,7 @@
         return line;
       });
 
-      // During the opening, clicking from the first thought to the second starts Yuli walking.
-      // The original scenario callback is the walking trigger, so run it after line one,
-      // then immediately present line two as a separate dialogue.
+      // Start Yuli walking when the first thought advances to the second.
       if(!splittingOpening&&lines.length===2&&
          typeof lines[0]==='string'&&lines[0].includes('아웃백 교육에서 본 것 같은데')&&
          typeof lines[1]==='string'&&lines[1].includes('말 걸어볼까')){
@@ -36,20 +39,15 @@
     return previousShowDialogue(lines,cb);
   };
 
-  function showOpeningDate(){
-    document.querySelector('#gymDateCard')?.remove();
-    const card=document.createElement('div');
-    card.id='gymDateCard';
-    card.textContent='2025년 2월 16일, 헬스보이짐 잠실점.';
-    document.querySelector('#ui')?.appendChild(card);
-    setTimeout(()=>card.remove(),2450);
-  }
-
+  // Remove any date card created by an older cached layer.
+  function removeDateCard(){document.querySelector('#gymDateCard')?.remove();}
   const previousEnterGym=enterGym;
   enterGym=function(){
     const result=previousEnterGym();
-    // The scenario patch removes the legacy date card synchronously, so add the new one afterward.
-    setTimeout(showOpeningDate,0);
+    removeDateCard();
+    setTimeout(removeDateCard,0);
+    setTimeout(removeDateCard,100);
+    setTimeout(removeDateCard,500);
     return result;
   };
 })();
