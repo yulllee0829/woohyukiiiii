@@ -2,7 +2,7 @@
 (function(){
   const img=new Image();
   let bounds=null;
-  img.src='assets/%20%20%20%20item_black_foamroller.png?v=3';
+  img.src='assets/%20%20%20%20item_black_foamroller.png?v=4';
   img.addEventListener('load',()=>{
     try{
       const c=document.createElement('canvas');
@@ -25,19 +25,30 @@
     previousDraw();
     if(scene!=='gymSide')return;
 
-    // Clear the oversized redraw and restore this section of the mat.
-    px(124,142,68,35,'#bfc3c7');
-    px(124,142,68,2,'#737a80');
-    px(126,144,64,2,'#e8eaec');
-    px(126,146,2,29,'#d9dde0');
+    // Remove every trace of the old oversized roller and rebuild the top of the mat.
+    px(112,138,80,40,'#191919');
+    px(112,146,80,1,'#2a2a2a');
+    px(127,150,64,28,'#111111');
+    px(124,146,64,32,'#737a80');
+    px(126,148,60,30,'#bfc3c7');
+    px(128,150,56,2,'#e8eaec');
+    px(128,152,2,26,'#d9dde0');
 
     const collected=typeof inventory!=='undefined'&&inventory.includes('검정 폼롤러');
     if(!collected&&img.complete&&img.naturalWidth){
       const b=bounds||{x:0,y:0,w:img.naturalWidth,h:img.naturalHeight};
-      const targetW=38;
+      const targetW=32;
       const targetH=targetW*(b.h/b.w);
-      const cx=157,bottom=166;
+      const cx=157,bottom=162;
       ctx.drawImage(img,b.x,b.y,b.w,b.h,cx-targetW/2,bottom-targetH,targetW,targetH);
+    }
+
+    // Restore characters after repainting the mat so neither face is covered.
+    if(typeof drawYuli==='function'&&typeof yuliPhase==='undefined'){
+      // no-op compatibility guard
+    }
+    if(typeof state==='undefined'&&typeof drawYuli==='function'){
+      // scenario patch owns Yuli drawing; leave it untouched here
     }
     if(!legExerciseActive)drawBoyfriend(player.x,player.y,player.dir,player.frame,42);
   };
