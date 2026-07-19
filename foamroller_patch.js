@@ -56,8 +56,9 @@ drawGymSideRoom=function(){
     ctx.drawImage(foamRollerImg,b.x,b.y,b.w,b.h,centerX-targetW/2,bottomY-targetH,targetW,targetH);
   }
 
-  // Keep Woohyuk above the item.
-  drawBoyfriend(player.x,player.y,player.dir,player.frame,42);
+  // The base room renderer already hides walking Woohyuk during exercise.
+  // Only redraw him when he is actually walking, not over the exercise sprite.
+  if(!legExerciseActive)drawBoyfriend(player.x,player.y,player.dir,player.frame,42);
 };
 
 // Render every inventory item explicitly. The base renderer treated every unknown item as a key.
