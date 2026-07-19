@@ -41,18 +41,19 @@ const originalDrawGymSideRoomFoam=drawGymSideRoom;
 drawGymSideRoom=function(){
   originalDrawGymSideRoomFoam();
 
-  // Cover the old canvas-drawn teal roller with the exercise-mat surface.
-  px(176,214,11,39,'#bfc3c7');
-  px(176,214,11,2,'#e8eaec');
-  px(176,249,11,2,'#969da3');
+  // Restore the exact exercise-mat surface beneath the old canvas roller.
+  // The former extra highlight/shadow lines caused a visible stain after pickup.
+  px(176,214,10,39,'#bfc3c7');
+  px(186,214,2,39,'#737a80');
 
-  // Draw the uploaded PNG at its original aspect ratio instead of forcing it into a thin box.
+  // Draw the uploaded PNG at 2/3 of its previous size while preserving its aspect ratio.
   if(!window.foamRollerCollected&&foamRollerImg.complete&&foamRollerImg.naturalWidth){
     const b=foamRollerBounds||{x:0,y:0,w:foamRollerImg.naturalWidth,h:foamRollerImg.naturalHeight};
-    const targetH=42;
-    const targetW=Math.max(8,targetH*(b.w/b.h));
-    const centerX=181.5;
-    ctx.drawImage(foamRollerImg,b.x,b.y,b.w,b.h,centerX-targetW/2,211,targetW,targetH);
+    const targetH=28;
+    const targetW=Math.max(6,targetH*(b.w/b.h));
+    const centerX=181;
+    const bottomY=251;
+    ctx.drawImage(foamRollerImg,b.x,b.y,b.w,b.h,centerX-targetW/2,bottomY-targetH,targetW,targetH);
   }
 
   // Keep Woohyuk above the item.
@@ -92,7 +93,7 @@ renderInventory=function(){
 };
 
 function isNearFoamRoller(){
-  return scene==='gymSide'&&!legExerciseActive&&!window.foamRollerCollected&&Math.hypot(player.x-181,player.y-233)<38;
+  return scene==='gymSide'&&!legExerciseActive&&!window.foamRollerCollected&&Math.hypot(player.x-181,player.y-237)<34;
 }
 
 function collectFoamRoller(){
