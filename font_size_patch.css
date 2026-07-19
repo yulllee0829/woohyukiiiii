@@ -1,0 +1,12 @@
+/* Final global typography reduction: every visible UI label is 2px smaller. */
+.pixel-button{font-size:15px!important}
+.inventory-title{font-size:14px!important}
+.inventory-item{font-size:10px!important}
+.inventory-help{font-size:9px!important}
+.inventory-empty{font-size:11px!important}
+.dialogue,#dialogue{font-size:11px!important}
+#dialogue::before{font-size:8px!important}
+.hint{font-size:11px!important}
+#missionBanner{font-size:13px!important}
+#gymDateCard{font-size:19px!important}
+#scenarioChoices button,#giveItemButton{font-size:13px!important}
