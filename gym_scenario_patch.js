@@ -1,7 +1,7 @@
 // Full 2/14 Jamsil Gymboy Gym mini-game scenario.
 (function(){
   const state={
-    active:false,mission:0,yuliPhase:'counter',yuliWalkStart:0,
+    active:false,mission:0,yuliPhase:'back',yuliWalkStart:0,
     hongVisible:false,hongTalked:false,onaoPlaced:false,
     dumbbellCollected:false,blackRollerCollected:false,
     giftMode:false,ending:false
@@ -16,11 +16,12 @@
   const mission=document.createElement('div');mission.id='missionBanner';mission.classList.add('hidden');document.querySelector('#ui').appendChild(mission);
   const fade=document.createElement('div');fade.id='gymFadeout';document.querySelector('#ui').appendChild(fade);
 
-  function setMission(n){
+  function setMission(n,bang=false){
     state.mission=n;
-    if(!n){mission.classList.add('hidden');return;}
+    if(!n){mission.classList.add('hidden');mission.classList.remove('mission-bang');return;}
     mission.textContent=n===1?'미션 1 : 율리님에게 말 걸기':'미션 2 : 율리 삐진 거 풀어쥬기';
-    mission.classList.remove('hidden');
+    mission.classList.remove('hidden','mission-bang');
+    if(bang){void mission.offsetWidth;mission.classList.add('mission-bang');}
   }
   function showDate(){
     document.querySelector('#gymDateCard')?.remove();
@@ -44,26 +45,36 @@
   function startYuliWalk(){
     state.yuliPhase='walking';state.yuliWalkStart=performance.now();
     yuli.dir='right';state.hongVisible=true;
-    setTimeout(()=>{state.yuliPhase='side';yuli.x=205;},1550);
+    setTimeout(()=>{
+      state.yuliPhase='side';yuli.x=205;
+      setMission(1,true);
+    },1550);
   }
 
   const originalEnterGymScenario=enterGym;
   enterGym=function(){
     originalEnterGymScenario();
-    Object.assign(state,{active:true,mission:1,yuliPhase:'counter',yuliWalkStart:0,hongVisible:false,hongTalked:false,onaoPlaced:false,dumbbellCollected:false,blackRollerCollected:false,giftMode:false,ending:false});
-    setMission(1);fade.classList.remove('active');
+    Object.assign(state,{active:true,mission:0,yuliPhase:'back',yuliWalkStart:0,hongVisible:false,hongTalked:false,onaoPlaced:false,dumbbellCollected:false,blackRollerCollected:false,giftMode:false,ending:false});
+    setMission(0);fade.classList.remove('active');
     showDate();
-    setTimeout(()=>showDialogue(['우혁 : 엇 혹시 아웃백 교육...???','우혁 : 말 걸어볼까...'],startYuliWalk),2050);
+    setTimeout(()=>{
+      state.yuliPhase='front';
+      yuli.dir='down';
+      setTimeout(()=>showDialogue(['우혁 : 엇 혹시 아웃백 교육...???','우혁 : 말 걸어볼까...'],startYuliWalk),420);
+    },2050);
   };
 
-  // Hide the original counter Yuli after she leaves; animate her walking right first.
+  // Yuli begins directly in front of the counter, faces away, turns toward Woohyuk, then walks right.
   const originalDrawYuliScenario=drawYuli;
   drawYuli=function(x,y,dir='down',frame=0,w=34){
     if(state.active&&scene==='gym'){
       if(state.yuliPhase==='side')return;
+      if(state.yuliPhase==='back'||state.yuliPhase==='front'){
+        x=96;y=166;dir=state.yuliPhase==='back'?'up':'down';frame=0;w=42;
+      }
       if(state.yuliPhase==='walking'){
         const p=Math.min(1,(performance.now()-state.yuliWalkStart)/1500);
-        x=96+(112*p);dir='right';frame=1+Math.floor(performance.now()/150)%2;
+        x=96+(112*p);y=166;dir='right';frame=1+Math.floor(performance.now()/150)%2;w=42;
       }
     }
     originalDrawYuliScenario(x,y,dir,frame,w);
@@ -76,7 +87,6 @@
     ctx.drawImage(img,cx-w/2,bottom-h,w,h);
   }
 
-  // Add Hong in the lobby gym and place ONAO on the counter after the conversation.
   const originalDrawGymWorldScenario=drawGymWorld;
   drawGymWorld=function(){
     originalDrawGymWorldScenario();
@@ -88,13 +98,10 @@
     drawBoyfriend(player.x,player.y,player.dir,player.frame,42);
   };
 
-  // Add Yuli to the stretching zone and collectible dumbbell/black roller.
   const originalDrawSideScenario=drawGymSideRoom;
   drawGymSideRoom=function(){
     originalDrawSideScenario();
     if(!state.active)return;
-
-    // Remove the old code-drawn black roller and replace it with the uploaded item PNG.
     px(134,145,47,23,'#bfc3c7');
     px(134,145,47,2,'#e8eaec');
     if(!state.blackRollerCollected)drawContained(blackRollerImg,157,166,38,19);
@@ -139,7 +146,7 @@
         '율리 : ㅡ3ㅡ 삐졌어요 저^^',
         '우혁 : 미안해요 장난이었어요ㅜㅜ',
         '율리 : 제가 좋아할 만한 거 찾아와 주시면 용서해 드릴게용*^^*'
-      ],()=>setMission(2));
+      ],()=>setMission(2,true));
       return;
     }
     showDialogue(['율리 : 머 가져오셨어용ㅎㅎ 기대 마니 된다!'],beginGiftSelection);
@@ -163,7 +170,6 @@
     return false;
   }
 
-  // Capture clicks before older listeners so scenario interactions happen once.
   actionButton.addEventListener('click',e=>{
     if(handleScenarioAction()){e.preventDefault();e.stopImmediatePropagation();}
   },true);
@@ -183,7 +189,6 @@
   const originalRenderInventoryScenario=renderInventory;
   renderInventory=function(){
     originalRenderInventoryScenario();
-    // Replace/append scenario item artwork where older renderers do not know the item.
     const art={
       '아령':'assets/item_dumbbell.png?v=1',
       '검정 폼롤러':'assets/%20%20%20%20item_black_foamroller.png?v=1',
