@@ -51,10 +51,10 @@ update=function(dt){
     const inDeskX=player.x>22&&player.x<170,inDeskY=player.y>119&&player.y<171;
     if(inDeskX&&inDeskY){const cameFromFront=oldY>=171,cameFromBack=oldY<=119;if(cameFromFront)player.y=171;else if(cameFromBack)player.y=119;else{player.x=oldX;player.y=oldY;}}
 
-    // Dynamic character collision: follows Yuli's current position, so it still works
-    // when she is moved later. Use an ellipse around both characters' foot points.
-    const yuliDx=(player.x-yuli.x)/22;
-    const yuliDy=(player.y-yuli.y)/15;
+    // Dynamic full-body collision that follows Yuli's current position.
+    // The taller vertical radius prevents Woohyuk from walking onto her head.
+    const yuliDx=(player.x-yuli.x)/23;
+    const yuliDy=(player.y-yuli.y)/39;
     if(yuliDx*yuliDx+yuliDy*yuliDy<1){player.x=oldX;player.y=oldY;}
 
     const nearYuli=Math.hypot(player.x-yuli.x,player.y-yuli.y)<34;foundYuli=nearYuli;actionButton.classList.toggle('hidden',!nearYuli);
