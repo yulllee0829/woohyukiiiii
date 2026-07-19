@@ -2,13 +2,13 @@
 (function(){
   const state={
     active:false,mission:0,yuliPhase:'back',yuliWalkStart:0,
-    hongVisible:false,hongTalked:false,onaoPlaced:false,
+    hongVisible:false,hongTalked:false,onaoPlaced:false,visitedSide:false,
     dumbbellCollected:false,blackRollerCollected:false,
     giftMode:false,ending:false
   };
 
   const asset=(src)=>{const img=new Image();img.src=src;return img;};
-  const hongImg=asset('assets/hong.png?v=1');
+  const hongImg=asset('assets/hong.png?v=2');
   const dumbbellImg=asset('assets/item_dumbbell.png?v=1');
   const blackRollerImg=asset('assets/%20%20%20%20item_black_foamroller.png?v=1');
   const onaoImg=asset('assets/item_onao.png?v=1');
@@ -44,7 +44,7 @@
   }
   function startYuliWalk(){
     state.yuliPhase='walking';state.yuliWalkStart=performance.now();
-    yuli.dir='right';state.hongVisible=true;
+    yuli.dir='right';
     setTimeout(()=>{
       state.yuliPhase='side';yuli.x=205;
       setMission(1,true);
@@ -54,7 +54,7 @@
   const originalEnterGymScenario=enterGym;
   enterGym=function(){
     originalEnterGymScenario();
-    Object.assign(state,{active:true,mission:0,yuliPhase:'back',yuliWalkStart:0,hongVisible:false,hongTalked:false,onaoPlaced:false,dumbbellCollected:false,blackRollerCollected:false,giftMode:false,ending:false});
+    Object.assign(state,{active:true,mission:0,yuliPhase:'back',yuliWalkStart:0,hongVisible:false,hongTalked:false,onaoPlaced:false,visitedSide:false,dumbbellCollected:false,blackRollerCollected:false,giftMode:false,ending:false});
     setMission(0);fade.classList.remove('active');
     showDate();
     setTimeout(()=>{
@@ -64,19 +64,10 @@
     },2050);
   };
 
-  // Yuli begins fully in front of the counter, faces away, turns toward Woohyuk, then walks right.
+  // Suppress the original gym Yuli draw. She is redrawn after the counter so her head is never hidden.
   const originalDrawYuliScenario=drawYuli;
   drawYuli=function(x,y,dir='down',frame=0,w=34){
-    if(state.active&&scene==='gym'){
-      if(state.yuliPhase==='side')return;
-      if(state.yuliPhase==='back'||state.yuliPhase==='front'){
-        x=96;y=198;dir=state.yuliPhase==='back'?'up':'down';frame=0;w=42;
-      }
-      if(state.yuliPhase==='walking'){
-        const p=Math.min(1,(performance.now()-state.yuliWalkStart)/1500);
-        x=96+(112*p);y=198;dir='right';frame=1+Math.floor(performance.now()/150)%2;w=42;
-      }
-    }
+    if(state.active&&scene==='gym')return;
     originalDrawYuliScenario(x,y,dir,frame,w);
   };
 
@@ -91,9 +82,17 @@
   drawGymWorld=function(){
     originalDrawGymWorldScenario();
     if(!state.active)return;
-    if(state.hongVisible){
-      ctx.save();ctx.beginPath();ctx.rect(0,72,W,60);ctx.clip();drawContained(hongImg,96,143,34,54);ctx.restore();
+
+    // Counter stays in the back; Yuli is placed fully in front of it.
+    if(state.yuliPhase==='back'||state.yuliPhase==='front'){
+      originalDrawYuliScenario(96,198,state.yuliPhase==='back'?'up':'down',0,42);
+    }else if(state.yuliPhase==='walking'){
+      const p=Math.min(1,(performance.now()-state.yuliWalkStart)/1500);
+      originalDrawYuliScenario(96+(112*p),198,'right',1+Math.floor(performance.now()/150)%2,42);
     }
+
+    // Hong appears only after Woohyuk has entered the right exercise room once.
+    if(state.hongVisible)drawContained(hongImg,96,166,42,64);
     if(state.onaoPlaced&&!inventory.includes('우혁made오나오'))drawContained(onaoImg,96,124,22,18);
     drawBoyfriend(player.x,player.y,player.dir,player.frame,42);
   };
@@ -114,7 +113,7 @@
   function interactionTarget(){
     if(!state.active||legExerciseActive)return null;
     if(scene==='gym'){
-      if(state.hongVisible&&!state.hongTalked&&near(96,143,45))return 'hong';
+      if(state.hongVisible&&!state.hongTalked&&near(96,166,48))return 'hong';
       if(state.onaoPlaced&&!inventory.includes('우혁made오나오')&&near(96,129,45))return 'onao';
     }
     if(scene==='gymSide'){
@@ -180,6 +179,10 @@
   const originalUpdateScenario=update;
   update=function(dt){
     originalUpdateScenario(dt);
+    if(state.active&&scene==='gymSide'&&!state.visitedSide){
+      state.visitedSide=true;
+      state.hongVisible=true;
+    }
     if(!state.active||legExerciseActive||!dialogue.classList.contains('hidden')||!inventoryPanel.classList.contains('hidden'))return;
     const target=interactionTarget();
     if(target){actionButton.classList.remove('hidden');foundYuli=target==='yuli';}
