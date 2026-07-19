@@ -65,7 +65,7 @@ update=function(dt){
     player.x=Math.min(180,player.x);
     const hitsRack=player.x>40&&player.x<151&&player.y>77&&player.y<121;
     const hitsDarkRoller=player.x>133&&player.x<179&&player.y>148&&player.y<166;
-    const hitsTealRoller=player.x>172&&player.x<189&&player.y>210&&player.y<256;
+    const hitsTealRoller=!window.foamRollerCollected&&player.x>172&&player.x<189&&player.y>210&&player.y<256;
     const hitsPurpleBall=Math.hypot(player.x-165.5,player.y-262.5)<8;
     const hitsYellowBall=Math.hypot(player.x-176.5,player.y-262.5)<8;
     // Three small boxes instead of one large rectangle: tower, seat, and bottom base.
@@ -77,6 +77,8 @@ update=function(dt){
     if(hitsRack||hitsDarkRoller||hitsTealRoller||hitsPurpleBall||hitsYellowBall||hitsLegMachine){player.x=oldX;player.y=oldY;}
     const nearMachine=!bingsuRevealed&&Math.hypot(player.x-74,player.y-228)<44;
     const nearBingsu=bingsuRevealed&&!bingsuCollected&&Math.hypot(player.x-77,player.y-241)<25;
-    actionButton.classList.toggle('hidden',!(nearMachine||nearBingsu));actionButton.textContent=nearBingsu?'획득':'운동하기';
+    const nearFoam=!window.foamRollerCollected&&Math.hypot(player.x-181,player.y-233)<38;
+    actionButton.classList.toggle('hidden',!(nearMachine||nearBingsu||nearFoam));
+    actionButton.textContent=nearBingsu||nearFoam?'획득':'운동하기';
   }
 };
