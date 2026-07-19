@@ -91,10 +91,9 @@
     #dialogue.speaker-system{left:16px;right:16px;width:auto;max-width:none;padding-top:12px;background:#fff5dd;border-color:#2b2138}
     #dialogue.speaker-system::before{content:''}
 
-    /* Yuli stays fixed just above-left of her head on the stretching mat. */
-    #dialogue.speaker-yuli-mat{left:132px;right:auto;top:49%;bottom:auto;width:174px;max-width:calc(100% - 146px)}
+    /* Keep Yuli visible: bubble sits clearly above-left of her face. */
+    #dialogue.speaker-yuli-mat{left:104px;right:auto;top:39%;bottom:auto;width:174px;max-width:calc(100% - 118px)}
 
-    /* Hong stays fixed and compact so the bubble does not cover him. */
     #dialogue.speaker-hong-gym{left:34px;right:auto;top:14%;bottom:auto;width:145px;max-width:calc(100% - 48px)}
   `;
   document.head.appendChild(style);
@@ -121,7 +120,6 @@
     requestAnimationFrame(followWoohyukBubble);
   }
 
-  // Advance dialogue by tapping anywhere on the game screen, not only the bubble.
   document.addEventListener('pointerup',event=>{
     if(dialogueEl.classList.contains('hidden'))return;
     if(event.target===dialogueEl||dialogueEl.contains(event.target))return;
