@@ -5,7 +5,7 @@
     if(Array.isArray(lines)){
       const expanded=[];
       for(const line of lines){
-        if(typeof line==='string'&&line.includes('혹시 아웃백 잠실롯데점에서 알바하시나요')){
+        if(typeof line==='string'&&line.includes('혹시 아웃백 잠실롯데점')&&line.includes('알바하시나요')){
           expanded.push('우혁 : 안녕하세요..!');
           expanded.push('우혁 : 혹시 아웃백 잠실롯데점에서 알바하시나요?');
         }else{
