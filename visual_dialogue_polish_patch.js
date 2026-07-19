@@ -32,7 +32,7 @@
   new MutationObserver(renameSpeaker).observe(dialogueEl,{attributes:true,attributeFilter:['data-speaker'],childList:true,subtree:true});
   renameSpeaker();
 
-  // Draw tiny pixel hearts over Yuli's eyes while she is on the mat.
+  // Draw tiny pixel hearts directly over Yuli's eyes while she is on the mat.
   const previousDrawGymSideRoom=drawGymSideRoom;
   drawGymSideRoom=function(){
     previousDrawGymSideRoom();
@@ -44,13 +44,13 @@
       px(x+1,y+3,3,1,'#d93670');
       px(x+2,y+4,1,1,'#d93670');
     };
-    heart(144,188);
-    heart(153,188);
+    // Shift both hearts right so they sit exactly on the visible pupils.
+    heart(147,188);
+    heart(156,188);
   };
 
   const style=document.createElement('style');
   style.textContent=`
-    /* Dialogue text: one point larger, compact height, and balanced inner spacing. */
     #dialogue{
       min-height:0!important;
       width:auto;
@@ -75,8 +75,6 @@
       padding:14px 15px!important;
       text-align:left;
     }
-
-    /* Cleaner mission card: softer border, lighter shadow, and less bulky proportions. */
     #missionBanner{
       padding:8px 15px 7px!important;
       border:2px solid #9b3450!important;
@@ -87,8 +85,6 @@
       box-shadow:0 3px 0 rgba(91,31,51,.22),0 8px 18px rgba(36,21,29,.12)!important;
       letter-spacing:-.2px;
     }
-
-    /* Softer, cleaner gift button instead of the heavy hot-pink block. */
     #giveItemButton{
       border:2px solid #5e7182!important;
       border-radius:10px!important;
