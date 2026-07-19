@@ -83,16 +83,16 @@
 
   const style=document.createElement('style');
   style.textContent=`
-    #dialogue{min-width:0;min-height:82px;border-radius:12px;padding:22px 14px 12px;line-height:1.4;box-sizing:border-box;font-size:14px}
+    #dialogue{min-width:0;min-height:68px;border-radius:12px;padding:22px 13px 10px;line-height:1.35;box-sizing:border-box;font-size:14px}
     #dialogue::before{content:attr(data-speaker);position:absolute;top:4px;left:12px;font-size:11px;font-weight:800;color:#6f2941}
-    #dialogue.speaker-woohyuk{right:auto;width:150px;max-width:calc(100% - 16px);background:#e8f7ff;border-color:#4b7185}
-    #dialogue.speaker-yuli{left:48px;right:auto;width:150px;max-width:calc(100% - 62px);background:#ffe8f1;border-color:#98506b}
+    #dialogue.speaker-woohyuk{right:auto;width:174px;max-width:calc(100% - 16px);background:#e8f7ff;border-color:#4b7185}
+    #dialogue.speaker-yuli{left:48px;right:auto;width:174px;max-width:calc(100% - 62px);background:#ffe8f1;border-color:#98506b}
     #dialogue.speaker-hong{left:24px;right:auto;width:145px;max-width:calc(100% - 38px);background:#fff6cf;border-color:#88733d}
     #dialogue.speaker-system{left:16px;right:16px;width:auto;max-width:none;padding-top:12px;background:#fff5dd;border-color:#2b2138}
     #dialogue.speaker-system::before{content:''}
 
     /* Yuli stays fixed just above-left of her head on the stretching mat. */
-    #dialogue.speaker-yuli-mat{left:145px;right:auto;top:49%;bottom:auto;width:150px;max-width:calc(100% - 160px)}
+    #dialogue.speaker-yuli-mat{left:132px;right:auto;top:49%;bottom:auto;width:174px;max-width:calc(100% - 146px)}
 
     /* Hong stays fixed and compact so the bubble does not cover him. */
     #dialogue.speaker-hong-gym{left:34px;right:auto;top:14%;bottom:auto;width:145px;max-width:calc(100% - 48px)}
