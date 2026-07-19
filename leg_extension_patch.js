@@ -27,8 +27,8 @@ drawFixedPatbingsu=function(){
   drawPatbingsu(63,227,28);
 };
 
-// Replace movement handling with a tighter collision box matching the visible machine.
-// The old box extended far beyond the artwork and blocked the side passage.
+// Replace movement handling with a collision box that hugs the visible machine.
+// The player's foot point can pass immediately beside it, but cannot enter the artwork.
 update=function(dt){
   if(legExerciseActive)return;
   if(!joy.active||!dialogue.classList.contains('hidden')||!inventoryPanel.classList.contains('hidden'))return;
@@ -61,7 +61,8 @@ update=function(dt){
     const hitsTealRoller=player.x>172&&player.x<189&&player.y>210&&player.y<256;
     const hitsPurpleBall=Math.hypot(player.x-165.5,player.y-262.5)<8;
     const hitsYellowBall=Math.hypot(player.x-176.5,player.y-262.5)<8;
-    const hitsLegMachine=player.x>32&&player.x<103&&player.y>164&&player.y<246;
+    // Tightest safe footprint for the scaled machine: only the pixels occupied by it.
+    const hitsLegMachine=player.x>42&&player.x<94&&player.y>173&&player.y<244;
     if(hitsRack||hitsDarkRoller||hitsTealRoller||hitsPurpleBall||hitsYellowBall||hitsLegMachine){player.x=oldX;player.y=oldY;}
     const nearMachine=!bingsuRevealed&&Math.hypot(player.x-74,player.y-228)<44;
     const nearBingsu=bingsuRevealed&&!bingsuCollected&&Math.hypot(player.x-77,player.y-241)<28;
