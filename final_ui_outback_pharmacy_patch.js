@@ -4,32 +4,26 @@
   const dialogue=document.querySelector('#dialogue');
   const action=document.querySelector('#actionButton');
   const start=document.querySelector('#startButton');
-  const inventoryItems=document.querySelector('#inventoryItems');
   if(!app||!dialogue||!action||!start)return;
 
   const style=document.createElement('style');
   style.textContent=`
-    /* Larger image start button. */
     #startButton.home-start-button{
       width:190px!important;
       height:104px!important;
       background-size:contain!important;
     }
 
-    /* A soft left-to-right reveal for every new dialogue line. */
+    /* Dialogue must appear immediately with no reveal/typing animation. */
+    #dialogue,
     #dialogue.dialogue-reveal{
-      animation:dialogueReveal .48s steps(22,end) both!important;
-      overflow:hidden!important;
-    }
-    @keyframes dialogueReveal{
-      from{clip-path:inset(0 100% 0 0)}
-      to{clip-path:inset(0 0 0 0)}
+      animation:none!important;
+      clip-path:none!important;
+      overflow:visible!important;
     }
 
-    /* Remove the explicit Outback minigame solution hint. */
     #cutleryGame .cutlery-help{display:none!important}
 
-    /* Wrong-answer Yuli lines must sit above the minigame. */
     #dialogue.cutlery-warning{
       z-index:130!important;
       left:50%!important;
@@ -40,7 +34,6 @@
       transform:translateX(-50%)!important;
     }
 
-    /* Matcha choco-pie waiting on the pharmacy counter. */
     #pharmacyChocoPickup{
       position:absolute;
       z-index:45;
@@ -57,18 +50,11 @@
   `;
   document.head.appendChild(style);
 
-  // Restart the reveal whenever the visible line changes.
-  let revealBusy=false;
-  new MutationObserver(()=>{
-    if(revealBusy||dialogue.classList.contains('hidden'))return;
-    revealBusy=true;
-    dialogue.classList.remove('dialogue-reveal');
-    void dialogue.offsetWidth;
-    dialogue.classList.add('dialogue-reveal');
-    revealBusy=false;
-  }).observe(dialogue,{childList:true,characterData:true,subtree:true});
+  // Remove every leftover reveal class added by older cached code.
+  dialogue.classList.remove('dialogue-reveal');
+  new MutationObserver(()=>dialogue.classList.remove('dialogue-reveal'))
+    .observe(dialogue,{attributes:true,attributeFilter:['class']});
 
-  // Keep minigame feedback visible above the work panel.
   function syncCutleryWarning(){
     const game=document.querySelector('#cutleryGame');
     const visible=!dialogue.classList.contains('hidden');
@@ -83,7 +69,7 @@
   }
   requestAnimationFrame(syncCutleryWarning);
 
-  // Scale/reposition Outback sprites at draw time without touching other scenes.
+  // Enlarge Outback characters while preserving the approved Yuli position.
   if(typeof ctx!=='undefined'&&ctx&&typeof ctx.drawImage==='function'){
     const originalDraw=ctx.drawImage.bind(ctx);
     let outbackFrame=null;
@@ -99,18 +85,20 @@
       if(outbackFrame&&src instanceof HTMLCanvasElement&&args.length===5){
         let [,x,y,w,h]=args;
         if(outbackFrame==='b1'&&spriteIndex===0&&Math.abs(Number(w)-24)<1){
-          const nw=20,nh=h*(nw/w);
+          const nw=28,nh=h*(nw/w);
           spriteIndex++;
           return originalDraw(src,x+(w-nw)/2,y+(h-nh),nw,nh);
         }
         if(outbackFrame==='b2'&&Math.abs(Number(w)-19)<1){
           const isYuli=spriteIndex===0;
-          const nw=16,nh=h*(nw/w);
+          const nw=23,nh=h*(nw/w);
           spriteIndex++;
           if(isYuli){
-            // Move Yuli substantially toward the upper-left corner and trim edge residue.
-            const sx=src.width>4?1:0,sy=src.height>4?1:0;
-            const sw=Math.max(1,src.width-sx*2),sh=Math.max(1,src.height-sy*2);
+            // Trim only tiny side/bottom residue. Never crop the top of Yuli's hair.
+            const sx=src.width>4?1:0;
+            const sy=0;
+            const sw=Math.max(1,src.width-sx*2);
+            const sh=Math.max(1,src.height-1);
             return originalDraw(src,sx,sy,sw,sh,x+(w-nw)/2-18,y+(h-nh)-18,nw,nh);
           }
           return originalDraw(src,x+(w-nw)/2,y+(h-nh),nw,nh);
@@ -120,7 +108,6 @@
     };
   }
 
-  // Replace automatic choco-pie receipt with an actual counter pickup.
   let chocoPending=false;
   let chocoCallback=null;
   let systemPickupLine=false;
@@ -134,7 +121,7 @@
       if(!document.querySelector('#pharmacyChocoPickup')){
         const img=document.createElement('img');
         img.id='pharmacyChocoPickup';
-        img.src='assets/choco.png?v=20260720-32';
+        img.src='assets/choco.png?v=20260720-33';
         img.alt='말차 초코파이';
         app.appendChild(img);
       }
