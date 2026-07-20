@@ -18,7 +18,8 @@
   };
 
   // The scenario captured an older drawYuli reference, so redraw the moving frame last.
-  // Include a generous source margin above the horizontal sprite cell so the hair tip is visible.
+  // Pull in a much larger source margin above the side frame and scale it slightly smaller,
+  // which preserves the full hair tip without changing the foot position.
   let walkStartedAt=0;
   const previousDrawGymWorld=drawGymWorld;
   drawGymWorld=function(){
@@ -38,11 +39,11 @@
     const fh=yuliSheet.naturalHeight/rows;
     const col=1+((frame-1)%2);
     const row=rowByDir.right??3;
-    const topPad=Math.max(8,Math.round(fh*0.10));
+    const topPad=Math.max(14,Math.round(fh*0.20));
     const sx=col*fw;
     const sy=Math.max(0,row*fh-topPad);
     const sh=Math.min(yuliSheet.naturalHeight-sy,fh+topPad);
-    const w=40;
+    const w=38;
     const targetH=w*(sh/fw);
     const dx=Math.round(x-w/2);
     const dy=Math.round(198-targetH);
