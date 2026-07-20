@@ -9,16 +9,33 @@
   const fade=document.querySelector('#gymFadeout');
   if(!ui||!action||!joystick||!pocket||!dialogue||!mission)return;
 
-  const VERSION='20260720-28';
+  const VERSION='20260720-29';
   const b1=new Image(); b1.src=`assets/outback_b1.PNG?v=${VERSION}`;
   const b2=new Image(); b2.src=`assets/outback_b2.PNG?v=${VERSION}`;
   const boy=new Image(); boy.src=`assets/boyfriend_ob.png?v=${VERSION}`;
   const yuliImg=new Image(); yuliImg.src=`assets/yuli_ob.png?v=${VERSION}`;
   const itemSrc={spoon:`assets/s.png?v=${VERSION}`,knife:`assets/n.png?v=${VERSION}`,fork:`assets/f.png?v=${VERSION}`,bag:`assets/b.png?v=${VERSION}`};
 
-  let mode='off'; // off, entrance, inside, minigame, done
+  let mode='off';
   let introDone=false,talking=false,yuliFacing='right';
   const boyFrames={},yuliFrames={};
+  const YULI_X=158,YULI_Y=151;
+
+  function keepLargestComponent(image,fw,fh){
+    const d=image.data,seen=new Uint8Array(fw*fh);let best=[];
+    for(let sy=0;sy<fh;sy++)for(let sx=0;sx<fw;sx++){
+      const start=sy*fw+sx;if(seen[start]||d[start*4+3]<12)continue;
+      const q=[start],part=[];seen[start]=1;
+      for(let i=0;i<q.length;i++){
+        const p=q[i],x=p%fw,y=(p/fw)|0;part.push(p);
+        const ns=[p-1,p+1,p-fw,p+fw];
+        for(const n of ns){if(n<0||n>=fw*fh||seen[n]||d[n*4+3]<12)continue;const nx=n%fw;if(Math.abs(nx-x)>1)continue;seen[n]=1;q.push(n)}
+      }
+      if(part.length>best.length)best=part;
+    }
+    const keep=new Uint8Array(fw*fh);for(const p of best)keep[p]=1;
+    for(let i=0;i<fw*fh;i++)if(!keep[i])d[i*4+3]=0;
+  }
 
   function buildFrames(img,target){
     if(!img.complete||!img.naturalWidth)return;
@@ -33,7 +50,7 @@
       const push=(x,y)=>{if(x<0||y<0||x>=fw||y>=fh)return;const i=y*fw+x;if(seen[i]||!pale(i))return;seen[i]=1;q.push(i)};
       for(let x=0;x<fw;x++){push(x,0);push(x,fh-1)}for(let y=0;y<fh;y++){push(0,y);push(fw-1,y)}
       for(let i=0;i<q.length;i++){const p=q[i],x=p%fw,y=(p/fw)|0;d[p*4+3]=0;push(x-1,y);push(x+1,y);push(x,y-1);push(x,y+1)}
-      tc.putImageData(im,0,0);
+      keepLargestComponent(im,fw,fh);tc.putImageData(im,0,0);
       let minX=fw,minY=fh,maxX=-1,maxY=-1;
       for(let y=0;y<fh;y++)for(let x=0;x<fw;x++){if(im.data[(y*fw+x)*4+3]>10){minX=Math.min(minX,x);maxX=Math.max(maxX,x);minY=Math.min(minY,y);maxY=Math.max(maxY,y)}}
       const out=document.createElement('canvas');
@@ -54,42 +71,39 @@
   function drawOutback(){
     const bg=mode==='entrance'?b1:b2;
     if(bg.complete&&bg.naturalWidth)ctx.drawImage(bg,0,0,W,H);else px(0,0,W,H,'#32261e');
-    if(mode==='entrance')drawSprite(boyFrames,'up',0,96,292,34);
+    if(mode==='entrance')drawSprite(boyFrames,'up',0,96,292,27);
     if(mode==='inside'||mode==='minigame'){
-      drawSprite(yuliFrames,yuliFacing,0,151,184,35);
-      drawSprite(boyFrames,player.dir,player.frame,player.x,player.y,35);
+      drawSprite(yuliFrames,yuliFacing,0,YULI_X,YULI_Y,23);
+      drawSprite(boyFrames,player.dir,player.frame,player.x,player.y,23);
     }
   }
   const oldDraw=drawGymSideRoom;
   drawGymSideRoom=function(){if(mode!=='off'){drawOutback();return}oldDraw()};
 
-  function nearYuli(){return mode==='inside'&&introDone&&!talking&&Math.hypot(player.x-151,player.y-184)<48}
+  function nearYuli(){return mode==='inside'&&introDone&&!talking&&Math.hypot(player.x-YULI_X,player.y-YULI_Y)<58}
   const oldUpdate=update;
   update=function(dt){
     if(mode!=='inside'){if(mode==='off')oldUpdate(dt);return}
     if(!introDone||talking||!dialogue.classList.contains('hidden')||!document.querySelector('#inventoryPanel').classList.contains('hidden')){player.frame=0;return}
     const len=Math.hypot(joy.dx,joy.dy);
     if(joy.active&&len>=8){
-      const vx=joy.dx/len,vy=joy.dy/len;
-      let nx=player.x+vx*68*dt,ny=player.y+vy*68*dt;
-      // Walkable dining-floor region only; keep out of tables/walls.
-      nx=Math.max(18,Math.min(176,nx));ny=Math.max(154,Math.min(320,ny));
-      // central table obstacle
+      const vx=joy.dx/len,vy=joy.dy/len;let nx=player.x+vx*68*dt,ny=player.y+vy*68*dt;
+      nx=Math.max(18,Math.min(176,nx));ny=Math.max(145,Math.min(320,ny));
       if(nx>64&&nx<134&&ny>190&&ny<244){ny=player.y<217?190:244}
       player.x=nx;player.y=ny;player.frame=1+Math.floor(performance.now()/150)%2;
       player.dir=Math.abs(vx)>Math.abs(vy)?(vx>0?'right':'left'):(vy>0?'down':'up');
     }else player.frame=0;
-    const talk=nearYuli();action.classList.toggle('hidden',!talk);action.classList.toggle('action-talk',talk);action.classList.toggle('action-hand',false);
   };
 
   const oldShowDialogue=showDialogue;
   showDialogue=function(lines,...args){
-    if(mode!=='off'&&Array.isArray(lines)) lines=lines.map(s=>typeof s==='string'?s.replace(/^카이\s*:/,'우혁 :').replace(/^주디\s*:/,'율리 :'):s);
+    if(mode!=='off'&&Array.isArray(lines))lines=lines.map(s=>typeof s==='string'?s.replace(/^카이\s*:/,'우혁 :').replace(/^주디\s*:/,'율리 :'):s);
     return oldShowDialogue(lines,...args);
   };
 
   function beginEntrance(){
     if(mode!=='off')return;mode='entrance';scene='gymSide';player={x:96,y:292,dir:'up',frame:0};
+    mission.classList.add('hidden');mission.classList.remove('mission-clear','mission-bang');mission.textContent='';
     joystick.classList.add('hidden');action.classList.add('hidden');pocket.classList.remove('hidden');
     if(fade)fade.classList.remove('active');
     setTimeout(()=>showDialogue(['우혁 : 율리가 일하고 있으려낭~','우혁 : 끝나고 데이트 가야지~'],()=>{
@@ -98,9 +112,10 @@
   }
   function beginInside(){
     mode='inside';introDone=false;yuliFacing='right';player={x:28,y:292,dir:'right',frame:1};
+    mission.classList.add('hidden');mission.classList.remove('mission-clear','mission-bang');
     if(fade)fade.classList.remove('active');
-    let start=performance.now();
-    const walk=()=>{if(mode!=='inside'||introDone)return;const p=Math.min(1,(performance.now()-start)/1600);player.x=28+70*p;player.frame=1+Math.floor(performance.now()/160)%2;if(p<1)requestAnimationFrame(walk);else{player.frame=0;showDialogue(['우혁 : 주디님이다ㅎㅎ'],()=>{introDone=true;joystick.classList.remove('hidden');mission.textContent='미션 4 : 율리 일 도와주기!!';mission.classList.remove('hidden','mission-bang');void mission.offsetWidth;mission.classList.add('mission-bang')})}};requestAnimationFrame(walk);
+    const start=performance.now();
+    const walk=()=>{if(mode!=='inside'||introDone)return;const p=Math.min(1,(performance.now()-start)/1600);player.x=28+70*p;player.frame=1+Math.floor(performance.now()/160)%2;if(p<1)requestAnimationFrame(walk);else{player.frame=0;showDialogue(['우혁 : 주디님이다ㅎㅎ'],()=>{introDone=true;joystick.classList.remove('hidden');mission.textContent='미션 4 : 율리 일 도와주기!!';mission.classList.remove('hidden','mission-clear','mission-bang');void mission.offsetWidth;mission.classList.add('mission-bang')})}};requestAnimationFrame(walk);
   }
 
   function talkYuli(){
@@ -108,6 +123,16 @@
     showDialogue(['카이 : 주디님 안녕하세용','주디 : 하이용','주디 : 이것 좀 도와주실래요ㅎㅎ','카이 : 제가 전문인건 어떻게 아시구ㅋㅋ','주디 : 네 믿을게요^^'],()=>{talking=false;openCutleryGame()});
   }
   document.addEventListener('click',e=>{if(mode==='inside'&&e.target===action&&nearYuli()){e.preventDefault();e.stopImmediatePropagation();talkYuli()}},true);
+
+  function enforceOutbackUi(){
+    if(mode==='inside'){
+      const talk=nearYuli();
+      action.classList.toggle('hidden',!talk);action.classList.toggle('action-talk',talk);action.classList.toggle('action-hand',false);
+      action.setAttribute('aria-label','주디에게 말 걸기');
+    }
+    requestAnimationFrame(enforceOutbackUi);
+  }
+  requestAnimationFrame(enforceOutbackUi);
 
   function openCutleryGame(){
     mode='minigame';document.querySelector('#cutleryGame')?.remove();
@@ -126,19 +151,17 @@
     panel.querySelectorAll('.drag-item').forEach(el=>{
       el.addEventListener('pointerdown',e=>{drag=el;const r=el.getBoundingClientRect();ox=e.clientX-r.left;oy=e.clientY-r.top;el.setPointerCapture(e.pointerId);el.classList.add('dragging')});
       el.addEventListener('pointermove',e=>{if(drag!==el)return;const r=work.getBoundingClientRect();el.style.left=(e.clientX-r.left-ox)+'px';el.style.top=(e.clientY-r.top-oy)+'px'});
-      el.addEventListener('pointerup',e=>{if(drag!==el)return;drag=null;el.classList.remove('dragging');const kind=el.dataset.kind;
-        const spoon=panel.querySelector('.spoon'),fork=panel.querySelector('.fork');
+      el.addEventListener('pointerup',()=>{if(drag!==el)return;drag=null;el.classList.remove('dragging');const kind=el.dataset.kind;const spoon=panel.querySelector('.spoon'),fork=panel.querySelector('.fork');
         if(kind==='fork'&&overlap(fork,spoon)){stacked=true;fork.classList.add('stacked');fork.style.left=(spoon.offsetLeft+8)+'px';fork.style.top=(spoon.offsetTop-2)+'px';return}
         if(kind==='spoon'&&overlap(spoon,fork)&&!stacked){yuliLine('아니지롱ㅎㅎ');reset(spoon);return}
         if(overlap(el,bag)){
           if(kind==='knife'){knifeIn=true;el.classList.add('packed')}
           else if(stacked&&(kind==='spoon'||kind==='fork')){setIn=true;spoon.classList.add('packed');fork.classList.add('packed')}
-          else {yuliLine(kind==='spoon'?'너 머하냐ㅋㅋ':'모해 너 진짜ㅋ');reset(el)}
+          else{yuliLine(kind==='spoon'?'너 머하냐ㅋㅋ':'모해 너 진짜ㅋ');reset(el)}
           if(knifeIn&&setIn)finishCutlery();
         }
       });
     });
-    // Stacked pair moves together when spoon is dragged.
     const spoon=panel.querySelector('.spoon'),fork=panel.querySelector('.fork');
     spoon.addEventListener('pointermove',()=>{if(stacked&&drag===spoon){fork.style.left=(spoon.offsetLeft+8)+'px';fork.style.top=(spoon.offsetTop-2)+'px'}});
   }
@@ -151,7 +174,6 @@
     });
   }
 
-  // Pharmacy mission 3 ends by showing CLEAR and activating the shared fade.
   let armed=false;
   new MutationObserver(()=>{if((mission.textContent||'').includes('미션 3 CLEAR'))armed=true;if(armed&&mode==='off'&&fade&&fade.classList.contains('active'))setTimeout(beginEntrance,950)}).observe(document.body,{subtree:true,childList:true,attributes:true,characterData:true});
 
