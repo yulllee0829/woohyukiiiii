@@ -14,7 +14,7 @@
       background-size:contain!important;
     }
 
-    /* Dialogue must appear immediately with no reveal/typing animation. */
+    /* Dialogue appears immediately. No typing/reveal animation. */
     #dialogue,
     #dialogue.dialogue-reveal{
       animation:none!important;
@@ -50,10 +50,8 @@
   `;
   document.head.appendChild(style);
 
-  // Remove every leftover reveal class added by older cached code.
+  // Remove the old class once only. Repeatedly observing class changes caused Safari to lock up.
   dialogue.classList.remove('dialogue-reveal');
-  new MutationObserver(()=>dialogue.classList.remove('dialogue-reveal'))
-    .observe(dialogue,{attributes:true,attributeFilter:['class']});
 
   function syncCutleryWarning(){
     const game=document.querySelector('#cutleryGame');
@@ -94,7 +92,6 @@
           const nw=23,nh=h*(nw/w);
           spriteIndex++;
           if(isYuli){
-            // Trim only tiny side/bottom residue. Never crop the top of Yuli's hair.
             const sx=src.width>4?1:0;
             const sy=0;
             const sw=Math.max(1,src.width-sx*2);
@@ -121,7 +118,7 @@
       if(!document.querySelector('#pharmacyChocoPickup')){
         const img=document.createElement('img');
         img.id='pharmacyChocoPickup';
-        img.src='assets/choco.png?v=20260720-33';
+        img.src='assets/choco.png?v=20260720-34';
         img.alt='말차 초코파이';
         app.appendChild(img);
       }
