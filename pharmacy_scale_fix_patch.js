@@ -12,7 +12,7 @@
     // Pharmacy Woohyuk is rendered from a cropped canvas at width 34.
     if(pharmacyFrame&&source instanceof HTMLCanvasElement&&args.length===5&&Math.abs(Number(args[3])-34)<0.1){
       const [,x,y,w,h]=args;
-      const nw=30,nh=h*(nw/w);
+      const nw=27,nh=h*(nw/w);
       pharmacyFrame=false;
       return original(source,x+(w-nw)/2,y+(h-nh),nw,nh);
     }
