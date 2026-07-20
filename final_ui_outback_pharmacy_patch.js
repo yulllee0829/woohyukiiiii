@@ -14,7 +14,6 @@
       background-size:contain!important;
     }
 
-    /* Dialogue appears immediately. No typing/reveal animation. */
     #dialogue,
     #dialogue.dialogue-reveal{
       animation:none!important;
@@ -34,13 +33,14 @@
       transform:translateX(-50%)!important;
     }
 
+    /* Place the reward on the pharmacy counter instead of over the pharmacist. */
     #pharmacyChocoPickup{
       position:absolute;
       z-index:45;
       left:50%;
-      top:31.5%;
-      width:46px;
-      height:46px;
+      top:37%;
+      width:42px;
+      height:42px;
       object-fit:contain;
       transform:translateX(-50%);
       image-rendering:pixelated;
@@ -50,7 +50,6 @@
   `;
   document.head.appendChild(style);
 
-  // Remove the old class once only. Repeatedly observing class changes caused Safari to lock up.
   dialogue.classList.remove('dialogue-reveal');
 
   function syncCutleryWarning(){
@@ -67,7 +66,6 @@
   }
   requestAnimationFrame(syncCutleryWarning);
 
-  // Enlarge Outback characters while preserving the approved Yuli position.
   if(typeof ctx!=='undefined'&&ctx&&typeof ctx.drawImage==='function'){
     const originalDraw=ctx.drawImage.bind(ctx);
     let outbackFrame=null;
@@ -108,17 +106,19 @@
   let chocoPending=false;
   let chocoCallback=null;
   let systemPickupLine=false;
+  let pickupBusy=false;
   const previousShowDialogue=showDialogue;
   showDialogue=function(lines,...args){
     if(Array.isArray(lines)&&lines.some(line=>typeof line==='string'&&line.includes('말차 초코파이를 받았다'))){
       const idx=typeof inventory!=='undefined'?inventory.indexOf('말차 초코파이'):-1;
       if(idx>=0){inventory.splice(idx,1);renderInventory();}
       chocoPending=true;
+      pickupBusy=false;
       chocoCallback=typeof args[0]==='function'?args[0]:null;
       if(!document.querySelector('#pharmacyChocoPickup')){
         const img=document.createElement('img');
         img.id='pharmacyChocoPickup';
-        img.src='assets/choco.png?v=20260720-34';
+        img.src='assets/choco.png?v=20260720-35';
         img.alt='말차 초코파이';
         app.appendChild(img);
       }
@@ -129,23 +129,31 @@
   };
 
   function nearChoco(){
-    return chocoPending&&typeof player!=='undefined'&&Math.hypot(player.x-96,player.y-188)<54;
+    return chocoPending&&typeof player!=='undefined'&&Math.hypot(player.x-96,player.y-205)<76;
   }
 
-  document.addEventListener('click',event=>{
-    if(!nearChoco()||event.target!==action)return;
-    event.preventDefault();event.stopImmediatePropagation();
+  function collectChoco(event){
+    if(pickupBusy||!nearChoco()||event.target!==action)return;
+    pickupBusy=true;
+    event.preventDefault();
+    event.stopImmediatePropagation();
     chocoPending=false;
     document.querySelector('#pharmacyChocoPickup')?.remove();
     if(!inventory.includes('말차 초코파이'))inventory.push('말차 초코파이');
     renderInventory();
-    const cb=chocoCallback;chocoCallback=null;
+    const cb=chocoCallback;
+    chocoCallback=null;
     systemPickupLine=true;
     previousShowDialogue(['말차 초코파이를 얻었다!'],()=>{
       systemPickupLine=false;
+      pickupBusy=false;
       if(typeof cb==='function')cb();
     });
-  },true);
+  }
+
+  /* Use pointerup so the older pharmacist click handler cannot swallow this interaction. */
+  document.addEventListener('pointerup',collectChoco,true);
+  document.addEventListener('click',collectChoco,true);
 
   function enforceChocoUi(){
     if(chocoPending){
