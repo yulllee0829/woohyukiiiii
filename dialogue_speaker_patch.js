@@ -49,9 +49,9 @@
     const raw=(dialogueEl.textContent||'').trim();
     let speaker=lastSpeaker;
     let clean=raw;
-    const match=raw.match(/^(우혁|율리|홍다민씨)\s*[:：]\s*/);
+    const match=raw.match(/^(우혁|율리|홍다민씨|시스템)\s*[:：]\s*/);
     if(match){
-      speaker=match[1]==='우혁'?'woohyuk':match[1]==='율리'?'yuli':'hong';
+      speaker=match[1]==='우혁'?'woohyuk':match[1]==='율리'?'yuli':match[1]==='홍다민씨'?'hong':'system';
       lastSpeaker=speaker;
       clean=raw.slice(match[0].length);
     }else if(dialogueEl.classList.contains('hidden')||!raw){
@@ -90,7 +90,6 @@
     #dialogue.speaker-hong{left:18px;right:auto;width:145px;max-width:calc(100% - 32px);background:#fff6cf;border-color:#88733d}
     #dialogue.speaker-system{left:16px;right:16px;width:auto;max-width:none;padding-top:12px;background:#fff5dd;border-color:#2b2138}
     #dialogue.speaker-system::before{content:''}
-
     #dialogue.speaker-yuli-mat{left:104px;right:auto;top:39%;bottom:auto;width:174px;max-width:calc(100% - 118px)}
     #dialogue.speaker-hong-gym{left:22px;right:auto;top:14%;bottom:auto;width:145px;max-width:calc(100% - 36px)}
   `;
