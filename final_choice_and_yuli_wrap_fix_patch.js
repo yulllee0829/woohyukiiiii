@@ -30,10 +30,10 @@
       max-width:calc(100% - 24px)!important;
     }
 
-    /* Damin teacher: a very small right/down correction from the previous position. */
+    /* Keep Damin teacher from being pulled upward by older patches. */
     #dialogue.speaker-hong-gym{
       left:12px!important;
-      top:11%!important;
+      top:13%!important;
     }
   `;
   document.head.appendChild(style);
