@@ -10,11 +10,11 @@
   const fade=document.querySelector('#gymFadeout');
   if(!ui||!action||!joystickEl||!pocket||!dialogueEl||!inventoryEl||!mission)return;
 
-  const bg=new Image(); bg.src='assets/phar.png?v=20260720-23';
-  const woo=new Image(); woo.src='assets/woo.png?v=20260720-23';
-  const med1=new Image(); med1.src='assets/m1.png?v=20260720-23';
-  const med2=new Image(); med2.src='assets/m2.png?v=20260720-23';
-  const choco=new Image(); choco.src='assets/choco.png?v=20260720-23';
+  const bg=new Image(); bg.src='assets/phar.png?v=20260720-24';
+  const woo=new Image(); woo.src='assets/woo.png?v=20260720-24';
+  const med1=new Image(); med1.src='assets/m1.png?v=20260720-24';
+  const med2=new Image(); med2.src='assets/m2.png?v=20260720-24';
+  const choco=new Image(); choco.src='assets/choco.png?v=20260720-24';
 
   let active=false;
   let introDone=false;
@@ -22,44 +22,45 @@
   let popupOpen=false;
   let completed=false;
   let entering=false;
-  let wooBounds=null;
   let selected=new Set();
+  const wooFrames={};
 
-  function alphaBounds(img){
-    if(!img.complete||!img.naturalWidth)return null;
-    try{
-      const c=document.createElement('canvas');
-      c.width=img.naturalWidth;c.height=img.naturalHeight;
-      const cc=c.getContext('2d',{willReadFrequently:true});
-      cc.drawImage(img,0,0);
-      const d=cc.getImageData(0,0,c.width,c.height).data;
-      let minX=c.width,minY=c.height,maxX=-1,maxY=-1;
-      for(let y=0;y<c.height;y++)for(let x=0;x<c.width;x++){
-        if(d[(y*c.width+x)*4+3]>10){
-          if(x<minX)minX=x;if(x>maxX)maxX=x;
-          if(y<minY)minY=y;if(y>maxY)maxY=y;
-        }
-      }
-      return maxX>=minX?{x:minX,y:minY,w:maxX-minX+1,h:maxY-minY+1}:null;
-    }catch(_){return null;}
+  function buildWooFrames(){
+    if(!woo.complete||!woo.naturalWidth)return;
+    const cols=3,rows=4,fw=Math.floor(woo.naturalWidth/cols),fh=Math.floor(woo.naturalHeight/rows);
+    const temp=document.createElement('canvas');temp.width=fw;temp.height=fh;
+    const tc=temp.getContext('2d',{willReadFrequently:true});
+    for(let row=0;row<rows;row++)for(let col=0;col<cols;col++){
+      tc.clearRect(0,0,fw,fh);
+      tc.drawImage(woo,col*fw,row*fh,fw,fh,0,0,fw,fh);
+      const image=tc.getImageData(0,0,fw,fh),d=image.data;
+      const seen=new Uint8Array(fw*fh),queue=[];
+      const pale=i=>d[i*4]>232&&d[i*4+1]>232&&d[i*4+2]>232&&Math.max(d[i*4],d[i*4+1],d[i*4+2])-Math.min(d[i*4],d[i*4+1],d[i*4+2])<22;
+      const push=(x,y)=>{if(x<0||y<0||x>=fw||y>=fh)return;const i=y*fw+x;if(seen[i]||!pale(i))return;seen[i]=1;queue.push(i);};
+      for(let x=0;x<fw;x++){push(x,0);push(x,fh-1);}for(let y=0;y<fh;y++){push(0,y);push(fw-1,y);}
+      for(let q=0;q<queue.length;q++){const i=queue[q],x=i%fw,y=(i/fw)|0;d[i*4+3]=0;push(x-1,y);push(x+1,y);push(x,y-1);push(x,y+1);}
+      let minX=fw,minY=fh,maxX=-1,maxY=-1;
+      for(let y=0;y<fh;y++)for(let x=0;x<fw;x++){const i=(y*fw+x)*4;if(d[i+3]>10){if(x<minX)minX=x;if(x>maxX)maxX=x;if(y<minY)minY=y;if(y>maxY)maxY=y;}}
+      const out=document.createElement('canvas');
+      if(maxX>=minX){out.width=maxX-minX+1;out.height=maxY-minY+1;const oc=out.getContext('2d');tc.putImageData(image,0,0);oc.drawImage(temp,minX,minY,out.width,out.height,0,0,out.width,out.height);}
+      wooFrames[`${row}-${col}`]=out;
+    }
   }
-  woo.addEventListener('load',()=>{wooBounds=alphaBounds(woo);});
+  woo.addEventListener('load',buildWooFrames);
 
-  function drawContained(img,cx,bottom,targetW,flip=false){
-    if(!img.complete||!img.naturalWidth)return;
-    const b=img===woo?(wooBounds||{x:0,y:0,w:img.naturalWidth,h:img.naturalHeight}):{x:0,y:0,w:img.naturalWidth,h:img.naturalHeight};
-    const h=targetW*(b.h/b.w);
-    ctx.save();
-    if(flip){ctx.translate(Math.round(cx*2),0);ctx.scale(-1,1);}
-    ctx.drawImage(img,b.x,b.y,b.w,b.h,Math.round(cx-targetW/2),Math.round(bottom-h),Math.round(targetW),Math.round(h));
-    ctx.restore();
+  function drawWoo(cx,bottom,targetW){
+    const row={down:0,up:1,left:2,right:3}[player.dir]??1;
+    const col=player.frame===0?0:1+((player.frame-1)%2);
+    const frame=wooFrames[`${row}-${col}`];
+    if(!frame||!frame.width)return;
+    const h=targetW*(frame.height/frame.width);
+    ctx.drawImage(frame,Math.round(cx-targetW/2),Math.round(bottom-h),Math.round(targetW),Math.round(h));
   }
 
   function drawPharmacy(){
     if(bg.complete&&bg.naturalWidth)ctx.drawImage(bg,0,0,W,H);
     else px(0,0,W,H,'#e8e5dc');
-    // woo.png is tightly alpha-cropped at runtime, so neither hair nor shoes are cut.
-    drawContained(woo,player.x,player.y,42,player.dir==='left');
+    drawWoo(player.x,player.y,42);
   }
 
   const previousDrawSide=drawGymSideRoom;
@@ -69,7 +70,6 @@
   };
 
   function nearPharmacist(){
-    // Pharmacist is fixed behind the counter in phar.png.
     return active&&introDone&&!popupOpen&&!completed&&Math.hypot(player.x-96,player.y-184)<58;
   }
 
@@ -77,8 +77,7 @@
   update=function(dt){
     if(!active){previousUpdate(dt);return;}
     if(!introDone||talking||popupOpen||completed||!dialogueEl.classList.contains('hidden')||!inventoryPanel.classList.contains('hidden')){
-      player.frame=0;
-      return;
+      player.frame=0;return;
     }
     const len=Math.hypot(joy.dx,joy.dy);
     if(!joy.active||len<8){player.frame=0;}
@@ -86,7 +85,6 @@
       const vx=joy.dx/len,vy=joy.dy/len;
       player.x+=vx*72*dt;player.y+=vy*72*dt;
       player.x=Math.max(14,Math.min(178,player.x));
-      // Counter collision: Woohyuk's feet can never cross above its lowest edge.
       player.y=Math.max(178,Math.min(322,player.y));
       player.frame=1+Math.floor(performance.now()/150)%2;
       if(Math.abs(vx)>Math.abs(vy))player.dir=vx>0?'right':'left';else player.dir=vy>0?'down':'up';
@@ -95,54 +93,37 @@
   };
 
   function setMission3(text,bang=true){
-    mission.textContent=text;
-    mission.classList.remove('hidden','mission-bang');
+    mission.textContent=text;mission.classList.remove('hidden','mission-bang');
     if(bang){void mission.offsetWidth;mission.classList.add('mission-bang');}
   }
 
   function enterPharmacy(){
     if(active||entering)return;
-    entering=true;
-    active=true;
+    entering=true;active=true;
     completed=false;introDone=false;talking=false;popupOpen=false;selected.clear();
-    scene='gymSide';
-    player={x:96,y:322,dir:'up',frame:0};
-    inventory=[];selectedItem=null;
-    window.gymPickupHelpShown=true;
-    renderInventory();
-    mission.classList.add('hidden');
-    inventoryPanel.classList.add('hidden');
-    pocket.classList.remove('hidden');
-    action.classList.add('hidden');
-    joystickEl.classList.add('hidden');
-    if(fade)fade.classList.remove('active');
-    setTimeout(()=>{
-      showDialogue(['우혁 : 머리가 좀 아프네ㅜㅜ 약을 사야겠어!'],()=>{
-        introDone=true;
-        joystickEl.classList.remove('hidden');
-        setMission3('미션 3 : 약 구매하기',true);
-      });
-    },650);
+    scene='gymSide';player={x:96,y:322,dir:'up',frame:0};
+    inventory=[];selectedItem=null;window.gymPickupHelpShown=true;renderInventory();
+    mission.classList.add('hidden');inventoryPanel.classList.add('hidden');pocket.classList.remove('hidden');
+    action.classList.add('hidden');joystickEl.classList.add('hidden');if(fade)fade.classList.remove('active');
+    setTimeout(()=>showDialogue(['우혁 : 머리가 좀 아프네ㅜㅜ 약을 사야겠어!'],()=>{
+      introDone=true;joystickEl.classList.remove('hidden');setMission3('미션 3 : 약 구매하기',true);
+    }),650);
   }
 
-  // The gym ending already fades to black. Switch scenes while fully dark.
-  if(fade){
-    new MutationObserver(()=>{
-      if(!active&&!entering&&fade.classList.contains('active'))setTimeout(enterPharmacy,2250);
-    }).observe(fade,{attributes:true,attributeFilter:['class']});
-  }
+  if(fade)new MutationObserver(()=>{
+    if(!active&&!entering&&fade.classList.contains('active'))setTimeout(enterPharmacy,2250);
+  }).observe(fade,{attributes:true,attributeFilter:['class']});
 
-  // Treat pharmacist dialogue as the same yellow style/position as Damin teacher.
   const previousShowDialogue=showDialogue;
   showDialogue=function(lines,...args){
-    if(active&&Array.isArray(lines)){
-      lines=lines.map(line=>typeof line==='string'&&line.startsWith('약사 :')?line.replace(/^약사\s*:/,'홍다민씨 :'):line);
-    }
+    if(active&&Array.isArray(lines))lines=lines.map(line=>typeof line==='string'&&line.startsWith('약사 :')?line.replace(/^약사\s*:/,'홍다민씨 :'):line);
     return previousShowDialogue(lines,...args);
   };
 
+  let syncingName=false;
   function syncPharmacistName(){
-    if(active&&dialogueEl.classList.contains('speaker-hong'))dialogueEl.dataset.speaker='약사';
+    if(syncingName||!active||!dialogueEl.classList.contains('speaker-hong')||dialogueEl.dataset.speaker==='약사')return;
+    syncingName=true;dialogueEl.dataset.speaker='약사';syncingName=false;
   }
   new MutationObserver(syncPharmacistName).observe(dialogueEl,{attributes:true,childList:true,subtree:true,attributeFilter:['class','data-speaker']});
 
@@ -153,27 +134,23 @@
   }
 
   function openMedicinePopup(){
-    popupOpen=true;selected.clear();
-    joystickEl.classList.add('hidden');action.classList.add('hidden');
+    popupOpen=true;selected.clear();joystickEl.classList.add('hidden');action.classList.add('hidden');
     document.querySelector('#medicinePopup')?.remove();
     const panel=document.createElement('section');panel.id='medicinePopup';
     panel.innerHTML=`
       <div class="medicine-title">어떤 약으로 하시겠어요?</div>
       <div class="medicine-grid">
-        <button type="button" class="medicine-card" data-med="m1"><img src="assets/m1.png?v=20260720-23" alt="율리가 좋아지는 약"><span>율리가 좋아지는 약</span></button>
-        <button type="button" class="medicine-card" data-med="m2"><img src="assets/m2.png?v=20260720-23" alt="율리랑 결혼하고 싶어지는 약"><span>율리랑 결혼하고 싶어지는 약</span></button>
+        <button type="button" class="medicine-card" data-med="m1"><img src="assets/m1.png?v=20260720-24" alt="율리가 좋아지는 약"><span>율리가 좋아지는 약</span></button>
+        <button type="button" class="medicine-card" data-med="m2"><img src="assets/m2.png?v=20260720-24" alt="율리랑 결혼하고 싶어지는 약"><span>율리랑 결혼하고 싶어지는 약</span></button>
       </div>
       <div id="medicineDescription" class="medicine-description">약을 눌러 설명을 확인해 보세요</div>
       <button type="button" id="medicineConfirm" disabled>선택</button>`;
     ui.appendChild(panel);
-    const desc=panel.querySelector('#medicineDescription');
-    const confirm=panel.querySelector('#medicineConfirm');
+    const desc=panel.querySelector('#medicineDescription'),confirm=panel.querySelector('#medicineConfirm');
     panel.querySelectorAll('.medicine-card').forEach(card=>card.addEventListener('click',()=>{
-      const key=card.dataset.med;
-      if(selected.has(key))selected.delete(key);else selected.add(key);
+      const key=card.dataset.med;if(selected.has(key))selected.delete(key);else selected.add(key);
       panel.querySelectorAll('.medicine-card').forEach(c=>c.classList.toggle('selected',selected.has(c.dataset.med)));
-      confirm.disabled=selected.size===0;
-      confirm.textContent=selected.size===2?'♥둘 다♥':'선택';
+      confirm.disabled=selected.size===0;confirm.textContent=selected.size===2?'♥둘 다♥':'선택';
       if(selected.size===1)desc.textContent=medicineDescription([...selected][0]);
       else if(selected.size===2)desc.innerHTML=`${medicineDescription('m1')}<br><br>${medicineDescription('m2')}`;
       else desc.textContent='약을 눌러 설명을 확인해 보세요';
@@ -182,59 +159,38 @@
   }
 
   function missionClear(){
-    setMission3('미션 3 CLEAR!',true);
-    mission.classList.add('mission-clear');
-    joystickEl.classList.add('hidden');action.classList.add('hidden');
-    setTimeout(()=>{if(fade)fade.classList.add('active');},1250);
+    setMission3('미션 3 CLEAR!',true);mission.classList.add('mission-clear');
+    joystickEl.classList.add('hidden');action.classList.add('hidden');setTimeout(()=>{if(fade)fade.classList.add('active');},1250);
   }
-
-  function addChocoToBag(){
-    if(!inventory.includes('말차 초코파이'))inventory.push('말차 초코파이');
-    renderInventory();
-  }
+  function addChocoToBag(){if(!inventory.includes('말차 초코파이'))inventory.push('말차 초코파이');renderInventory();}
 
   function finishMedicineChoice(){
     if(!selected.size)return;
-    document.querySelector('#medicinePopup')?.remove();
-    popupOpen=false;talking=true;
+    document.querySelector('#medicinePopup')?.remove();popupOpen=false;talking=true;
     if(selected.size===2){
-      showDialogue([
-        '약사 : 사랑꾼이시네요ㅎㅎ',
-        '약사 : 꼭 결혼하세요~',
-        '약사 : 말차 초코파이 드세요ㅎㅎ!!'
-      ],()=>{
-        addChocoToBag();
-        showDialogue(['말차 초코파이를 받았다!'],()=>{talking=false;completed=true;missionClear();});
+      showDialogue(['약사 : 사랑꾼이시네요ㅎㅎ','약사 : 꼭 결혼하세요~','약사 : 말차 초코파이 드세요ㅎㅎ!!'],()=>{
+        addChocoToBag();showDialogue(['말차 초코파이를 받았다!'],()=>{talking=false;completed=true;missionClear();});
       });
-    }else{
-      showDialogue(['약사 : 안녕히 가세요~'],()=>{talking=false;completed=true;missionClear();});
-    }
+    }else showDialogue(['약사 : 안녕히 가세요~'],()=>{talking=false;completed=true;missionClear();});
   }
 
   function talkToPharmacist(){
     if(!nearPharmacist()||talking)return;
     talking=true;joystickEl.classList.add('hidden');action.classList.add('hidden');
-    showDialogue([
-      '우혁 : 머리가 아파서요ㅜㅜ',
-      '약사 : 이 두 가지 약이 좋으실 것 같은데, 한번 보시겠어요?'
-    ],()=>{talking=false;openMedicinePopup();});
+    showDialogue(['우혁 : 머리가 아파서요ㅜㅜ','약사 : 이 두 가지 약이 좋으실 것 같은데, 한번 보시겠어요?'],()=>{
+      talking=false;openMedicinePopup();
+    });
   }
 
   document.addEventListener('click',event=>{
     if(!active||event.target!==action)return;
-    if(nearPharmacist()){
-      event.preventDefault();event.stopImmediatePropagation();talkToPharmacist();
-    }
+    if(nearPharmacist()){event.preventDefault();event.stopImmediatePropagation();talkToPharmacist();}
   },true);
 
-  // Keep bag and joystick in their normal fixed positions; only context button changes.
   function enforcePharmacyUi(){
     if(active){
-      pocket.classList.remove('hidden');
-      const talk=nearPharmacist()&&!talking&&!popupOpen&&!completed;
-      if(talk)action.classList.remove('hidden');
-      action.classList.toggle('action-talk',talk);
-      action.classList.toggle('action-hand',false);
+      pocket.classList.remove('hidden');const talk=nearPharmacist()&&!talking&&!popupOpen&&!completed;
+      if(talk)action.classList.remove('hidden');action.classList.toggle('action-talk',talk);action.classList.toggle('action-hand',false);
       action.setAttribute('aria-label','약사에게 말 걸기');
     }
     requestAnimationFrame(enforcePharmacyUi);
@@ -247,7 +203,7 @@
     if(inventory.includes('말차 초코파이')){
       let b=inventoryEl.querySelector('[data-item="말차 초코파이"]');
       if(!b){b=document.createElement('button');b.type='button';b.className='inventory-item';b.dataset.item='말차 초코파이';inventoryEl.appendChild(b);}
-      b.innerHTML='<img src="assets/choco.png?v=20260720-23" alt="말차 초코파이"><span>말차 초코파이</span>';
+      b.innerHTML='<img src="assets/choco.png?v=20260720-24" alt="말차 초코파이"><span>말차 초코파이</span>';
     }
   };
 
