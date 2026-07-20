@@ -1,4 +1,4 @@
-// Outback scenes: entrance intro, indoor mission 4, and cutlery-packing minigame.
+// Outback scenes: entrance intro, indoor mission 4, cutlery-packing minigame, and ending.
 (function(){
   const ui=document.querySelector('#ui');
   const action=document.querySelector('#actionButton');
@@ -9,7 +9,7 @@
   const fade=document.querySelector('#gymFadeout');
   if(!ui||!action||!joystick||!pocket||!dialogue||!mission)return;
 
-  const VERSION='20260720-29';
+  const VERSION='20260720-30';
   const b1=new Image(); b1.src=`assets/outback_b1.PNG?v=${VERSION}`;
   const b2=new Image(); b2.src=`assets/outback_b2.PNG?v=${VERSION}`;
   const boy=new Image(); boy.src=`assets/boyfriend_ob.png?v=${VERSION}`;
@@ -19,17 +19,20 @@
   let mode='off';
   let introDone=false,talking=false,yuliFacing='right';
   const boyFrames={},yuliFrames={};
-  const YULI_X=158,YULI_Y=151;
+  const YULI_X=163,YULI_Y=132;
 
   function keepLargestComponent(image,fw,fh){
     const d=image.data,seen=new Uint8Array(fw*fh);let best=[];
     for(let sy=0;sy<fh;sy++)for(let sx=0;sx<fw;sx++){
-      const start=sy*fw+sx;if(seen[start]||d[start*4+3]<12)continue;
+      const start=sy*fw+sx;if(seen[start]||d[start*4+3]<18)continue;
       const q=[start],part=[];seen[start]=1;
       for(let i=0;i<q.length;i++){
-        const p=q[i],x=p%fw,y=(p/fw)|0;part.push(p);
-        const ns=[p-1,p+1,p-fw,p+fw];
-        for(const n of ns){if(n<0||n>=fw*fh||seen[n]||d[n*4+3]<12)continue;const nx=n%fw;if(Math.abs(nx-x)>1)continue;seen[n]=1;q.push(n)}
+        const p=q[i],x=p%fw;part.push(p);
+        for(const n of [p-1,p+1,p-fw,p+fw]){
+          if(n<0||n>=fw*fh||seen[n]||d[n*4+3]<18)continue;
+          if(Math.abs((n%fw)-x)>1)continue;
+          seen[n]=1;q.push(n);
+        }
       }
       if(part.length>best.length)best=part;
     }
@@ -46,15 +49,21 @@
       tc.clearRect(0,0,fw,fh);tc.drawImage(img,c*fw,r*fh,fw,fh,0,0,fw,fh);
       const im=tc.getImageData(0,0,fw,fh),d=im.data;
       const seen=new Uint8Array(fw*fh),q=[];
-      const pale=i=>d[i*4]>230&&d[i*4+1]>230&&d[i*4+2]>230;
+      const pale=i=>{
+        const rr=d[i*4],gg=d[i*4+1],bb=d[i*4+2];
+        return rr>198&&gg>198&&bb>198&&(Math.max(rr,gg,bb)-Math.min(rr,gg,bb)<42);
+      };
       const push=(x,y)=>{if(x<0||y<0||x>=fw||y>=fh)return;const i=y*fw+x;if(seen[i]||!pale(i))return;seen[i]=1;q.push(i)};
       for(let x=0;x<fw;x++){push(x,0);push(x,fh-1)}for(let y=0;y<fh;y++){push(0,y);push(fw-1,y)}
       for(let i=0;i<q.length;i++){const p=q[i],x=p%fw,y=(p/fw)|0;d[p*4+3]=0;push(x-1,y);push(x+1,y);push(x,y-1);push(x,y+1)}
       keepLargestComponent(im,fw,fh);tc.putImageData(im,0,0);
       let minX=fw,minY=fh,maxX=-1,maxY=-1;
-      for(let y=0;y<fh;y++)for(let x=0;x<fw;x++){if(im.data[(y*fw+x)*4+3]>10){minX=Math.min(minX,x);maxX=Math.max(maxX,x);minY=Math.min(minY,y);maxY=Math.max(maxY,y)}}
+      for(let y=0;y<fh;y++)for(let x=0;x<fw;x++)if(im.data[(y*fw+x)*4+3]>18){minX=Math.min(minX,x);maxX=Math.max(maxX,x);minY=Math.min(minY,y);maxY=Math.max(maxY,y)}
       const out=document.createElement('canvas');
-      if(maxX>=minX){out.width=maxX-minX+1;out.height=maxY-minY+1;out.getContext('2d').drawImage(temp,minX,minY,out.width,out.height,0,0,out.width,out.height)}
+      if(maxX>=minX){
+        const pad=2,sx=Math.max(0,minX-pad),sy=Math.max(0,minY-pad),ex=Math.min(fw-1,maxX+pad),ey=Math.min(fh-1,maxY+pad);
+        out.width=ex-sx+1;out.height=ey-sy+1;out.getContext('2d').drawImage(temp,sx,sy,out.width,out.height,0,0,out.width,out.height);
+      }
       target[`${r}-${c}`]=out;
     }
   }
@@ -71,16 +80,16 @@
   function drawOutback(){
     const bg=mode==='entrance'?b1:b2;
     if(bg.complete&&bg.naturalWidth)ctx.drawImage(bg,0,0,W,H);else px(0,0,W,H,'#32261e');
-    if(mode==='entrance')drawSprite(boyFrames,'up',0,96,292,27);
+    if(mode==='entrance')drawSprite(boyFrames,'up',0,96,292,24);
     if(mode==='inside'||mode==='minigame'){
-      drawSprite(yuliFrames,yuliFacing,0,YULI_X,YULI_Y,23);
-      drawSprite(boyFrames,player.dir,player.frame,player.x,player.y,23);
+      drawSprite(yuliFrames,yuliFacing,0,YULI_X,YULI_Y,19);
+      drawSprite(boyFrames,player.dir,player.frame,player.x,player.y,19);
     }
   }
   const oldDraw=drawGymSideRoom;
   drawGymSideRoom=function(){if(mode!=='off'){drawOutback();return}oldDraw()};
 
-  function nearYuli(){return mode==='inside'&&introDone&&!talking&&Math.hypot(player.x-YULI_X,player.y-YULI_Y)<58}
+  function nearYuli(){return mode==='inside'&&introDone&&!talking&&Math.hypot(player.x-YULI_X,player.y-YULI_Y)<64}
   const oldUpdate=update;
   update=function(dt){
     if(mode!=='inside'){if(mode==='off')oldUpdate(dt);return}
@@ -88,7 +97,7 @@
     const len=Math.hypot(joy.dx,joy.dy);
     if(joy.active&&len>=8){
       const vx=joy.dx/len,vy=joy.dy/len;let nx=player.x+vx*68*dt,ny=player.y+vy*68*dt;
-      nx=Math.max(18,Math.min(176,nx));ny=Math.max(145,Math.min(320,ny));
+      nx=Math.max(18,Math.min(176,nx));ny=Math.max(126,Math.min(320,ny));
       if(nx>64&&nx<134&&ny>190&&ny<244){ny=player.y<217?190:244}
       player.x=nx;player.y=ny;player.frame=1+Math.floor(performance.now()/150)%2;
       player.dir=Math.abs(vx)>Math.abs(vy)?(vx>0?'right':'left'):(vy>0?'down':'up');
@@ -143,35 +152,52 @@
 
   function setupDrag(panel){
     const work=panel.querySelector('.cutlery-work'),bag=panel.querySelector('.bag-zone');
+    const spoon=panel.querySelector('.spoon'),fork=panel.querySelector('.fork');
     let stacked=false,knifeIn=false,setIn=false,drag=null,ox=0,oy=0;
     const home={};panel.querySelectorAll('.drag-item').forEach(el=>{home[el.dataset.kind]={left:el.offsetLeft,top:el.offsetTop}});
     const overlap=(a,b)=>{const r=a.getBoundingClientRect(),s=b.getBoundingClientRect();return r.left<s.right&&r.right>s.left&&r.top<s.bottom&&r.bottom>s.top};
     const reset=el=>{const h=home[el.dataset.kind];el.style.left=h.left+'px';el.style.top=h.top+'px'};
+    const syncPair=()=>{if(stacked){fork.style.left=(spoon.offsetLeft+8)+'px';fork.style.top=(spoon.offsetTop-2)+'px'}};
     function yuliLine(text){showDialogue([`주디 : ${text}`])}
+
     panel.querySelectorAll('.drag-item').forEach(el=>{
-      el.addEventListener('pointerdown',e=>{drag=el;const r=el.getBoundingClientRect();ox=e.clientX-r.left;oy=e.clientY-r.top;el.setPointerCapture(e.pointerId);el.classList.add('dragging')});
-      el.addEventListener('pointermove',e=>{if(drag!==el)return;const r=work.getBoundingClientRect();el.style.left=(e.clientX-r.left-ox)+'px';el.style.top=(e.clientY-r.top-oy)+'px'});
-      el.addEventListener('pointerup',()=>{if(drag!==el)return;drag=null;el.classList.remove('dragging');const kind=el.dataset.kind;const spoon=panel.querySelector('.spoon'),fork=panel.querySelector('.fork');
-        if(kind==='fork'&&overlap(fork,spoon)){stacked=true;fork.classList.add('stacked');fork.style.left=(spoon.offsetLeft+8)+'px';fork.style.top=(spoon.offsetTop-2)+'px';return}
-        if(kind==='spoon'&&overlap(spoon,fork)&&!stacked){yuliLine('아니지롱ㅎㅎ');reset(spoon);return}
+      el.addEventListener('pointerdown',e=>{
+        if(stacked&&el===fork)return;
+        drag=el;const r=el.getBoundingClientRect();ox=e.clientX-r.left;oy=e.clientY-r.top;el.setPointerCapture(e.pointerId);el.classList.add('dragging');
+      });
+      el.addEventListener('pointermove',e=>{
+        if(drag!==el)return;const r=work.getBoundingClientRect();el.style.left=(e.clientX-r.left-ox)+'px';el.style.top=(e.clientY-r.top-oy)+'px';
+        if(stacked&&el===spoon)syncPair();
+      });
+      el.addEventListener('pointerup',()=>{
+        if(drag!==el)return;drag=null;el.classList.remove('dragging');const kind=el.dataset.kind;
+        if(kind==='fork'&&!stacked&&overlap(fork,spoon)){
+          stacked=true;fork.classList.add('stacked','locked');spoon.classList.add('paired');syncPair();return;
+        }
+        if(kind==='spoon'&&!stacked&&overlap(spoon,fork)){yuliLine('아니지롱ㅎㅎ');reset(spoon);return}
         if(overlap(el,bag)){
           if(kind==='knife'){knifeIn=true;el.classList.add('packed')}
-          else if(stacked&&(kind==='spoon'||kind==='fork')){setIn=true;spoon.classList.add('packed');fork.classList.add('packed')}
+          else if(stacked&&kind==='spoon'){setIn=true;spoon.classList.add('packed');fork.classList.add('packed')}
           else{yuliLine(kind==='spoon'?'너 머하냐ㅋㅋ':'모해 너 진짜ㅋ');reset(el)}
-          if(knifeIn&&setIn)finishCutlery();
-        }
+          if(knifeIn&&setIn)setTimeout(finishCutlery,120);
+        }else if(stacked&&kind==='spoon')syncPair();
       });
     });
-    const spoon=panel.querySelector('.spoon'),fork=panel.querySelector('.fork');
-    spoon.addEventListener('pointermove',()=>{if(stacked&&drag===spoon){fork.style.left=(spoon.offsetLeft+8)+'px';fork.style.top=(spoon.offsetTop-2)+'px'}});
+  }
+
+  function showEnding(){
+    document.querySelector('#theEndScreen')?.remove();
+    const end=document.createElement('div');end.id='theEndScreen';
+    end.innerHTML='<div class="the-end-title">The End</div><div class="the-end-mission">마지막 미션!<br>♥오늘 율리랑 행복한 시간 보내기♥</div>';
+    ui.appendChild(end);
   }
 
   function finishCutlery(){
     document.querySelector('#cutleryGame')?.remove();mode='inside';talking=true;
-    showDialogue(['주디 : 올~ 칼각인데ㅎㅎ','카이 : 맞지 맞지','주디 : 나 대신 100개만 말아조ㅋ'],()=>{
+    setTimeout(()=>showDialogue(['주디 : 올~ 칼각인데ㅎㅎ','카이 : 맞지 맞지','주디 : 나 대신 100개만 말아조ㅋ'],()=>{
       mode='done';mission.textContent='미션 4 CLEAR!';mission.classList.remove('hidden','mission-bang');mission.classList.add('mission-clear');void mission.offsetWidth;mission.classList.add('mission-bang');
-      setTimeout(()=>{if(fade)fade.classList.add('active')},1400);
-    });
+      setTimeout(()=>{if(fade)fade.classList.add('active');setTimeout(showEnding,1150)},1400);
+    }),180);
   }
 
   let armed=false;
@@ -180,6 +206,9 @@
   const style=document.createElement('style');style.textContent=`
     #cutleryGame{position:absolute;z-index:95;left:14px;right:14px;top:78px;padding:13px;border:3px solid #78665d;border-radius:14px;background:#fffaf0;color:#2b2138;box-shadow:0 5px 0 rgba(45,31,28,.26);pointer-events:auto}
     .cutlery-title{text-align:center;font-weight:900;font-size:14.2px;margin-bottom:8px}.cutlery-work{position:relative;height:330px;border:2px solid #d5c8b9;border-radius:11px;background:#fff;overflow:hidden}
-    .drag-item,.bag-zone{position:absolute;touch-action:none;user-select:none}.drag-item{width:56px;height:155px;z-index:3}.drag-item img,.bag-zone img{width:100%;height:100%;object-fit:contain;pointer-events:none}.drag-item.spoon{left:10px;top:70px}.drag-item.knife{left:77px;top:70px}.drag-item.fork{left:142px;top:70px}.bag-zone{right:7px;top:42px;width:86px;height:232px;border:2px dashed #c79a9e;border-radius:10px;background:#fff8f6}.drag-item.dragging{z-index:10}.drag-item.stacked{z-index:5}.drag-item.packed{opacity:0;pointer-events:none}.cutlery-help{padding-top:9px;text-align:center;font-size:13px;line-height:1.35}
+    .drag-item,.bag-zone{position:absolute;touch-action:none;user-select:none}.drag-item{width:56px;height:155px;z-index:3}.drag-item img,.bag-zone img{width:100%;height:100%;object-fit:contain;pointer-events:none}.drag-item.spoon{left:10px;top:70px}.drag-item.knife{left:77px;top:70px}.drag-item.fork{left:142px;top:70px}.bag-zone{right:7px;top:42px;width:86px;height:232px;border:2px dashed #c79a9e;border-radius:10px;background:#fff8f6}.drag-item.dragging{z-index:10}.drag-item.stacked{z-index:5}.drag-item.locked{pointer-events:none}.drag-item.paired{z-index:6}.drag-item.packed{opacity:0;pointer-events:none}.cutlery-help{padding-top:9px;text-align:center;font-size:13px;line-height:1.35}
+    #theEndScreen{position:absolute;z-index:999;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:#000;color:#fff;opacity:0;animation:endFadeIn 1.2s ease forwards;padding:24px;box-sizing:border-box}
+    .the-end-title{font-family:serif;font-size:34px;font-weight:700;letter-spacing:2px;margin-bottom:30px}.the-end-mission{font-size:16px;font-weight:800;line-height:1.75;color:#ffe8f0}
+    @keyframes endFadeIn{to{opacity:1}}
   `;document.head.appendChild(style);
 })();
