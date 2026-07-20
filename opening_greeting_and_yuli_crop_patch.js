@@ -17,9 +17,9 @@
     return previousShowDialogue(lines,...args);
   };
 
-  // The scenario captured an older drawYuli reference, so redraw the moving frame last.
-  // Pull in a much larger source margin above the side frame and scale it slightly smaller,
-  // which preserves the full hair tip without changing the foot position.
+  // The animated side frames themselves clip the very top of Yuli's hair.
+  // During the opening walk, redraw her with the complete side idle frame instead,
+  // keeping the same walking path and foot position so the whole head stays visible.
   let walkStartedAt=0;
   const previousDrawGymWorld=drawGymWorld;
   drawGymWorld=function(){
@@ -33,22 +33,17 @@
 
     const p=Math.min(1,(performance.now()-walkStartedAt)/1500);
     const x=96+(112*p);
-    const frame=1+Math.floor(performance.now()/150)%2;
     const cols=3,rows=4;
     const fw=yuliSheet.naturalWidth/cols;
     const fh=yuliSheet.naturalHeight/rows;
-    const col=1+((frame-1)%2);
+    const col=0;
     const row=rowByDir.right??3;
-    const topPad=Math.max(14,Math.round(fh*0.20));
-    const sx=col*fw;
-    const sy=Math.max(0,row*fh-topPad);
-    const sh=Math.min(yuliSheet.naturalHeight-sy,fh+topPad);
-    const w=38;
-    const targetH=w*(sh/fw);
+    const w=40;
+    const targetH=w*(fh/fw);
     const dx=Math.round(x-w/2);
     const dy=Math.round(198-targetH);
 
-    ctx.drawImage(yuliSheet,sx,sy,fw,sh,dx,dy,Math.round(w),Math.round(targetH));
+    ctx.drawImage(yuliSheet,col*fw,row*fh,fw,fh,dx,dy,Math.round(w),Math.round(targetH));
   };
 
   const style=document.createElement('style');
