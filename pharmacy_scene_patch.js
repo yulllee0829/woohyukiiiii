@@ -10,9 +10,9 @@
   const fade=document.querySelector('#gymFadeout');
   if(!ui||!action||!joystickEl||!pocket||!dialogueEl||!inventoryEl||!mission)return;
 
-  const bg=new Image(); bg.src='assets/phar.png?v=20260720-26';
-  const woo=new Image(); woo.src='assets/woo.png?v=20260720-26';
-  const choco=new Image(); choco.src='assets/choco.png?v=20260720-26';
+  const bg=new Image(); bg.src='assets/phar.png?v=20260720-27';
+  const woo=new Image(); woo.src='assets/woo.png?v=20260720-27';
+  const choco=new Image(); choco.src='assets/choco.png?v=20260720-27';
 
   let active=false,introDone=false,talking=false,popupOpen=false,completed=false,entering=false;
   let selected=new Set();
@@ -53,7 +53,7 @@
 
   function drawPharmacy(){
     if(bg.complete&&bg.naturalWidth)ctx.drawImage(bg,0,0,W,H);else px(0,0,W,H,'#e8e5dc');
-    drawWoo(player.x,player.y,42);
+    drawWoo(player.x,player.y,34);
   }
 
   const previousDrawSide=drawGymSideRoom;
@@ -116,8 +116,8 @@
     panel.innerHTML=`
       <div class="medicine-title">어떤 약으로 하시겠어요?</div>
       <div class="medicine-grid">
-        <div class="medicine-card" data-med="m1"><button type="button" class="medicine-check" aria-label="율리가 좋아지는 약 선택"></button><button type="button" class="medicine-info"><img src="assets/m1.png?v=20260720-26" alt="율리가 좋아지는 약"><span>율리가 좋아지는 약</span></button></div>
-        <div class="medicine-card" data-med="m2"><button type="button" class="medicine-check" aria-label="율리랑 결혼하고 싶어지는 약 선택"></button><button type="button" class="medicine-info"><img src="assets/m2.png?v=20260720-26" alt="율리랑 결혼하고 싶어지는 약"><span>율리랑 결혼하고 싶어지는 약</span></button></div>
+        <div class="medicine-card" data-med="m1"><button type="button" class="medicine-check" aria-label="율리가 좋아지는 약 선택"></button><button type="button" class="medicine-info"><img src="assets/m1.png?v=20260720-27" alt="율리가 좋아지는 약"><span>율리가 좋아지는 약</span></button></div>
+        <div class="medicine-card" data-med="m2"><button type="button" class="medicine-check" aria-label="율리랑 결혼하고 싶어지는 약 선택"></button><button type="button" class="medicine-info"><img src="assets/m2.png?v=20260720-27" alt="율리랑 결혼하고 싶어지는 약"><span>율리랑 결혼하고 싶어지는 약</span></button></div>
       </div>
       <div id="medicineDescription" class="medicine-description">약을 눌러 설명을 확인해 보세요</div>
       <button type="button" id="medicineConfirm" disabled>선택</button>`;
@@ -186,7 +186,7 @@
     if(inventory.includes('말차 초코파이')){
       let b=inventoryEl.querySelector('[data-item="말차 초코파이"]');
       if(!b){b=document.createElement('button');b.type='button';b.className='inventory-item';b.dataset.item='말차 초코파이';inventoryEl.appendChild(b);}
-      b.innerHTML='<img src="assets/choco.png?v=20260720-26" alt="말차 초코파이"><span>말차 초코파이</span>';
+      b.innerHTML='<img src="assets/choco.png?v=20260720-27" alt="말차 초코파이"><span>말차 초코파이</span>';
     }
   };
 
