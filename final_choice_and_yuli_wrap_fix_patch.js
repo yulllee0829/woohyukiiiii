@@ -23,24 +23,34 @@
 
   const style=document.createElement('style');
   style.textContent=`
-    /* Give Yuli's bubble just enough width to keep the ending together. */
     #dialogue.speaker-yuli,
     #dialogue.speaker-yuli-mat{
       width:204px!important;
       max-width:calc(100% - 24px)!important;
     }
 
-    /* Keep Damin teacher from being pulled upward by older patches. */
+    /* Lock Damin teacher at a lower fixed position so older patches cannot pull her bubble upward. */
     #dialogue.speaker-hong-gym{
       left:12px!important;
-      top:13%!important;
+      top:15%!important;
+      bottom:auto!important;
+      transform:none!important;
     }
   `;
   document.head.appendChild(style);
 
+  function lockDaminPosition(){
+    if(!dialogueEl.classList.contains('hidden')&&dialogueEl.classList.contains('speaker-hong-gym')){
+      dialogueEl.style.setProperty('left','12px','important');
+      dialogueEl.style.setProperty('top','15%','important');
+      dialogueEl.style.setProperty('right','auto','important');
+      dialogueEl.style.setProperty('bottom','auto','important');
+    }
+    requestAnimationFrame(lockDaminPosition);
+  }
+
   function syncFrontPositions(){
     if(scene==='gym'){
-      // Remember the actual front-room Woohyuk bubble position while it is visible.
       if(!dialogueEl.classList.contains('hidden')&&dialogueEl.classList.contains('speaker-woohyuk')){
         const left=parseFloat(dialogueEl.style.left);
         const top=parseFloat(dialogueEl.style.top);
@@ -63,7 +73,6 @@
           top=Math.max(118,Math.min(appRect.height-boxRect.height-10,screenY-boxRect.height-54));
         }
 
-        // Inline !important beats the older patches that were pulling this box to the top.
         choices.style.setProperty('left',`${left}px`,'important');
         choices.style.setProperty('top',`${top}px`,'important');
         choices.style.setProperty('right','auto','important');
@@ -73,5 +82,6 @@
     requestAnimationFrame(syncFrontPositions);
   }
 
+  requestAnimationFrame(lockDaminPosition);
   requestAnimationFrame(syncFrontPositions);
 })();
